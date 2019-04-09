@@ -1,0 +1,26 @@
+#!/bin/bash
+iconPath="/usr/share/kernel-notify/icon.png"
+content=$(wget www.kernel.org -q -O -)
+
+latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70)
+latestVersion=$(echo $latestVersion | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70)
+latestVersion=$(echo $latestVersion |grep -o '[^-]*\.tar$')
+latestVersion=$(echo $latestVersion |sed 's/.tar//g')
+currVersion=$(uname -r |sed 's/-.*/ /g')
+
+latestVersionFull=$latestVersion
+currVersionFull=$currVersion
+
+echo 'Latest Kernel: '$latestVersionFull
+echo 'Current Kernel: '$currVersionFull
+
+latestVersion=$(echo "${latestVersion//.}")
+currVersion=$(echo "${currVersion//.}")
+
+if [ "$latestVersion" -gt "$currVersion" ]
+then
+  notify-send -i $iconPath \
+"Kernel $latestVersionFull is available" \
+"You are currently running Kernel $currVersionFull"
+fi
+
