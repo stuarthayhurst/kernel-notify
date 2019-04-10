@@ -1,25 +1,43 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
+activeDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="2.0"
+version="2.5"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
+PS3='Make your choice: '
+options=("Yes" "No")
+  select opt in "${options[@]}"
+  do
+      case $opt in
+          "Yes")
+              echo "Uninstalling:"
+              break
+              ;;
+          "No")
+              exit
+              ;;
+          *) echo "invalid option $REPLY";;
+      esac
+  done
   rm ~/.config/autostart/kernel-notify.desktop
   sudo rm /usr/bin/kernel-notify
   sudo rm -rf /usr/share/kernel-notify
+  echo "Done"
   exit
 }
 
 update() {
-  git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && rm -rf kernel-notify
+  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify
 }
+
 
 cd $workDir
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h | --help      : Display this page and exit"; echo "-u | --update    : Update the program and exit"; echo "-v | --version   : Display program version and exit"; echo "-i | --uninstall : Uninstall the program"; exit;;
-  -i|--uninstall) echo "Are you sure you want to uninstall? (Y/N)"; uninstall; exit;;
+  -i|--uninstall) echo "Are you sure you want to uninstall?"; uninstall; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify:"; echo "Program version: $version"; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
