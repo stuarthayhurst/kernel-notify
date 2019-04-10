@@ -1,9 +1,10 @@
 #!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 iconPath="/usr/share/kernel-notify/icon.png"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
-  rm kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop
+  rm ~/.config/autostart/kernel-notify.desktop
   sudo rm /usr/bin/kernel-notify
   sudo rm -rf /usr/share/kernel-notify
   exit
@@ -12,6 +13,8 @@ uninstall() {
 update() {
   git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && rm -rf kernel-notify
 }
+
+cd $DIR
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h | --help      : Display this page and exit"; echo "-i | --uninstall : Uninstall the program"; echo "-u | --update    : Update the program and exit"; exit;;
@@ -34,9 +37,6 @@ echo 'Current Kernel: '$currVersionFull
 
 latestVersion=$(echo "${latestVersion//.}")
 currVersion=$(echo "${currVersion//.}")
-
-echo $latestVersion
-echo $currVersion
 
 if [ "$latestVersion" -gt "$currVersion" ]
 then
