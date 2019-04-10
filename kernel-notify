@@ -1,6 +1,5 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
-activeDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 iconPath="/usr/share/kernel-notify/icon.png"
 version="2.5"
 content=$(wget www.kernel.org -q -O -)
