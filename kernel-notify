@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="2.5"
+version="2.6"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -59,7 +59,7 @@ currVersion=$(echo "${currVersion//.}")
 
 if [ "$latestVersion" -gt "$currVersion" ]
 then
-  notify-send -i $iconPath \
+  notify-send -u critical -i $iconPath \
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
 fi
