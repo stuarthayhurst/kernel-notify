@@ -11,4 +11,5 @@ sudo mv icon.png /usr/share/kernel-notify/icon.png
 
 #Move kernel-notify.desktop to ~/.config/autostart/kernel-notify.desktop
 cp kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop
+sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 sudo rm kernel-notify.desktop
