@@ -36,7 +36,7 @@ update() {
 cd $workDir
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-um | --un-mute  : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; exit;;
+  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; exit;;
   -i|--uninstall) echo "Are you sure you want to uninstall?"; uninstall; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify:"; echo "Program version: $version"; exit;;
