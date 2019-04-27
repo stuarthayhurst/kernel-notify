@@ -1,6 +1,6 @@
 #!/bin/bash
 iconPath="/usr/share/kernel-notify/icon.png"
-version="3.1"
+version="3.2"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -11,6 +11,10 @@ options=("Yes" "No")
       case $opt in
           "Yes")
               echo "Uninstalling:"
+              rm ~/.config/autostart/kernel-notify.desktop
+              sudo rm /usr/bin/kernel-notify
+              sudo rm -rf /usr/share/kernel-notify
+              echo "Done"
               break
               ;;
           "No")
@@ -19,15 +23,27 @@ options=("Yes" "No")
           *) echo "invalid option $REPLY";;
       esac
   done
-  rm ~/.config/autostart/kernel-notify.desktop
-  sudo rm /usr/bin/kernel-notify
-  sudo rm -rf /usr/share/kernel-notify
-  echo "Done"
   exit
 }
 
+checkUpdate() {
+  cd kernel-notify
+  changed=0
+  git pull --dry-run | grep -q -v 'Already up-to-date.' && changed=1
+  if [ $changed -gt 0 ]
+  then
+    echo "Program outdated, sending notification"
+    notify-send -u critical -i $iconPath \
+"A new version of kernel-notify is available" \
+"Run 'kernel-notify -u' to update"
+  else
+    echo "Program is up-to-date"
+  fi
+  cd ../
+}
+
 update() {
-  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify
+  cd kernel-notify && git pull && ./install.sh && cd ../ && sudo git clone https://github.com/Dragon8oy/kernel-notify.git
 }
 
 removeKernel() {
@@ -38,7 +54,7 @@ echo "$(dpkg --list | grep linux-image-unsigned)" |sed 's/ii  //g' |sed 's/linux
   echo "Please select a kernel to remove:"
   read DELKERNEL
   sudo apt purge linux-headers-$DELKERNEL linux-headers-$DELKERNEL-generic linux-image-unsigned-$DELKERNEL-generic linux-modules-$DELKERNEL-generic -y
-#dpkg --list | grep linux-image-unsigned
+  echo "Removed selected kernel"
 }
 
 cd /usr/share/kernel-notify
@@ -47,7 +63,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-r  | --remove    : Remove a kernel from a displayed list"; echo "-i  | --uninstall : Uninstall the program"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; exit;;
   -i|--uninstall) echo "Are you sure you want to uninstall?"; uninstall; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
-  -v|--version) echo "Kernel version: $version"; exit;;
+  -v|--version) echo "Kernel-notify version: $version"; exit;;
   -r|--remove) removeKernel; exit;;
   -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; cp kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop; echo "Done"; exit;;
   -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm ~/.config/autostart/kernel-notify.desktop; echo "Done"; exit;;
@@ -76,3 +92,4 @@ then
 "You are currently running Kernel $currVersionFull"
 fi
 
+checkUpdate
