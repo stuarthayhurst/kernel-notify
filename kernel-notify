@@ -2,7 +2,7 @@
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
 activeDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-version="2.8"
+version="2.9"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -47,8 +47,8 @@ esac; shift; done
 
 latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70)
 latestVersion=$(echo $latestVersion | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70)
-latestVersion=$(echo $latestVersion |grep -o '[^-]*\.tar$')
-latestVersion=$(echo $latestVersion |sed 's/.tar//g')
+latestVersion=$(echo $latestVersion |sed 's/linux-//g')
+latestVersion=${latestVersion%.*}
 currVersion=$(uname -r |sed 's/-.*/ /g')
 
 latestVersionFull=$latestVersion
@@ -62,7 +62,7 @@ currVersion=$(echo "${currVersion//.}")
 
 if [ "$latestVersion" -gt "$currVersion" ]
 then
-  notify-send -u critical -i $iconPath \
+  notify-send -u normal -i $iconPath \
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
 fi
