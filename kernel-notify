@@ -29,7 +29,7 @@ options=("Yes" "No")
 checkUpdate() {
   cd kernel-notify
   changed=0
-  git pull --dry-run | grep -q -v 'Already up-to-date.' && changed=1
+  sudo git pull --dry-run | grep -q -v 'Already up-to-date.' && changed=1
   if [ $changed -gt 0 ]
   then
     echo "Program outdated, sending notification"
@@ -43,7 +43,7 @@ checkUpdate() {
 }
 
 update() {
-  cd kernel-notify && git pull && ./install.sh && cd ../ && sudo git clone https://github.com/Dragon8oy/kernel-notify.git
+  cd kernel-notify && sudo git pull && ./install.sh && cd ../ && sudo git clone https://github.com/Dragon8oy/kernel-notify.git
 }
 
 removeKernel() {
