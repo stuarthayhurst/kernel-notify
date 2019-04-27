@@ -20,7 +20,7 @@ sudo cp icon.png /usr/share/kernel-notify/icon.png
 echo "Added icon"
 
 #Move kernel-notify.desktop to ~/.config/autostart/ and /usr/share/kernel-notify/
-mv kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop
+cp kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop
 sudo cp ~/.config/autostart/kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 echo "Added autostart file"
 
