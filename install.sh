@@ -32,4 +32,4 @@ else
   echo "Clone git repo"
 fi
 
-rm -rf $DIR
+sudo rm -rf $DIR
