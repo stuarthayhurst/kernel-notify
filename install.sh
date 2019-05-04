@@ -15,6 +15,12 @@ else
   echo "Wget not installed, exiting"
   exit
 fi
+if ls /bin/notify-send; then
+  echo "Notify-send found"
+else
+  echo "Notify-send not installed, exiting"
+  exit
+fi
 
 #Move kernel-notify to /usr/bin/kernel-notify
 sudo cp kernel-notify /usr/bin/kernel-notify
