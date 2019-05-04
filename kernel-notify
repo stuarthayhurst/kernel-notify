@@ -1,6 +1,6 @@
 #!/bin/bash
 iconPath="/usr/share/kernel-notify/icon.png"
-version="3.2"
+version="3.3"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -11,7 +11,7 @@ options=("Yes" "No")
       case $opt in
           "Yes")
               echo "Uninstalling:"
-              rm ~/.config/autostart/kernel-notify.desktop
+              sudo rm /etc/xdg/autostart/kernel-notify.desktop
               sudo rm /usr/bin/kernel-notify
               sudo rm -rf /usr/share/kernel-notify
               echo "Done"
@@ -65,8 +65,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify version: $version"; exit;;
   -r|--remove) removeKernel; exit;;
-  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; cp kernel-notify.desktop ~/.config/autostart/kernel-notify.desktop; echo "Done"; exit;;
-  -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm ~/.config/autostart/kernel-notify.desktop; echo "Done"; exit;;
+  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
+  -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
