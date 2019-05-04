@@ -33,3 +33,4 @@ else
 fi
 
 sudo rm -rf $DIR
+cd ../
