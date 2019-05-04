@@ -26,24 +26,8 @@ options=("Yes" "No")
   exit
 }
 
-checkUpdate() {
-  cd kernel-notify
-  changed=0
-  sudo git pull --dry-run | grep -q -v 'Already up-to-date.' && changed=1
-  if [ $changed -gt 0 ]
-  then
-    echo "Program outdated, sending notification"
-    notify-send -u critical -i $iconPath \
-"A new version of kernel-notify is available" \
-"Run 'kernel-notify -u' to update"
-  else
-    echo "Program is up-to-date"
-  fi
-  cd ../
-}
-
 update() {
-  cd kernel-notify && sudo git pull && ./install.sh && cd ../ && sudo git clone https://github.com/Dragon8oy/kernel-notify.git
+  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify
 }
 
 removeKernel() {
@@ -54,7 +38,6 @@ echo "$(dpkg --list | grep linux-image-unsigned)" |sed 's/ii  //g' |sed 's/linux
   echo "Please select a kernel to remove:"
   read DELKERNEL
   sudo apt purge linux-headers-$DELKERNEL linux-headers-$DELKERNEL-generic linux-image-unsigned-$DELKERNEL-generic linux-modules-$DELKERNEL-generic -y
-  echo "Removed selected kernel"
 }
 
 cd /usr/share/kernel-notify
@@ -91,5 +74,3 @@ then
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
 fi
-
-checkUpdate
