@@ -1,4 +1,5 @@
 #!/bin/bash
+workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
 version="3.4"
 content=$(wget www.kernel.org -q -O -)
