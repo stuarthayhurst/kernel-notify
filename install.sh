@@ -7,13 +7,13 @@ if ls /bin/git; then
   echo "Git found"
 else
   echo "Git not installed, exiting"
-  return 1
+  exit
 fi
 if ls /bin/wget; then
   echo "Wget found"
 else
-  echo "Git not installed, exiting"
-  return 1
+  echo "Wget not installed, exiting"
+  exit
 fi
 
 #Move kernel-notify to /usr/bin/kernel-notify
