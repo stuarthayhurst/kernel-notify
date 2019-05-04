@@ -23,4 +23,4 @@ The program will work until kernel 99.99.99 is released, when it will need a min
 ## Dependencies:
  * wget
  * git
- * notify-send
+ * notify-send / libnotify4 / libnotify-bin
