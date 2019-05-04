@@ -1,6 +1,6 @@
 #!/bin/bash
 iconPath="/usr/share/kernel-notify/icon.png"
-version="3.3"
+version="3.4"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -48,7 +48,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify version: $version"; exit;;
   -r|--remove) removeKernel; exit;;
-  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
+  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
   -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
@@ -68,7 +68,7 @@ echo 'Current Kernel: '$currVersionFull
 latestVersion=$(echo "${latestVersion//.}")
 currVersion=$(echo "${currVersion//.}")
 
-if [ "$latestVersion" -gt "$currVersion" ]
+if [ "$latestVersion" -ne "$currVersion" ]
 then
   notify-send -u normal -i $iconPath \
 "Kernel $latestVersionFull is available" \

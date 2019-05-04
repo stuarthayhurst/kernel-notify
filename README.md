@@ -11,3 +11,7 @@ Run `install.sh` to make the program start on login and use an icon
 * -i  | --uninstall : Uninstall the program
 * -um | --un-mute   : Unmute the program on boot
 * -m  | --mute      : Mute the program on boot
+
+## Dependencies:
+ * wget
+ * git

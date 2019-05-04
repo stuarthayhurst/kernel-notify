@@ -2,7 +2,19 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 cd $DIR
-sudo apt install git -y
+
+if ls /bin/git; then
+  echo "Git found"
+else
+  echo "Git not installed, exiting"
+  return 1
+fi
+if ls /bin/wget; then
+  echo "Wget found"
+else
+  echo "Git not installed, exiting"
+  return 1
+fi
 
 #Move kernel-notify to /usr/bin/kernel-notify
 sudo cp kernel-notify /usr/bin/kernel-notify
@@ -24,13 +36,5 @@ sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 echo "Added autostart file"
 
-cd /usr/share/kernel-notify
-if [ -d "/usr/share/kernel-notify" ]; then
-  echo "Git repo already cloned"
-else
-  sudo git clone https://github.com/Dragon8oy/kernel-notify.git
-  echo "Clone git repo"
-fi
-
-sudo rm -rf $DIR
 cd ../
+sudo rm -rf $DIR

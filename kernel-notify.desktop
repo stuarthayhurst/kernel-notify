@@ -1,12 +1,12 @@
 [Desktop Entry]
 Type=Application
-Version=3.3
+Version=3.4
 Exec=kernel-notify
 Hidden=false
 NoDisplay=false
 Icon=/usr/share/kernel-notify/icon.png
 X-GNOME-Autostart-enabled=true
 Name[en_GB]=Kernel Update Notifier
-Name=Notifies the user if their kernel is no longer bleeding-edge
+Name=Notifies the user if their kernel is no longer the latest
 Comment[en_GB]=
 Comment=
