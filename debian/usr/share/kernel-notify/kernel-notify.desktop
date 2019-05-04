@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Version=3.6
+Version=3.7
 Exec=kernel-notify
 Hidden=false
 NoDisplay=false
