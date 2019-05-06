@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="3.7"
+version="3.8"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -28,7 +28,7 @@ options=("Yes" "No")
 }
 
 update() {
-  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify
+  /usr/share/kernel-notify/updater
 }
 
 cd /usr/share/kernel-notify

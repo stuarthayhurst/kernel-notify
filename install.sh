@@ -42,5 +42,8 @@ sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 echo "Added autostart file"
 
+sudo cp updater /usr/share/kernel-notify/updater
+echo "Added updater"
+
 cd ../
 sudo rm -rf $DIR

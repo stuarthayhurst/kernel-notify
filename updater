@@ -1,0 +1,4 @@
+#!/bin/bash
+workDir="/usr/share/kernel-notify"
+cd $workDir
+sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh
