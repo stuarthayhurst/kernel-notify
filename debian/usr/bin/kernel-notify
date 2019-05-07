@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.0"
+version="4.1"
 content=$(wget www.kernel.org -q -O -)
 
 uninstall() {
@@ -66,9 +66,16 @@ else
 fi
 echo $latestVersion
 
-if [ "$latestVersion" -ne "$currVersion" ]
-then
+if [ "$latestVersion" -ne "$currVersion" ]; then
   notify-send -u normal -i $iconPath \
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
 fi
+
+latestProgVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+if [ "${latestProgVer%.*}" -ne "${version%.*}" ]; then
+  notify-send -u normal -i $iconPath \
+"Version v$latestProgVer is available" \
+"Update with 'kernel-notify -u'"
+fi
+
