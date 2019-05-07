@@ -18,8 +18,7 @@ fi
 if ls /usr/bin/notify-send; then
   echo "Notify-send found"
 else
-  echo "Notify-send not installed, exiting"
-  exit
+  echo "Notify-send not installed, we strongly reccomend installing if for GUI systems"
 fi
 
 #Move kernel-notify to /usr/bin/kernel-notify

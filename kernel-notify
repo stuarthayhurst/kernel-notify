@@ -64,18 +64,25 @@ if [ "$latestVersion" -le "99" ]; then
 else
   echo "More than 2 digits"
 fi
-echo $latestVersion
 
 if [ "$latestVersion" -ne "$currVersion" ]; then
-  notify-send -u normal -i $iconPath \
+  if [ ! -f /usr/bin/notify-send ]; then
+    wall "Kernel $latestVersionFull is available, you are currently running Kernel $currVersionFull"
+  else
+    notify-send -u normal -i $iconPath \
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
+  fi
 fi
 
 latestProgVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestProgVer%.*}" -ne "${version%.*}" ]; then
-  notify-send -u normal -i $iconPath \
+  if [ ! -f /usr/bin/notify-send ]; then
+    wall "Version v$latestProgVer is available, update with 'kernel-notify -u'"
+  else
+    notify-send -u normal -i $iconPath \
 "Version v$latestProgVer is available" \
 "Update with 'kernel-notify -u'"
+  fi
 fi
 
