@@ -13,9 +13,10 @@ The program will work until kernel 99.99.99 is released, when it will need a min
 
 ## Help:
  * -h  | --help      : Display this page and exit
- * -u  | --update    : Update the program and exit - Please install the program before attempting to run this
+ * -u  | --update    : Update the program and exit - Please install the program before running this
  * -v  | --version   : Display program version and exit
  * -i  | --uninstall : Uninstall the program
+ * -s  | --silent    : Run the program with only notification output
  * -um | --un-mute   : Unmute the program on boot
  * -m  | --mute      : Mute the program on boot
 

@@ -1,8 +1,9 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.2"
+version="4.3"
 content=$(wget www.kernel.org -q -O -)
+silent="0"
 
 uninstall() {
 PS3='Make your choice: '
@@ -12,7 +13,10 @@ options=("Yes" "No")
       case $opt in
           "Yes")
               echo "Uninstalling:"
-              sudo rm /etc/xdg/autostart/kernel-notify.desktop
+              if ls /etc/xdg/autostart/kernel-notify.desktop; then
+                sudo rm /etc/xdg/autostart/kernel-notify.desktop
+              fi
+              sudo rm /etc/profile.d/autostart.sh
               sudo rm /usr/bin/kernel-notify
               sudo rm -rf /usr/share/kernel-notify
               echo "Done"
@@ -28,38 +32,37 @@ options=("Yes" "No")
 }
 
 update() {
-  /usr/share/kernel-notify/updater
+  $workDir/updater
 }
 
 cd $workDir
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-s  | --silent    : Run the program without console output"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -i|--uninstall) echo "Are you sure you want to uninstall?"; uninstall; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
-  -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm /etc/xdg/autostart/kernel-notify.desktop; echo "Done"; exit;;
+  -s|--silent) silent="1";;
+  -um|--un-mute) echo "Unmuting kernel-notify:"; cd $workDir; sudo cp autostart.sh /etc/profile.d/autostart.sh; echo "Done"; exit;;
+  -m|--mute) echo "Muting Kernel-notify:"; cd $workDir; sudo rm /etc/profile.d/autostart.sh; echo "Done"; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70)
-latestVersion=$(echo $latestVersion | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70)
-latestVersion=$(echo $latestVersion |sed 's/linux-//g')
-latestVersion=${latestVersion%.t*}
-currVersion=$(uname -r |sed 's/-.*/ /g')
+latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+currVersion=$(uname -r | sed 's/-.*/ /g')
 
 latestVersionFull=$latestVersion
 currVersionFull=$currVersion
 
-echo 'Latest Kernel: '$latestVersionFull
-echo 'Current Kernel: '$currVersionFull
+if [ "$silent" -lt "1" ]; then
+  echo 'Latest Kernel: '$latestVersionFull
+  echo 'Current Kernel: '$currVersionFull
+fi
 
 latestVersion=$(echo "${latestVersion//.}")
 currVersion=$(echo "${currVersion//.}")
 
 if [ "$latestVersion" -le "99" ]; then
-  echo "Short kernel version found, adjusting"
   latestVersion=$(echo "$latestVersion""0")
 else
   echo "More than 2 digits"
@@ -76,7 +79,7 @@ if [ "$latestVersion" -ne "$currVersion" ]; then
 fi
 
 latestProgVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-if [ "${latestProgVer%.*}" -ne "${version%.*}" ]; then
+if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   if [ ! -f /usr/bin/notify-send ]; then
     wall "Version v$latestProgVer is available, update with 'kernel-notify -u'"
   else

@@ -37,18 +37,13 @@ sudo cp icon.png /usr/share/kernel-notify/icon.png
 echo "Added icon"
 
 #Add startup app
-if [ -d "/etc/xdg/autostart" ]; then
-  echo "/etc/xdg/autostart found"
-  sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-  sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
-else
-  echo "/etc/xdg/autostart not found"
-  echo "Adding commands for autostart on user login to /etc/profile or /etc/profile.d/"
-  if [ -d "/etc/profile.d" ]; then
-    sudo cp autostart.sh /etc/profile.d/autostart.sh
-  else
-    sudo echo "kernel-notify" >> /etc/profile
+if ls /etc/xdg/autostart/kernel-notify.desktop; then
+  sudo rm /etc/xdg/autostart/kernel-notify.desktop
+  sudo rm /usr/share/kernel-notify/kernel-notify.desktop
 fi
+sudo cp autostart.sh /usr/share/kernel-notify/autostart.sh
+sudo cp autostart.sh /etc/profile.d/autostart.sh
+
 echo "Added autostart file"
 
 sudo cp updater /usr/share/kernel-notify/updater
