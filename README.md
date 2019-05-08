@@ -4,7 +4,7 @@ The program will work until kernel 99.99.99 is released, when it will need a min
 
 ## Installation:
  * Run `install.sh` to make the program start on login and use an icon
- - OR:
+ - ### OR:
  * `dpkg --build debian`
  * `sudo dpkg -i debian.deb`
 
