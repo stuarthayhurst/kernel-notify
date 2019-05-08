@@ -15,11 +15,6 @@ else
   echo "Wget not installed, exiting"
   exit
 fi
-if ls /usr/bin/notify-send; then
-  echo "Notify-send found"
-else
-  echo "Notify-send not installed, we strongly recommend installing if for GUI systems"
-fi
 
 #Move kernel-notify to /usr/bin/kernel-notify
 sudo cp kernel-notify /usr/bin/kernel-notify
@@ -37,12 +32,21 @@ sudo cp icon.png /usr/share/kernel-notify/icon.png
 echo "Added icon"
 
 #Add startup app
-sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
+if ls /usr/bin/notify-send; then
+  echo "Notify-send found"
+  sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+  sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
+else
+  echo "Notify-send not installed, we strongly recommend installing it for GUI systems"
+  echo "Adding commands for autostart on user login to /etc/profile or /etc/profile.d/"
+  if [ -d "/etc/profile.d" ]; then
+    sudo cp autostart.sh /etc/profile.d/autostart.sh
+  else
+    sudo echo "kernel-notify" >> /etc/profile
+fi
 echo "Added autostart file"
 
 sudo cp updater /usr/share/kernel-notify/updater
 echo "Added updater"
 
-cd ../
 sudo rm -rf $DIR
