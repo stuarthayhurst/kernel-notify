@@ -5,7 +5,8 @@ Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
 Version: 4.2
 Architecture: all
-Depends: git, wget, libnotify-bin, libnotify4
+Depends: git, wget
+Recommends: libnotify-bin, libnotify4
 Homepage: <https://github.com/Dragon8oy/kernel-notify>
 Description: Kernel update checker
  A small package / project to check the latest kernel version and notify all users of an update
