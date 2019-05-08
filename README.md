@@ -1,6 +1,6 @@
 # kernel-notify
 A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
-The program will work until kernel 99.99.99 is released, when it will need a minor patch
+The program will work until kernel 99.99.99 is released, when it will need a minor patch (Almost never)
 
 ## Installation:
  * Run `install.sh` to make the program start on login and use an icon
