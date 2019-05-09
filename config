@@ -9,7 +9,7 @@ autostart="desktop"
 
 workDir="/usr/share/kernel-notify"
 if [ "$1" == "-c" ]; then
-  echo "Config:"
+  echo "Running config:"
   if [ "$2" == "" ]; then
     cat $workDir/config | cut -f1 -d"@" --zero-terminated
   else
@@ -18,6 +18,7 @@ if [ "$1" == "-c" ]; then
     else
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
       sudo mv $workDir/config.temp $workDir/config
+      kernel-notify -c installed true
     fi
   fi
 fi

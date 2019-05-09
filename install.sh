@@ -43,6 +43,6 @@ sudo cp autostart.sh /usr/share/kernel-notify/autostart.sh
 sudo cp updater /usr/share/kernel-notify/updater
 echo "Added updater"
 
-kernel-notify -v
+kernel-notify -c installed true
 
 sudo rm -rf $DIR
