@@ -6,7 +6,7 @@ content=$(wget www.kernel.org -q -O -)
 silent="0"
 
 #source $workDir/config
-source config
+source $workDir/config
 
 if [ "$muted" == "0" ]; then
   if [ "$autostart" == "desktop" ]; then
