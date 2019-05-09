@@ -1,0 +1,3 @@
+#!/bin/bash
+kernel-notify -v
+echo "Successfully installed"

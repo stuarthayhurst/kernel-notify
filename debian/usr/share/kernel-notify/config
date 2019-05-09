@@ -1,0 +1,23 @@
+#!/bin/bash
+#Don't manually edit this, us -m to mute and -um to unmute
+muted="0"
+#1 for majour, 2 for minor and 3 for patch
+degree=""
+#desktop or text
+autostart="desktop"
+#@
+
+workDir="/home/ratus5/Downloads/kernel-notify"
+if [ "$1" == "-c" ]; then
+  echo "Config:"
+  if [ "$2" == "" ]; then
+    cat $workDir/config | cut -f1 -d"@" --zero-terminated
+  else
+    if [ "$3" == "" ]; then
+      cat $workDir/config | grep $2
+    else
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
+      sudo mv $workDir/config.temp $workDir/config
+    fi
+  fi
+fi

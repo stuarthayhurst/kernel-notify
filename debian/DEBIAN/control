@@ -3,7 +3,7 @@ Section: utility
 Priority: optional
 Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
-Version: 4.3
+Version: 4.4
 Architecture: all
 Depends: git, wget
 Recommends: libnotify-bin, libnotify4
