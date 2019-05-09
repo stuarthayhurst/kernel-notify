@@ -5,9 +5,9 @@ version="4.4"
 content=$(wget www.kernel.org -q -O -)
 silent="0"
 
-#source $workDir/config
 source $workDir/config
 
+cd $workDir
 if [ "$muted" == "0" ]; then
   if [ "$autostart" == "desktop" ]; then
     if [ -f /etc/profile.d/autostart.sh ]; then
@@ -98,8 +98,6 @@ unmute() {
 update() {
   $workDir/updater
 }
-
-cd $workDir
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-s  | --silent    : Run the program without console output"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; echo "-c  | --config    : Change / read a config value"; echo ""; echo "Program written by: Dragon8oy"; exit;;

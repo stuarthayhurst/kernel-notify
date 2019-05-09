@@ -7,7 +7,7 @@ degree=""
 autostart="desktop"
 #@
 
-workDir="/home/ratus5/Downloads/kernel-notify"
+workDir="/usr/share/kernel-notify"
 if [ "$1" == "-c" ]; then
   echo "Config:"
   if [ "$2" == "" ]; then
