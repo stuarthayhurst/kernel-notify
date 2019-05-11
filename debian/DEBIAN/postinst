@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -f /usr/share/kernel-notify/config.old ]; then
   if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
-    echo "Config file has changed"
+    echo "Config may have changed"
     echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
     echo ""
     echo "Old values:"

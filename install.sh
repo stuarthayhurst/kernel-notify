@@ -97,4 +97,4 @@ echo "Added updater"
 
 kernel-notify -c installed true
 
-sudo rm -rf $DIR
+echo "Successfully installed program, you can remove this directory with 'rm -rf $DIR'"
