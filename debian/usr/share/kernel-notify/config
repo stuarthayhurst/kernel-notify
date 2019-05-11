@@ -1,15 +1,15 @@
 #!/bin/bash
 #Don't manually edit this, us -m to mute and -um to unmute
 muted="0"
-#1 for majour, 2 for minor and 3 for patch
-degree=""
+#1 for majour, 2 for minor and 3 for patch version checking
+detail=""
 #desktop or text
 autostart="desktop"
 #@
 
 workDir="/usr/share/kernel-notify"
 if [ "$1" == "-c" ]; then
-  echo "Running config operation:"
+  echo "Running config:"
   if [ "$2" == "" ]; then
     cat $workDir/config | cut -f1 -d"@" --zero-terminated
   else

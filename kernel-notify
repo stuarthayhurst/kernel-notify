@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.4"
+version="4.5"
 content=$(wget www.kernel.org -q -O -)
 silent="0"
 
@@ -49,10 +49,10 @@ options=("Yes" "No")
       case $opt in
           "Yes")
               echo "Uninstalling:"
-              if ls /etc/xdg/autostart/kernel-notify.desktop; then
+              if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
                 sudo rm /etc/xdg/autostart/kernel-notify.desktop
               fi
-              if ls /etc/profile.d/autostart.sh; then
+              if [ -f /etc/profile.d/autostart.sh ]; then
                 sudo rm /etc/profile.d/autostart.sh
               fi
               sudo rm /usr/bin/kernel-notify
@@ -66,11 +66,6 @@ options=("Yes" "No")
           *) echo "invalid option $REPLY";;
       esac
   done
-  exit
-}
-
-config() {
-  echo "$1"
 }
 
 mute() {
@@ -101,7 +96,7 @@ update() {
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-s  | --silent    : Run the program without console output"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; echo "-c  | --config    : Change / read a config value"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -i|--uninstall) echo "Are you sure you want to uninstall?"; uninstall; exit;;
+  -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -s|--silent) silent="1";;

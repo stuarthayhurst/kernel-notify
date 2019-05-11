@@ -1,3 +1,10 @@
 #!/bin/bash
+
+if [ -f /usr/share/kernel-notify/config.old ]; then
+  echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+  echo "Old values:"
+  cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+fi
+
 kernel-notify -c installed true
 echo "Successfully installed"

@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+  sudo rm /etc/xdg/autostart/kernel-notify.desktop
+  echo "Removed autostart"
+elif [ -f /etc/profile.d/autostart.sh ]; then
+  sudo rm /etc/profile.d/autostart.sh
+  echo "Removed autostart"
+fi
+

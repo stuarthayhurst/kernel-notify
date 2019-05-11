@@ -3,19 +3,54 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 cd $DIR
 
-if ls /usr/bin/git; then
+uninstall() {
+PS3='Make your choice: '
+options=("Yes" "No")
+  select opt in "${options[@]}"
+  do
+      case $opt in
+          "Yes")
+              echo "Uninstalling:"
+              if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+                sudo rm /etc/xdg/autostart/kernel-notify.desktop
+              fi
+              if [ -f /etc/profile.d/autostart.sh ]; then
+                sudo rm /etc/profile.d/autostart.sh
+              fi
+              sudo rm /usr/bin/kernel-notify
+              sudo rm -rf /usr/share/kernel-notify
+              echo "Done"
+              break
+              ;;
+          "No")
+              exit
+              ;;
+          *) echo "invalid option $REPLY";;
+      esac
+  done
+}
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-ui | --uninstall : Uninstall the program"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+  -u|--update) git pull; exit;;
+  -v|--version) ./kernel-notify -v; exit;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+if [ -f /usr/bin/git ]; then
   echo "Git found"
 else
   echo "Git not installed, exiting"
   exit
 fi
-if ls /usr/bin/wget; then
+if [ -f /usr/bin/wget ]; then
   echo "Wget found"
 else
   echo "Wget not installed, exiting"
   exit
 fi
-if ls /usr/bin/notify-send; then
+if [ -f /usr/bin/notify-send ]; then
   echo "Notify-send found"
 else
   echo "Notify-send not installed, we strongly recommend installing it for GUI systems"
@@ -33,8 +68,17 @@ else
   echo "Created directory"
 fi
 
+if [ -f /usr/share/kernel-notify/config ]; then
+  sudo cp /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
+  echo "Saved old config as /usr/share/kernel-notify/config.old"
+  echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+  echo "Old values:"
+  cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+fi
+
 sudo cp icon.png /usr/share/kernel-notify/icon.png
-echo "Added icon"
+sudo cp config /usr/share/kernel-notify/config
+echo "Added icon and config"
 
 #Add startup app files
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
