@@ -120,8 +120,6 @@ latestVersion=$(echo "${latestVersion//.}")
 
 if [ "$latestVersion" -le "99" ]; then
   latestVersion=$(echo "$latestVersion""0")
-else
-  echo "More than 2 digits"
 fi
 
 if [ "$latestVersion" -ne "${currVersion//.}" ]; then
