@@ -25,7 +25,7 @@ fi
 if [ "$muted" == "0" ]; then
   if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
     if [ ! -f /etc/profile.d/autostart.sh ]; then
-      echo "No autostart file found, creating one"
+      echo "Creating autostart file"
       if [ "$autostart" == "desktop" ]; then
         echo "Adding /etc/xdg/autostart/kernel-notify.desktop"
         sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop

@@ -68,14 +68,20 @@ else
   echo "Created directory"
 fi
 
-if [ -f /usr/share/kernel-notify/config ]; then
-  sudo cp /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
-  echo "Saved old config as /usr/share/kernel-notify/config.old"
-  echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
-  echo ""
-  echo "Old values:"
-  cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
-  echo ""
+if [ -f /usr/share/kernel-notify/config.old ]; then
+  if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
+    echo "Config file has changed"
+    echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+    echo ""
+    echo "Old values:"
+    cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+    echo ""
+    echo ""
+    echo "New values:"
+    cat /usr/share/kernel-notify/config | cut -f1 -d"@" --zero-terminated
+    echo ""
+    echo ""
+  fi
 fi
 
 sudo cp icon.png /usr/share/kernel-notify/icon.png
