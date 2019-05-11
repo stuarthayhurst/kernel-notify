@@ -72,8 +72,10 @@ if [ -f /usr/share/kernel-notify/config ]; then
   sudo cp /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
   echo "Saved old config as /usr/share/kernel-notify/config.old"
   echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+  echo ""
   echo "Old values:"
   cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+  echo ""
 fi
 
 sudo cp icon.png /usr/share/kernel-notify/icon.png
