@@ -14,6 +14,7 @@ If the program is brogen, please file a bug report under [Issues](https://github
 ## Updating:
  * `kernel-notify -u`
  - WARNING: Config will be reset after an update, it is recommended to note down current settings first
+ - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs
 
 ## Help:
  * -h  | --help      : Display this page and exit
