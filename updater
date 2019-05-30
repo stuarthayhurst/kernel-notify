@@ -3,9 +3,9 @@ version="4.6"
 cd /usr/share/kernel-notify
 echo "Checking for updates:";
 latestVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
+if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
-  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh
+  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify/
 else
   echo "Program up-to-date"
 fi
