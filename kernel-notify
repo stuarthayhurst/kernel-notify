@@ -96,10 +96,10 @@ removeKernel() {
   printf "${KERNELS// /\n}\n"
   echo "Please enter the kernel you want to remove: (x.x.x-xx): "
   read DELVERSION
-  GENERICHEADERS="linux-headers-$DELVERSION-0${DELVERSION//./0}-generic"
-  HEADERS="linux-headers-$DELVERSION-0${DELVERSION//./0}"
-  IMAGE="linux-image-unsigned-$DELVERSION-0${DELVERSION//./0}-generic"
-  MODULES="linux-modules-$DELVERSION-0${DELVERSION//./0}-generic"
+  GENERICHEADERS="linux-headers-$DELVERSION-generic"
+  HEADERS="linux-headers-$DELVERSION"
+  IMAGE="linux-image-unsigned-$DELVERSION-generic"
+  MODULES="linux-modules-$DELVERSION-generic"
   sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
 }
 
