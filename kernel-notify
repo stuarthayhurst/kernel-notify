@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.5"
+version="4.6"
 content=$(wget www.kernel.org -q -O -)
 silent="0"
 
@@ -68,6 +68,41 @@ options=("Yes" "No")
   done
 }
 
+listConfig() {
+  if [ -f /usr/share/kernel-notify/config.old ]; then
+    if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
+      echo "Config file has changed"
+      echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+      echo ""
+      echo "Old values:"
+      cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+      echo "" && echo ""
+      echo "New values:"
+      cat /usr/share/kernel-notify/config | cut -f1 -d"@" --zero-terminated
+      echo "" && echo ""
+    else
+      echo "No change in config found"
+    fi
+  else
+    echo "No old config file found"
+  fi
+}
+
+removeKernel() {
+  echo "Currently installed kernels:"
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  printf "${KERNELS// /\n}\n"
+  echo "Please enter the kernel you want to remove: (x.x.x-xx): "
+  read DELVERSION
+  GENERICHEADERS="linux-headers-$DELVERSION-0${DELVERSION//./0}-generic"
+  HEADERS="linux-headers-$DELVERSION-0${DELVERSION//./0}"
+  IMAGE="linux-image-unsigned-$DELVERSION-0${DELVERSION//./0}-generic"
+  MODULES="linux-modules-$DELVERSION-0${DELVERSION//./0}-generic"
+  sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
+}
+
 mute() {
   echo "Muting Kernel-notify:"
   kernel-notify -c muted 1
@@ -95,15 +130,17 @@ update() {
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-v  | --version   : Display program version and exit"; echo "-i  | --uninstall : Uninstall the program"; echo "-s  | --silent    : Run the program without console output"; echo "-um | --un-mute   : Unmute the program on login"; echo "-m  | --mute      : Mute the program on login"; echo "-c  | --config    : Change / read a config value"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+  -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--update) echo "Checking for updates:"; update; exit;;
   -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -s|--silent) silent="1";;
-  -um|--un-mute) unmute; exit;;
-  -m|--mute) mute; exit;;
+  -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+  -l|--list-config) listConfig; exit;;
   -c|--config) exit;;
-  *) echo "Unknown parameter passed: $1"; exit 1;;
+  -r|--remove) removeKernel; exit;;
+  -s|--silent) silent="1";;
+  -um|--unmute) unmute; exit;;
+  -m|--mute) mute; exit;;
+  *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
 esac; shift; done
 latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 currVersion=$(uname -r | sed 's/-.*/ /g')
