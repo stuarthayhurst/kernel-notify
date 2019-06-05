@@ -45,6 +45,9 @@ prepareRelease() {
   sed 's|.*Version:.*|Version: '$newVersion'|' debian/DEBIAN/control > debian/DEBIAN/control.temp
   mv debian/DEBIAN/control.temp debian/DEBIAN/control
 
+  chmod +x updater
+  chmod +x kernel-notify
+
   cp config $debianPath/
   cp icon.png $debianPath/
   cp autostart.sh $debianPath/
