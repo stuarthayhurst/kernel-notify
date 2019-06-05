@@ -36,7 +36,7 @@ prepareRelease() {
   read newVersion
   sed 's|.*version=".*|version="'$newVersion'"|' kernel-notify > kernel-notify.temp
   mv kernel-notify.temp kernel-notify
-  sed 's|.*Version=".*|Version="'$newVersion'"|' kernel-notify.desktop > kernel-notify.desktop.temp
+  sed 's|.*Version=.*|Version='$newVersion'|' kernel-notify.desktop > kernel-notify.desktop.temp
   mv kernel-notify.desktop.temp kernel-notify.desktop
   sed 's|.*version=".*|version="'$newVersion'"|' updater > updater.temp
   mv updater.temp updater
