@@ -47,6 +47,9 @@ prepareRelease() {
 
   chmod +x updater
   chmod +x kernel-notify
+  chmod +x debian/usr/share/kernel-notify/updater
+  chmod +x debian/usr/bin/kernel-notify
+  dpkg --build debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
 
   cp config $debianPath/
   cp icon.png $debianPath/
