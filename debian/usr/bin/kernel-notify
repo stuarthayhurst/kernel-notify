@@ -1,10 +1,11 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.6"
+version="4.7"
 content=$(wget www.kernel.org -q -O -)
 silent="0"
 
+#source $workDir/config
 source $workDir/config
 
 cd $workDir
@@ -75,16 +76,31 @@ listConfig() {
       echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
       echo ""
       echo "Old values:"
-      cat /usr/share/kernel-notify/config.old | cut -f1 -d"@" --zero-terminated
+      cat /usr/share/kernel-notify/config.old
       echo "" && echo ""
       echo "New values:"
-      cat /usr/share/kernel-notify/config | cut -f1 -d"@" --zero-terminated
+      cat /usr/share/kernel-notify/config
       echo "" && echo ""
     else
       echo "No change in config found"
     fi
   else
     echo "No old config file found"
+  fi
+}
+
+editConfig() {
+  echo "Running config:" && echo ""
+  if [ "$2" == "" ]; then
+    cat $workDir/config
+  else
+    if [ "$3" == "" ]; then
+      cat $workDir/config | grep $2
+    else
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
+      sudo mv $workDir/config.temp $workDir/config
+      kernel-notify -c installed true
+    fi
   fi
 }
 
@@ -129,19 +145,23 @@ update() {
   $workDir/updater
 }
 
-while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -u|--update) update; exit;;
-  -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
-  -l|--list-config) listConfig; exit;;
-  -c|--config) exit;;
-  -r|--remove) removeKernel; exit;;
-  -s|--silent) silent="1";;
-  -um|--unmute) unmute; exit;;
-  -m|--mute) mute; exit;;
-  *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
-esac; shift; done
+if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
+  editConfig
+else
+  while [[ "$#" -gt 0 ]]; do case $1 in
+    -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -u|--update) update; exit;;
+    -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+    -l|--list-config) listConfig; exit;;
+    -r|--remove) removeKernel; exit;;
+    -s|--silent) silent="1";;
+    -um|--unmute) unmute; exit;;
+    -m|--mute) mute; exit;;
+    *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
+  esac; shift; done
+fi
+
 latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 currVersion=$(uname -r | sed 's/-.*/ /g')
 

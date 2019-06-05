@@ -1,24 +1,7 @@
-#!/bin/bash
-#Don't manually edit this, us -m to mute and -um to unmute
+#Don't manually edit this, use -m to mute and -um to unmute
 muted="0"
 #1 for majour, 2 for minor and 3 for patch version checking
 detail=""
 #desktop or text
 autostart="desktop"
-#@
 
-workDir="/usr/share/kernel-notify"
-if [ "$1" == "-c" ]; then
-  echo "Running config:"
-  if [ "$2" == "" ]; then
-    cat $workDir/config | cut -f1 -d"@" --zero-terminated
-  else
-    if [ "$3" == "" ]; then
-      cat $workDir/config | grep $2
-    else
-      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
-      sudo mv $workDir/config.temp $workDir/config
-      kernel-notify -c installed true
-    fi
-  fi
-fi
