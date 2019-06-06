@@ -110,6 +110,6 @@ sudo cp autostart.sh /usr/share/kernel-notify/autostart.sh
 sudo cp updater /usr/share/kernel-notify/updater
 echo "Added updater"
 
-kernel-notify -c installed true
+kernel-notify -v
 
 echo "Successfully installed / updated program"
