@@ -5,8 +5,11 @@ If the program is broken, please file a bug report under [Issues](https://github
 ## Installation:
  * Run `./install.sh`
  - ### OR:
- * `dpkg --build debian`
- * `sudo dpkg -i debian.deb`
+ * Run `dpkg --build debian`
+ * Run `sudo dpkg -i debian.deb`
+ - ### OR:
+ * Download the latest .deb from the Releases page
+ * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
 ## Packaging:
  * `dpkg --build debian`
