@@ -79,6 +79,12 @@ else
   echo "Wget not installed, exiting"
   exit
 fi
+if [ -f /usr/bin/curl ]; then
+  echo "Curl found"
+else
+  echo "Curl not installed, exiting"
+  exit
+fi
 if [ -f /usr/bin/notify-send ]; then
   echo "Notify-send found"
 else
