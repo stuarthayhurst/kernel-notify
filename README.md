@@ -35,7 +35,7 @@ If the program is broken, please file a bug report under [Issues](https://github
  * wget
  * git
  * curl
- * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended)
+ * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended - if not used, bsdutils must be installed for wall)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGVALUE`
