@@ -31,6 +31,7 @@ If the program is broken, please file a bug report under [Issues](https://github
 ## Dependencies:
  * wget
  * git
+ * curl
  * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended)
 
 ## Config:
