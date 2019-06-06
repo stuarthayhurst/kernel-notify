@@ -98,7 +98,7 @@ editConfig() {
     else
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
       sudo mv $workDir/config.temp $workDir/config
-      kernel-notify -c installed true
+      kernel-notify -s
     fi
   fi
 }
