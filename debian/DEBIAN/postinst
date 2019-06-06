@@ -1,4 +1,4 @@
 #!/bin/bash
-kernel-notify -c installed true
+kernel-notify -s
 echo "Successfully installed"
 echo "Please run 'kernel-notify -l' to check the config"
