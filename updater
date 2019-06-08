@@ -1,11 +1,16 @@
 #!/bin/bash
 version="4.8"
-cd /usr/share/kernel-notify
+if [ ! -d "/tmp/kernel-notify" ]; then
+  mkdir /tmp/kernel-notify
+fi
+cd /tmp/kernel-notify
 echo "Checking for updates:";
+
 latestVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
-  sudo git clone https://github.com/Dragon8oy/kernel-notify.git && cd kernel-notify && ./install.sh && cd ../ && sudo rm -rf kernel-notify/
+  wget https://github.com/Dragon8oy/kernel-notify/archive/v$version.tar.gz
+  tar -xf v$version.tar.gz && cd kernel-notify-$version/ && ./install.sh
 else
   echo "Program up-to-date"
 fi

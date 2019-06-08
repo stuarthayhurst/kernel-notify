@@ -1,5 +1,6 @@
 # kernel-notify
 A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
+Updating and removing the kernel is supported on Debian based systems
 If the program is broken, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
 
 ## Installation:
@@ -16,7 +17,7 @@ If the program is broken, please file a bug report under [Issues](https://github
 
 ## Updating:
  * `kernel-notify -u`
- - WARNING: Config will be reset after an update, it is recommended to note down current settings first
+ - WARNING: Config will be reset after an update
  - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs or can be displayed any time with `kernel-notify -l`
 
 ## Help:
@@ -34,8 +35,8 @@ If the program is broken, please file a bug report under [Issues](https://github
 
 ## Dependencies:
  * wget
- * git
  * curl
+ * git (Only required for source code)
  * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended - if not used, bsdutils must be installed for wall)
  * dpkg (Used for kernel install / removal on Debian systems and program installation)
 
