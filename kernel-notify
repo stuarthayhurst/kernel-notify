@@ -136,8 +136,8 @@ else
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
     -l|--list-config) listConfig; exit;;
-    -a|--add-kernel) ./actions -i $latestVersionFull; exit;;
-    -r|--remove) ./actions -r $latestVersionFull; exit;;
+    -a|--add-kernel) ./actions -i $latestVersion; exit;;
+    -r|--remove) ./actions -r $latestVersion; exit;;
     -s|--silent) silent="1";;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
