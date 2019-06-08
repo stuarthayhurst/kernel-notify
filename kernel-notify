@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="4.7"
+version="4.8"
 content=$(wget www.kernel.org -q -O -)
 silent="0"
 

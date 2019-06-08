@@ -1,5 +1,5 @@
 #!/bin/bash
-version="4.7"
+version="4.8"
 cd /usr/share/kernel-notify
 echo "Checking for updates:";
 latestVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)

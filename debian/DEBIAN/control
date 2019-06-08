@@ -3,7 +3,7 @@ Section: utility
 Priority: optional
 Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
-Version: 4.7
+Version: 4.8
 Architecture: all
 Depends: git, wget, curl
 Recommends: libnotify-bin, libnotify4
