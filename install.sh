@@ -45,17 +45,19 @@ prepareRelease() {
   sed 's|.*Version:.*|Version: '$newVersion'|' debian/DEBIAN/control > debian/DEBIAN/control.temp
   mv debian/DEBIAN/control.temp debian/DEBIAN/control
 
+  chmod +x actions
   chmod +x updater
   chmod +x kernel-notify
   chmod +x debian/usr/share/kernel-notify/updater
   chmod +x debian/usr/bin/kernel-notify
-  dpkg --build debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
 
   cp config $debianPath/
   cp icon.png $debianPath/
+  cp actions $debianPath/
   cp autostart.sh $debianPath/
   cp kernel-notify.desktop $debianPath/
   cp kernel-notify debian/usr/bin/
+  dpkg --build debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
@@ -107,14 +109,11 @@ kernel-notify -l
 
 sudo cp icon.png /usr/share/kernel-notify/icon.png
 sudo cp config /usr/share/kernel-notify/config
-echo "Added icon and config"
-
-#Add startup app files
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 sudo cp autostart.sh /usr/share/kernel-notify/autostart.sh
-
 sudo cp updater /usr/share/kernel-notify/updater
-echo "Added updater"
+sudo cp actions /usr/share/kernel-notify/actions
+echo "Installed app files"
 
 kernel-notify -v
 

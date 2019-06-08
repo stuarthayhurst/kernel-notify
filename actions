@@ -1,0 +1,91 @@
+#!/bin/bash
+latestVersionFull=$2
+latestVersion=${latestVersionFull//.}
+currVersion=$(uname -r | sed 's/-.*/ /g')
+
+removeKernel() {
+  echo "Currently installed kernels:"
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  printf "${KERNELS// /\n}\n"
+  echo "Please enter the kernel you want to remove: (x.x.x-xx): "
+  read DELVERSION
+  GENERICHEADERS="linux-headers-$DELVERSION-generic"
+  HEADERS="linux-headers-$DELVERSION"
+  IMAGE="linux-image-unsigned-$DELVERSION-generic"
+  MODULES="linux-modules-$DELVERSION-generic"
+  sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
+}
+
+case $1 in
+    -r|--remove) removeKernel; exit;;
+    -i|--install) sudo -b sleep 0 ;;
+    *) echo "Use -i or -r"; exit 1;;
+esac;
+
+if [ ! -f "/usr/bin/dpkg" ]; then
+  echo "Kernel installation / removal is not supported on this system"
+  exit
+fi
+if [ ! "$(arch)" == "x86_64" ]; then
+  echo "Architecture not supported"
+  exit
+fi
+
+echo "Enter a kernel version to install, or leave it blank to use the latest: (x.x.x)"
+read installVersion
+
+if [[ "$installVersion" == "" ]]; then
+  echo "Finding latest version..."
+  if [ "$latestVersion" -eq "${currVersion//.}" ]; then
+    echo "Kernel is already on the latest version"
+    exit
+  fi
+  installVersion=$latestVersionFull
+else
+  echo "Finding kernel version $installVersion..."
+fi
+
+if [ "${installVersion%%.*}" -lt "9" ]; then
+  installVersionShort="0${installVersion%%.*}"
+else
+  installVersionShort="${installVersion%%.*}"
+fi
+installVersionTemp="${installVersion%.*}"
+installVersionTemp="${installVersionTemp##*.}"
+if [ "$installVersionTemp" -lt "9" ]; then
+  installVersionShort="$installVersionShort""0$installVersionTemp"
+else
+  installVersionShort="$installVersionShort$installVersionTemp"
+fi
+if [ "${installVersion##*.}" -lt "9" ]; then
+  installVersionShort="$installVersionShort""0${installVersion##*.}"
+else
+  installVersionShort="$installVersionShort${installVersion##*.}"
+fi
+
+archiveContent=$(wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/ -q -O -)
+kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
+
+
+if [ "$kernelDate" == "" ]; then
+  echo "Either that kernel doesn't have an entry, or you have no internet connection"
+  exit
+fi
+
+echo "Downloading kernel version $installVersion..."
+if [ -d "/tmp/kernel-notify" ]; then
+  rm -rf /tmp/kernel-notify/
+fi
+mkdir /tmp/kernel-notify
+cd /tmp/kernel-notify
+
+wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
+wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+
+echo "Installing kernel version $installVersion..."
+sudo dpkg -i *.deb
+echo "Done"

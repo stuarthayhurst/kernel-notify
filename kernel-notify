@@ -6,8 +6,8 @@ content=$(wget www.kernel.org -q -O -)
 silent="0"
 
 source $workDir/config
-
 cd $workDir
+
 if [ "$muted" == "0" ]; then
   if [ "$autostart" == "desktop" ]; then
     if [ -f /etc/profile.d/autostart.sh ]; then
@@ -103,21 +103,6 @@ editConfig() {
   fi
 }
 
-removeKernel() {
-  echo "Currently installed kernels:"
-  KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  printf "${KERNELS// /\n}\n"
-  echo "Please enter the kernel you want to remove: (x.x.x-xx): "
-  read DELVERSION
-  GENERICHEADERS="linux-headers-$DELVERSION-generic"
-  HEADERS="linux-headers-$DELVERSION"
-  IMAGE="linux-image-unsigned-$DELVERSION-generic"
-  MODULES="linux-modules-$DELVERSION-generic"
-  sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
-}
-
 mute() {
   echo "Muting Kernel-notify:"
   kernel-notify -c muted 1
@@ -140,16 +125,19 @@ unmute() {
   echo "Done";
 }
 
+latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
-    -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-a  | --add-kernel : Install a new kernel and exit"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -u|--update) $workDir/updater; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
     -l|--list-config) listConfig; exit;;
-    -r|--remove) removeKernel; exit;;
+    -a|--add-kernel) ./actions -i $latestVersionFull; exit;;
+    -r|--remove) ./actions -r $latestVersionFull; exit;;
     -s|--silent) silent="1";;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
@@ -157,9 +145,8 @@ else
   esac; shift; done
 fi
 
-latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
-currVersion=$(uname -r | sed 's/-.*/ /g')
 
+currVersion=$(uname -r | sed 's/-.*/ /g')
 latestVersionFull=$latestVersion
 currVersionFull=$currVersion
 
