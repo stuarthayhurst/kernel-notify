@@ -18,12 +18,6 @@ removeKernel() {
   sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
 }
 
-case $1 in
-    -r|--remove) removeKernel; exit;;
-    -i|--install) sudo -b sleep 0 ;;
-    *) echo "Use -i or -r"; exit 1;;
-esac;
-
 if [ ! -f "/usr/bin/dpkg" ]; then
   echo "Kernel installation / removal is not supported on this system"
   exit
@@ -32,6 +26,12 @@ if [ ! "$(arch)" == "x86_64" ]; then
   echo "Architecture not supported"
   exit
 fi
+
+case $1 in
+    -r|--remove) removeKernel; exit;;
+    -i|--install) sudo -b sleep 0 ;;
+    *) echo "Use -i or -r"; exit 1;;
+esac;
 
 echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
 read installVersion
