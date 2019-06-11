@@ -1,5 +1,5 @@
 #!/bin/bash
-version="4.8"
+version="4.9"
 
 if [ ! -d "/tmp/kernel-notify" ]; then
   mkdir /tmp/kernel-notify
