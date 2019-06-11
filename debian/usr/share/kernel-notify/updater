@@ -10,7 +10,7 @@ latestVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/release
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   wget $(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
-  sudo dpkg -i "kernel-notify-$version""_all.deb"
+  sudo dpkg -i "kernel-notify-$latestVer""_all.deb"
 else
   echo "Program up-to-date"
 fi
