@@ -33,7 +33,7 @@ if [ ! "$(arch)" == "x86_64" ]; then
   exit
 fi
 
-echo "Enter a kernel version to install, or leave it blank to use the latest: (x.x.x)"
+echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
 read installVersion
 
 if [[ "$installVersion" == "" ]]; then
@@ -47,23 +47,27 @@ else
   echo "Finding kernel version $installVersion..."
 fi
 
-if [ "${installVersion%%.*}" -lt "9" ]; then
+if [ "${installVersion%%.*}" -lt "10" ]; then
   installVersionShort="0${installVersion%%.*}"
 else
   installVersionShort="${installVersion%%.*}"
 fi
 installVersionTemp="${installVersion%.*}"
 installVersionTemp="${installVersionTemp##*.}"
-if [ "$installVersionTemp" -lt "9" ]; then
+if [ "$installVersionTemp" -lt "10" ]; then
   installVersionShort="$installVersionShort""0$installVersionTemp"
 else
   installVersionShort="$installVersionShort$installVersionTemp"
 fi
-if [ "${installVersion##*.}" -lt "9" ]; then
+if [ "${installVersion##*.}" -lt "10" ]; then
   installVersionShort="$installVersionShort""0${installVersion##*.}"
 else
   installVersionShort="$installVersionShort${installVersion##*.}"
 fi
+
+echo "$kernelDate"
+echo "$installVersion"
+echo "$installVersionShort"
 
 archiveContent=$(wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/ -q -O -)
 kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
