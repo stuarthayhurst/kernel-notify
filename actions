@@ -8,14 +8,14 @@ removeKernel() {
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
-  printf "${KERNELS// /\n}\n"
+  printf "${KERNELS// /\n}\n" |cat -n
   echo "Please enter the kernel you want to remove: (x.x.x-xx): "
   read DELVERSION
-  GENERICHEADERS="linux-headers-$DELVERSION-generic"
-  HEADERS="linux-headers-$DELVERSION"
-  IMAGE="linux-image-unsigned-$DELVERSION-generic"
-  MODULES="linux-modules-$DELVERSION-generic"
-  sudo apt remove $HEADERS $GENERICHEADERS $IMAGE $MODULES
+  read -ra ARR <<< $DELVERSION
+  for i in "${ARR[@]}"; do
+    REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
+  done
+  sudo apt remove $REMOVESTR
 }
 
 if [ ! -f "/usr/bin/dpkg" ]; then
