@@ -42,8 +42,13 @@ read installVersion
 
 if [[ "$installVersion" == "" ]]; then
   echo "Finding latest version..."
-  if [ "$latestVersion" -eq "${currVersion//.}" ]; then
-    echo "Kernel is already on the latest version"
+  if [[ "$latestVersionFull" != "x.x.x" ]]; then
+  echo $installVersion
+    if [ "$latestVersion" -eq "${currVersion//.}" ]; then
+      echo "Kernel is already on the latest version"
+      exit
+    fi
+  else
     exit
   fi
   installVersion=$latestVersionFull
