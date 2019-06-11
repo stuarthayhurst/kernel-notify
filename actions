@@ -65,10 +65,6 @@ else
   installVersionShort="$installVersionShort${installVersion##*.}"
 fi
 
-echo "$kernelDate"
-echo "$installVersion"
-echo "$installVersionShort"
-
 archiveContent=$(wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/ -q -O -)
 kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
 
