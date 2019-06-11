@@ -99,6 +99,7 @@ sudo cp kernel-notify /usr/bin/kernel-notify
 #Make /usr/share/kernel-notify and move icon.png to /usr/share/kernel-notify/icon.png
 if [ -d "/usr/share/kernel-notify" ]; then
   echo "/usr/share/kernel-notify was found, not creating it"
+  sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
 else
   echo "/usr/share/kernel-notify not found, creating it"
   sudo mkdir /usr/share/kernel-notify
