@@ -3,6 +3,10 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
+if [[ "$2" == "" ]]; then
+  latestVersionFull="x.x.x"
+fi
+
 removeKernel() {
   echo "Currently installed kernels:"
   KERNELS=$(ls /boot/ | grep vmlinuz)
@@ -29,7 +33,7 @@ fi
 
 case $1 in
     -r|--remove) removeKernel; exit;;
-    -i|--install) sudo -b sleep 0 ;;
+    -i|--install);;
     *) echo "Use -i or -r"; exit 1;;
 esac;
 
