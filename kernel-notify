@@ -2,7 +2,6 @@
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
 version="4.9"
-content=$(curl https://www.kernel.org -s)
 silent="0"
 
 source $workDir/config
@@ -77,7 +76,7 @@ unmute() {
   echo "Done";
 }
 
-latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+latestVersion=$(echo $(curl https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig
