@@ -29,6 +29,11 @@ options=("Yes" "No")
 prepareRelease() {
   echo "Enter the new version number: (Leave blank to only build packages)"
   read newVersion
+  if [[ "$newVersion" == "" ]]; then
+    newVersion=$(cat kernel-notify.desktop | sed -n '3p')
+    newVersion=${newVersion//Version=}
+    echo "No new version found, building packages"
+  fi
   sed 's|.*version=".*|version="'$newVersion'"|' kernel-notify > kernel-notify.temp
   mv kernel-notify.temp kernel-notify
   sed 's|.*Version=.*|Version='$newVersion'|' kernel-notify.desktop > kernel-notify.desktop.temp
