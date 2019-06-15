@@ -1,9 +1,0 @@
-#!/bin/bash
-if [ -f /usr/share/kernel-notify/config ]; then
-  echo "Existing config found"
-else
-  echo "No existing config file found, continuing"
-  exit
-fi
-
-sudo cp /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
