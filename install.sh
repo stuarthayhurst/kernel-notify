@@ -49,7 +49,7 @@ prepareRelease() {
   chmod +x debian/usr/bin/kernel-notify
 
   cp config $debianPath/
-  cp icon.png $debianPath/
+  cp icon.jpg $debianPath/
   cp actions $debianPath/
   cp kernel-notify.desktop $debianPath/
   cp kernel-notify debian/usr/bin/
@@ -80,7 +80,7 @@ fi
 #Move kernel-notify to /usr/bin/kernel-notify
 sudo cp kernel-notify /usr/bin/kernel-notify
 
-#Make /usr/share/kernel-notify and move icon.png to /usr/share/kernel-notify/icon.png
+#Make /usr/share/kernel-notify
 if [ -d "/usr/share/kernel-notify" ]; then
   echo "/usr/share/kernel-notify was found, not creating it"
   sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
@@ -92,7 +92,7 @@ fi
 
 kernel-notify -o
 
-sudo cp icon.png /usr/share/kernel-notify/icon.png
+sudo cp icon.jpg /usr/share/kernel-notify/icon.jpg
 sudo cp config /usr/share/kernel-notify/config
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 sudo cp updater /usr/share/kernel-notify/updater

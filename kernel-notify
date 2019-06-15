@@ -1,6 +1,6 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
-iconPath="/usr/share/kernel-notify/icon.png"
+iconPath="/usr/share/kernel-notify/icon.jpg"
 version="4.9"
 silent="0"
 
