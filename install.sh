@@ -61,20 +61,13 @@ prepareRelease() {
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-u  | --update    : Update the program and exit"; echo "-p  | --prepare   : Prepare the program for release"; echo "-v  | --version   : Display program version and exit"; echo "-ui | --uninstall : Uninstall the program"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-p  | --prepare   : Prepare the program for release"; echo "-v  | --version   : Display program version and exit"; echo "-ui | --uninstall : Uninstall the program"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
-  -u|--update) git pull; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -p|--prepare) prepareRelease; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-if [ -f /usr/bin/git ]; then
-  echo "Git found"
-else
-  echo "Git not installed, exiting"
-  exit
-fi
 if [ -f /usr/bin/wget ]; then
   echo "Wget found"
 else
