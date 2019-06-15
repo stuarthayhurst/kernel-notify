@@ -1,22 +1,22 @@
 # kernel-notify
  - A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
- - Updating and removing the kernel is supported on Debian based systems
- - If the program is broken, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
+ - Updating and removing the kernel is supported on Debian based systems, kernel removal is supported on rpm based systems
+ - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
 
 ## Installation:
  * Run `./install.sh`
  - ### OR:
- * Run `dpkg --build debian`
- * Run `sudo dpkg -i debian.deb`
+ * Run `./install.sh -b`
+ * Run `sudo dpkg -i kernel-notify-x.x_all.deb` / `sudo rpm -i kernel-notify-x.x_all.rpm`
  - ### OR:
- * Download the latest .deb from the Releases page
- * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
+ * Download the latest .deb / .rpm from the Releases page
+ * Run `sudo dpkg -i kernel-notify-x.x_all.deb` / `sudo rpm -i kernel-notify-x.x_all.rpm`
 
 ## Packaging:
- * `dpkg --build debian`
+ * Run `./install.sh -b`
 
 ## Updating:
- * `kernel-notify -u`
+ * Run `kernel-notify -u`
  - WARNING: Config will be reset after an update
  - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs or can be displayed any time with `kernel-notify -l`
 
@@ -34,11 +34,9 @@
  * -m  | --mute       : Mute the program on login
 
 ## Dependencies:
- * wget
  * curl
- * git (Only required for source code)
  * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended - if not used, bsdutils must be installed for wall)
- * dpkg (Used for kernel install / removal on Debian systems and program installation)
+ * dpkg / rpm (Optional for better system integration, used in kernel removal)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGVALUE`
