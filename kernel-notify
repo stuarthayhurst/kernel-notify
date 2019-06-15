@@ -50,7 +50,7 @@ listConfig() {
 }
 
 editConfig() {
-  echo "Running config:" && echo ""
+  echo "Config:" && echo ""
   if [ "$2" == "" ]; then
     cat $workDir/config
   else
@@ -59,9 +59,9 @@ editConfig() {
     else
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
       sudo mv $workDir/config.temp $workDir/config
-      kernel-notify -s
     fi
   fi
+  exit
 }
 
 mute() {
@@ -82,7 +82,7 @@ if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
-    -h|--help) echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -h|--help) echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -u|--update) $workDir/updater; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;

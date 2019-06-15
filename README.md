@@ -26,15 +26,15 @@
    * -u  | --update     : Update the program and exit
    * -v  | --version    : Display program version and exit
    * -i  | --uninstall  : Uninstall the program
-   * -o  | --old-config : List old and new config values
-   * -c  | --config     : Change / read a config value
+   * -o  | --old-config : List old and new config values and exit
+   * -c  | --config     : Change / read a config value and exit
 
  - ### Feature Help:
    * -r  | --remove-kernel : Remove a kernels from a menu and exit
    * -l  | --list-kernels  : List installed kernels and exit
    * -a  | --add-kernel    : Install a new kernel and exit
-   * -um | --unmute        : Unmute the program on login
-   * -m  | --mute          : Mute the program on login
+   * -um | --unmute        : Unmute the program on login and exit
+   * -m  | --mute          : Mute the program on login and exit
 
 ## Dependencies:
  * curl
