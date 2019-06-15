@@ -101,4 +101,4 @@ wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modu
 
 echo "Installing kernel version $installVersion..."
 sudo dpkg -i *.deb
-echo "Done"
+echo "Done, reboot for the update to take effect"
