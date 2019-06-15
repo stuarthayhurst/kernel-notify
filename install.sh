@@ -68,22 +68,23 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-if [ -f /usr/bin/wget ]; then
+if which wget; then
   echo "Wget found"
 else
   echo "Wget not installed, exiting"
   exit
 fi
-if [ -f /usr/bin/curl ]; then
+if which curl; then
   echo "Curl found"
 else
   echo "Curl not installed, exiting"
   exit
 fi
-if [ -f /usr/bin/notify-send ]; then
+if which notify-send; then
   echo "Notify-send found"
 else
-  echo "Notify-send not installed, we strongly recommend installing it for GUI systems"
+  echo "Notify-send not installed"
+  exit
 fi
 
 #Move kernel-notify to /usr/bin/kernel-notify
