@@ -52,19 +52,23 @@ prepareRelease() {
   chmod +x kernel-notify
   chmod +x package/debian/usr/share/kernel-notify/updater
 
-  mkdir package/debian/usr/bin/
-  cp actions $debianPath/
-  cp config $debianPath/
-  cp icon.png $debianPath/
-  cp kernel-notify.desktop $debianPath/
-  cp kernel-notify package/debian/usr/bin/
-  dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
+  if which dpkg > /dev/null 2>&1; then
+    mkdir package/debian/usr/bin/
+    cp actions $debianPath/
+    cp config $debianPath/
+    cp icon.png $debianPath/
+    cp kernel-notify.desktop $debianPath/
+    cp kernel-notify package/debian/usr/bin/
+    dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
-  rm -rf package/debian/usr/bin/
-  rm $debianPath/actions
-  rm $debianPath/config
-  rm $debianPath/icon.png
-  rm $debianPath/kernel-notify.desktop
+    rm -rf package/debian/usr/bin/
+    rm $debianPath/actions
+    rm $debianPath/config
+    rm $debianPath/icon.png
+    rm $debianPath/kernel-notify.desktop
+  else
+    echo "Building Debian packages not supported on this system"
+  fi
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
@@ -75,23 +79,20 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-if which curl; then
+if which curl > /dev/null 2>&1; then
   echo "Curl found"
 else
   echo "Curl not installed, exiting"
   exit
 fi
-if which notify-send; then
+if which notify-send > /dev/null 2>&1; then
   echo "Notify-send found"
 else
   echo "Notify-send not installed"
   exit
 fi
 
-#Move kernel-notify to /usr/bin/kernel-notify
 sudo cp kernel-notify /usr/bin/kernel-notify
-
-#Make /usr/share/kernel-notify
 if [ -d "/usr/share/kernel-notify" ]; then
   echo "/usr/share/kernel-notify was found, not creating it"
   sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
