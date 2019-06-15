@@ -49,7 +49,7 @@ prepareRelease() {
   chmod +x debian/usr/bin/kernel-notify
 
   cp config $debianPath/
-  cp icon.jpg $debianPath/
+  cp icon.png $debianPath/
   cp actions $debianPath/
   cp kernel-notify.desktop $debianPath/
   cp kernel-notify debian/usr/bin/
@@ -92,7 +92,7 @@ fi
 
 kernel-notify -o
 
-sudo cp icon.jpg /usr/share/kernel-notify/icon.jpg
+sudo cp icon.png /usr/share/kernel-notify/icon.png
 sudo cp config /usr/share/kernel-notify/config
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 sudo cp updater /usr/share/kernel-notify/updater
