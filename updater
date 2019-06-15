@@ -6,10 +6,10 @@ fi
 cd /tmp/kernel-notify
 echo "Checking for updates:";
 
-latestVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+latestVer=$(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
-  curl https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
+  curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
   tar -xf v$latestVer.tar.gz && cd kernel-notify-$latestVer/ && ./install.sh
 else
   echo "Program up-to-date"
