@@ -53,13 +53,13 @@ prepareRelease() {
   cp icon.png $debianPath/
   cp kernel-notify.desktop $debianPath/
   cp kernel-notify package/debian/usr/bin/
-  dpkg --build package/debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
+  dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
-  #rm -rf package/debian/usr/bin/
-  #rm $debianPath/actions
-  #rm $debianPath/config
-  #rm $debianPath/icon
-  #rm $debianPath/kernel-notify.desktop
+  rm -rf package/debian/usr/bin/
+  rm $debianPath/actions
+  rm $debianPath/config
+  rm $debianPath/icon.png
+  rm $debianPath/kernel-notify.desktop
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
