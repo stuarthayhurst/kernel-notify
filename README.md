@@ -29,7 +29,6 @@
  * -a  | --add-kernel : Install a new kernel and exit
  * -c  | --config     : Change / read a config value
  * -r  | --remove     : Remove a specific kernel version from a menu and exit
- * -s  | --silent     : Run the program without console output
  * -um | --unmute     : Unmute the program on login
  * -m  | --mute       : Mute the program on login
 

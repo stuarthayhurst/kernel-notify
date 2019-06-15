@@ -14,9 +14,6 @@ options=("Yes" "No")
               if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
                 sudo rm /etc/xdg/autostart/kernel-notify.desktop
               fi
-              if [ -f /etc/profile.d/autostart.sh ]; then
-                sudo rm /etc/profile.d/autostart.sh
-              fi
               sudo rm /usr/bin/kernel-notify
               sudo rm -rf /usr/share/kernel-notify
               echo "Done"
@@ -54,7 +51,6 @@ prepareRelease() {
   cp config $debianPath/
   cp icon.png $debianPath/
   cp actions $debianPath/
-  cp autostart.sh $debianPath/
   cp kernel-notify.desktop $debianPath/
   cp kernel-notify debian/usr/bin/
   dpkg --build debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
@@ -99,7 +95,6 @@ kernel-notify -l
 sudo cp icon.png /usr/share/kernel-notify/icon.png
 sudo cp config /usr/share/kernel-notify/config
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
-sudo cp autostart.sh /usr/share/kernel-notify/autostart.sh
 sudo cp updater /usr/share/kernel-notify/updater
 sudo cp actions /usr/share/kernel-notify/actions
 echo "Installed app files"
