@@ -2,7 +2,7 @@
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
 version="4.9"
-content=$(wget www.kernel.org -q -O -)
+content=$(curl https://www.kernel.org -s)
 silent="0"
 
 source $workDir/config

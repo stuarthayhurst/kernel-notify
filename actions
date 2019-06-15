@@ -78,7 +78,7 @@ else
   installVersionShort="$installVersionShort${installVersion##*.}"
 fi
 
-archiveContent=$(wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/ -q -O -)
+archiveContent=$(curl -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
 kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
 
 
@@ -94,10 +94,10 @@ fi
 mkdir /tmp/kernel-notify
 cd /tmp/kernel-notify
 
-wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
-wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-wget "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
+curl "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 
 echo "Installing kernel version $installVersion..."
 sudo dpkg -i *.deb
