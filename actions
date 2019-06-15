@@ -35,10 +35,20 @@ if [ ! "$(arch)" == "x86_64" ]; then
   exit
 fi
 
+listKernels() {
+  echo "Currently installed kernels:"
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  KERNELS=${KERNELS// /\n}
+  printf "$KERNELS\n" |cat -n
+}
+
 case $1 in
     -r|--remove) removeKernel; exit;;
+    -l|--list) listKernels; exit;;
     -i|--install);;
-    *) echo "Use -i or -r"; exit 1;;
+    *) echo "Use -i, -r or -l"; exit 1;;
 esac;
 
 echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"

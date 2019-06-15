@@ -82,13 +82,14 @@ if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
-    -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-a  | --add-kernel : Install a new kernel and exit"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -h|--help) echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -u|--update) $workDir/updater; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
-    -l|--list-config) listConfig; exit;;
+    -o|--old-config) listConfig; exit;;
+    -r|--remove-kernel) ./actions -r $latestVersion; exit;;
+    -l|--list-kernels) /home/ratus5/Downloads/Projects/kernel-notify/actions -l $latestVersion; exit;;
     -a|--add-kernel) ./actions -i $latestVersion; exit;;
-    -r|--remove) ./actions -r $latestVersion; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
     *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;

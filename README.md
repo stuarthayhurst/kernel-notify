@@ -18,23 +18,27 @@
 ## Updating:
  * Run `kernel-notify -u`
  - WARNING: Config will be reset after an update
- - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs or can be displayed any time with `kernel-notify -l`
+ - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs or can be displayed any time with `kernel-notify -o`
 
 ## Help:
- * -h  | --help       : Display this page and exit
- * -u  | --update     : Update the installed program and exit
- * -v  | --version    : Display program version and exit
- * -i  | --uninstall  : Uninstall the program
- * -l  | --list-config: List old and new config values
- * -a  | --add-kernel : Install a new kernel and exit
- * -c  | --config     : Change / read a config value
- * -r  | --remove     : Remove a specific kernel version from a menu and exit
- * -um | --unmute     : Unmute the program on login
- * -m  | --mute       : Mute the program on login
+ - ### Program Help:
+   * -h  | --help       : Display the help page and exit
+   * -u  | --update     : Update the program and exit
+   * -v  | --version    : Display program version and exit
+   * -i  | --uninstall  : Uninstall the program
+   * -o  | --old-config : List old and new config values
+   * -c  | --config     : Change / read a config value
+
+ - ### Feature Help:
+   * -r  | --remove-kernel : Remove a kernels from a menu and exit
+   * -l  | --list-kernels  : List installed kernels and exit
+   * -a  | --add-kernel    : Install a new kernel and exit
+   * -um | --unmute        : Unmute the program on login
+   * -m  | --mute          : Mute the program on login
 
 ## Dependencies:
  * curl
- * notify-send / libnotify4 / libnotify-bin (Not critical, highly recommended - if not used, bsdutils must be installed for wall)
+ * notify-send / libnotify4 / libnotify-bin (Used for notifications)
  * dpkg / rpm (Optional for better system integration, used in kernel removal)
 
 ## Config:

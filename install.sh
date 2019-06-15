@@ -90,7 +90,7 @@ else
   echo "Created directory"
 fi
 
-kernel-notify -l
+kernel-notify -o
 
 sudo cp icon.png /usr/share/kernel-notify/icon.png
 sudo cp config /usr/share/kernel-notify/config
