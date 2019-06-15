@@ -1,6 +1,5 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 cd $DIR
 
 uninstall() {
@@ -28,7 +27,6 @@ options=("Yes" "No")
 }
 
 prepareRelease() {
-  debianPath="debian/usr/share/kernel-notify"
   echo "Enter the new version number: (Leave blank to only build packages)"
   read newVersion
   sed 's|.*version=".*|version="'$newVersion'"|' kernel-notify > kernel-notify.temp
@@ -37,23 +35,31 @@ prepareRelease() {
   mv kernel-notify.desktop.temp kernel-notify.desktop
   sed 's|.*version=".*|version="'$newVersion'"|' updater > updater.temp
   mv updater.temp updater
+
+  debianPath="package/debian/usr/share/kernel-notify"
   sed 's|.*version=".*|version="'$newVersion'"|' $debianPath/updater > $debianPath/updater.temp
   mv $debianPath/updater.temp $debianPath/updater
-  sed 's|.*Version:.*|Version: '$newVersion'|' debian/DEBIAN/control > debian/DEBIAN/control.temp
-  mv debian/DEBIAN/control.temp debian/DEBIAN/control
+  sed 's|.*Version:.*|Version: '$newVersion'|' package/debian/DEBIAN/control > package/debian/DEBIAN/control.temp
+  mv package/debian/DEBIAN/control.temp package/debian/DEBIAN/control
 
   chmod +x actions
   chmod +x updater
   chmod +x kernel-notify
-  chmod +x debian/usr/share/kernel-notify/updater
-  chmod +x debian/usr/bin/kernel-notify
+  chmod +x package/debian/usr/share/kernel-notify/updater
 
+  mkdir package/debian/usr/bin/
+  cp actions $debianPath/
   cp config $debianPath/
   cp icon.png $debianPath/
-  cp actions $debianPath/
   cp kernel-notify.desktop $debianPath/
-  cp kernel-notify debian/usr/bin/
-  dpkg --build debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
+  cp kernel-notify package/debian/usr/bin/
+  dpkg --build package/debian/ && mv debian.deb kernel-notify-"$newVersion"_all.deb
+
+  #rm -rf package/debian/usr/bin/
+  #rm $debianPath/actions
+  #rm $debianPath/config
+  #rm $debianPath/icon
+  #rm $debianPath/kernel-notify.desktop
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in

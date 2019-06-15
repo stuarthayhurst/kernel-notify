@@ -1,0 +1,187 @@
+#!/bin/bash
+workDir="/usr/share/kernel-notify"
+iconPath="/usr/share/kernel-notify/icon.png"
+version="4.9"
+content=$(wget www.kernel.org -q -O -)
+silent="0"
+
+source $workDir/config
+cd $workDir
+
+if [ "$muted" == "0" ]; then
+  if [ "$autostart" == "desktop" ]; then
+    if [ -f /etc/profile.d/autostart.sh ]; then
+      sudo rm /etc/profile.d/autostart.sh
+      sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+    fi
+  elif [ "$autostart" == "text" ]; then
+    if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+      sudo rm /etc/xdg/autostart/kernel-notify.desktop
+      sudo cp autostart.sh /etc/profile.d/autostart.sh
+    fi
+  fi
+fi
+
+if [ "$muted" == "0" ]; then
+  if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+    if [ ! -f /etc/profile.d/autostart.sh ]; then
+      echo "Creating autostart file"
+      if [ "$autostart" == "desktop" ]; then
+        echo "Adding /etc/xdg/autostart/kernel-notify.desktop"
+        sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+        echo "Done"
+      elif [ "$autostart" == "text" ]; then
+        echo "Adding /etc/profile.d/autostart.sh"
+        sudo cp autostart.sh /etc/profile.d/autostart.sh
+        echo "Done"
+      else
+        echo "Invalid autostart config"
+      fi
+    fi
+  fi
+fi
+
+uninstall() {
+PS3='Make your choice: '
+options=("Yes" "No")
+  select opt in "${options[@]}"
+  do
+      case $opt in
+          "Yes")
+              echo "Uninstalling:"
+              if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+                sudo rm /etc/xdg/autostart/kernel-notify.desktop
+              fi
+              if [ -f /etc/profile.d/autostart.sh ]; then
+                sudo rm /etc/profile.d/autostart.sh
+              fi
+              sudo rm /usr/bin/kernel-notify
+              sudo rm -rf /usr/share/kernel-notify
+              echo "Done"
+              break
+              ;;
+          "No")
+              exit
+              ;;
+          *) echo "invalid option $REPLY";;
+      esac
+  done
+}
+
+listConfig() {
+  if [ -f /usr/share/kernel-notify/config.old ]; then
+    if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
+      echo "Config file has changed"
+      echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+      echo ""
+      echo "Old values:"
+      cat /usr/share/kernel-notify/config.old
+      echo "" && echo ""
+      echo "New values:"
+      cat /usr/share/kernel-notify/config
+      echo "" && echo ""
+    else
+      echo "No change in config found"
+    fi
+  else
+    echo "No old config file found"
+  fi
+}
+
+editConfig() {
+  echo "Running config:" && echo ""
+  if [ "$2" == "" ]; then
+    cat $workDir/config
+  else
+    if [ "$3" == "" ]; then
+      cat $workDir/config | grep $2
+    else
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
+      sudo mv $workDir/config.temp $workDir/config
+      kernel-notify -s
+    fi
+  fi
+}
+
+mute() {
+  echo "Muting Kernel-notify:"
+  kernel-notify -c muted 1
+  if [ "$autostart" == "desktop" ]; then
+    sudo rm /etc/xdg/autostart/kernel-notify.desktop
+  elif [ "$autostart" == "text" ]; then
+    sudo rm /etc/profile.d/autostart.sh
+  fi
+  echo "Done";
+}
+
+unmute() {
+  echo "Unmuting kernel-notify:"
+  kernel-notify -c muted 0
+  if [ "$autostart" == "desktop" ]; then
+    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+  elif [ "$autostart" == "text" ]; then
+    sudo cp autostart.sh /etc/profile.d/autostart.sh
+  fi
+  echo "Done";
+}
+
+latestVersion=$(echo $content | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+
+if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
+  editConfig
+else
+  while [[ "$#" -gt 0 ]]; do case $1 in
+    -h|--help) echo "Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-l  | --list-config: List old and new config values"; echo "-a  | --add-kernel : Install a new kernel and exit"; echo "-c  | --config     : Change / read a config value"; echo "-r  | --remove     : Remove a specific kernel version from a menu and exit"; echo "-s  | --silent     : Run the program without console output"; echo "-um | --unmute     : Unmute the program on login"; echo "-m  | --mute       : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -u|--update) $workDir/updater; exit;;
+    -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+    -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+    -l|--list-config) listConfig; exit;;
+    -a|--add-kernel) ./actions -i $latestVersion; exit;;
+    -r|--remove) ./actions -r $latestVersion; exit;;
+    -s|--silent) silent="1";;
+    -um|--unmute) unmute; exit;;
+    -m|--mute) mute; exit;;
+    *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
+  esac; shift; done
+fi
+
+
+currVersion=$(uname -r | sed 's/-.*/ /g')
+latestVersionFull=$latestVersion
+currVersionFull=$currVersion
+
+if [ "$silent" -lt "1" ]; then
+  echo 'Latest Kernel: '$latestVersionFull
+  echo 'Current Kernel: '$currVersionFull
+fi
+
+latestVersion=$(echo "${latestVersion//.}")
+
+if [ "$latestVersion" -le "99" ]; then
+  latestVersion=$(echo "$latestVersion""0")
+fi
+
+if [ "$latestVersion" -ne "${currVersion//.}" ]; then
+  if [ ! -f /usr/bin/notify-send ]; then
+    wall "Kernel $latestVersionFull is available, you are currently running Kernel $currVersionFull"
+  else
+    notify-send -u normal -i $iconPath \
+"Kernel $latestVersionFull is available" \
+"You are currently running Kernel $currVersionFull"
+  fi
+fi
+
+latestProgVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
+  if [ "$silent" -lt "1" ]; then
+    echo "Program outdated, v$latestProgVer is available"
+  fi
+  if [ ! -f /usr/bin/notify-send ]; then
+    wall "Version v$latestProgVer is available, update with 'kernel-notify -u'"
+  else
+    notify-send -u normal -i $iconPath \
+"Version v$latestProgVer is available" \
+"Update with 'kernel-notify -u'"
+  fi
+fi
+
