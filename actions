@@ -111,4 +111,5 @@ curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-m
 
 echo "Installing kernel version $installVersion..."
 sudo dpkg -i *.deb
+cd /tmp && rm -rf /tmp/kernel-notify
 echo "Done, reboot for the update to take effect"

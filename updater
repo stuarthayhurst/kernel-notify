@@ -14,3 +14,4 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
 else
   echo "Program up-to-date"
 fi
+cd /tmp && rm -rf /tmp/kernel-notify
