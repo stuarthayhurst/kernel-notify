@@ -1,16 +1,16 @@
 # kernel-notify
  - A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
- - Updating and removing the kernel is supported on Debian based systems, kernel removal is supported on rpm based systems
+ - Updating and removing the kernel is supported on Debian based systems
  - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
 
 ## Installation:
  * Run `./install.sh`
  - ### OR:
  * Run `./install.sh -b`
- * Run `sudo dpkg -i kernel-notify-x.x_all.deb` / `sudo rpm -i kernel-notify-x.x_all.rpm`
+ * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
  - ### OR:
- * Download the latest .deb / .rpm from the Releases page
- * Run `sudo dpkg -i kernel-notify-x.x_all.deb` / `sudo rpm -i kernel-notify-x.x_all.rpm`
+ * Download the latest deb from the Releases page
+ * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
 ## Packaging:
  * Run `./install.sh -b`
@@ -39,7 +39,7 @@
 ## Dependencies:
  * curl
  * notify-send / libnotify4 / libnotify-bin (Used for notifications)
- * dpkg / rpm (Optional for better system integration, used in kernel removal)
+ * dpkg & apt (Optional for better system integration, used in kernel removal)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGVALUE`
