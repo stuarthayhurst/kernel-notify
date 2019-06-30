@@ -76,7 +76,7 @@ unmute() {
   echo "Done";
 }
 
-latestVersion=$(echo $(curl https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig
@@ -118,7 +118,7 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
   fi
 fi
 
-latestProgVer=$(curl -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   echo "Program outdated, v$latestProgVer is available" 
   if which notify-send > /dev/null 2>&1; then

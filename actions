@@ -88,7 +88,7 @@ else
   installVersionShort="$installVersionShort${installVersion##*.}"
 fi
 
-archiveContent=$(curl -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
+archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
 kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
 
 

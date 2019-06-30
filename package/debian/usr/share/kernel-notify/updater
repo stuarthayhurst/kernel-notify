@@ -6,7 +6,7 @@ if [ ! -d "/tmp/kernel-notify" ]; then
 fi
 cd /tmp/kernel-notify
 echo "Checking for updates:";
-latestVer=$(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   curl -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
