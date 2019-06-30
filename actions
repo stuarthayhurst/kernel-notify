@@ -97,7 +97,7 @@ if [ "$kernelDate" == "" ]; then
   exit
 fi
 
-echo "Downloading kernel version $installVersion..."
+echo "Downloading kernel version $installVersion..." && echo ""
 if [ -d "/tmp/kernel-notify" ]; then
   rm -rf /tmp/kernel-notify/
 fi
@@ -109,7 +109,7 @@ curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-h
 curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 
-echo "Installing kernel version $installVersion..."
+echo "" && echo "Installing kernel version $installVersion..."
 sudo dpkg -i *.deb
 cd /tmp && rm -rf /tmp/kernel-notify
 echo "Done, reboot for the update to take effect"
