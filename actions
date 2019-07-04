@@ -26,9 +26,11 @@ removeKernel() {
   sudo apt remove $REMOVESTR
 }
 
-if [ ! -f "/usr/bin/dpkg" ]; then
-  echo "Kernel installation / removal is not supported on this system"
-  exit
+if [ "$1" != "-l" ] | [ "$1" != "--list" ]; then
+  if [ ! -f "/usr/bin/dpkg" ]; then
+    echo "Kernel installation / removal is not supported on this system"
+    exit
+  fi
 fi
 if [ ! "$(arch)" == "x86_64" ]; then
   echo "Architecture not supported"
