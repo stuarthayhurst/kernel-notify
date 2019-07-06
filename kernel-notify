@@ -72,17 +72,18 @@ editConfig() {
   exit
 }
 
+#Only remove if needed
 mute() {
   echo "Muting Kernel-notify:"
-  sudo rm /etc/xdg/autostart/kernel-notify.desktop
   kernel-notify -c muted 1
+  sudo rm /etc/xdg/autostart/kernel-notify.desktop
   echo "Done";
 }
 
 unmute() {
   echo "Unmuting kernel-notify:"
-  sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
   kernel-notify -c muted 0
+  sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
   echo "Done";
 }
 
