@@ -3,7 +3,7 @@ if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
   sudo rm /etc/xdg/autostart/kernel-notify.desktop
   echo "Removed autostart"
 fi
-if [ -d /usr/share/kernel-notify/ ]; then
-  sudo rm -rf /usr/share/kernel-notify/
+if [ -f /usr/share/kernel-notify/config.old ]; then
+  sudo rm /usr/share/kernel-notify/config.old
   echo "Removed program folder"
 fi
