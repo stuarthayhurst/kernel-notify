@@ -67,6 +67,7 @@ buildRelease() {
     rm $debianPath/actions
     rm $debianPath/config
     rm $debianPath/icon.png
+    rm $debianPath/kernel-notify.desktop
     rm -rf package/debian/etc/
   else
     echo "Building Debian packages not supported on this system"

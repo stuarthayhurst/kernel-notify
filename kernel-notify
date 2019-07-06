@@ -1,13 +1,16 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
-version="5.1"
+version="5.1.1"
 
 source $workDir/config
 cd $workDir
 
 if [ $muted -lt "1" ]; then
-  echo "Unmuted"
+  if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+    echo "Autostart file not found, creating"
+    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+  fi
 fi
 
 uninstall() {
@@ -53,15 +56,17 @@ listConfig() {
 }
 
 editConfig() {
-  echo "Config:" && echo ""
   if [ "$2" == "" ]; then
+    echo "Config:" && echo ""
     cat $workDir/config
   else
     if [ "$3" == "" ]; then
+      echo "Config:" && echo ""
       cat $workDir/config | grep $2
     else
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
       sudo mv $workDir/config.temp $workDir/config
+      echo "Saved new config"
     fi
   fi
   exit
