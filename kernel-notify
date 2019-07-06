@@ -2,10 +2,13 @@
 workDir="/usr/share/kernel-notify"
 iconPath="/usr/share/kernel-notify/icon.png"
 version="5.1"
-silent="0"
 
 source $workDir/config
 cd $workDir
+
+if [ $muted -lt "1" ]; then
+  echo "Unmuted"
+fi
 
 uninstall() {
 PS3='Make your choice: '
@@ -67,19 +70,21 @@ editConfig() {
 mute() {
   echo "Muting Kernel-notify:"
   sudo rm /etc/xdg/autostart/kernel-notify.desktop
+  kernel-notify -c muted 1
   echo "Done";
 }
 
 unmute() {
   echo "Unmuting kernel-notify:"
   sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+  kernel-notify -c muted 0
   echo "Done";
 }
 
 latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
-  editConfig
+  editConfig "$1" "$2" "$3"
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
     -h|--help) echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;

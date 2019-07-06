@@ -58,6 +58,7 @@ buildRelease() {
     cp actions $debianPath/
     cp config $debianPath/
     cp icon.png $debianPath/
+    cp kernel-notify.desktop $debianPath/
     cp kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp kernel-notify package/debian/usr/bin/
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
@@ -66,7 +67,7 @@ buildRelease() {
     rm $debianPath/actions
     rm $debianPath/config
     rm $debianPath/icon.png
-    rm package/debian/etc/xdg/autostart/kernel-notify.desktop
+    rm -rf package/debian/etc/
   else
     echo "Building Debian packages not supported on this system"
   fi
