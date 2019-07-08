@@ -72,6 +72,11 @@ else
   echo "Finding kernel version $installVersion..."
 fi
 
+installVersionLink=$installVersion
+if [ "$latestVersion" -le "99" ]; then
+  installVersion=$(echo "$installVersion"".0")
+fi
+
 if [ "${installVersion%%.*}" -lt "10" ]; then
   installVersionShort="0${installVersion%%.*}"
 else
@@ -90,9 +95,8 @@ else
   installVersionShort="$installVersionShort${installVersion##*.}"
 fi
 
-archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
+archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
 kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
-
 
 if [ "$kernelDate" == "" ]; then
   echo "Either that kernel doesn't have an entry, or you have no internet connection"
@@ -106,10 +110,10 @@ fi
 mkdir /tmp/kernel-notify
 cd /tmp/kernel-notify
 
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
+curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 
 echo "" && echo "Installing kernel version $installVersion..."
 sudo dpkg -i *.deb
