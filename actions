@@ -125,4 +125,5 @@ for filename in /tmp/kernel-notify/*.deb; do
 done
 
 echo "" && echo "All packages verified, installing kernel version $installVersion..."
-sudo dpkg -i *.deb && cd /tmp && rm -rf /tmp/kernel-notify && echo "Done, reboot for the update to take effect"
+sudo dpkg -i *.deb && echo "Done, reboot for the update to take effect"
+cd /tmp && rm -rf /tmp/kernel-notify
