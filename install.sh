@@ -105,8 +105,6 @@ else
   echo "Created directory"
 fi
 
-kernel-notify -o
-
 sudo cp icon.png /usr/share/kernel-notify/icon.png
 sudo cp config /usr/share/kernel-notify/config
 sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
@@ -114,6 +112,7 @@ sudo cp updater /usr/share/kernel-notify/updater
 sudo cp actions /usr/share/kernel-notify/actions
 echo "Installed app files"
 
+kernel-notify -o
 kernel-notify -v
 
 echo "Successfully installed / updated program"
