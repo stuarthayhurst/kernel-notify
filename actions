@@ -115,7 +115,14 @@ curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/lin
 curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
 
-echo "" && echo "Installing kernel version $installVersion..."
-sudo dpkg -i *.deb
-cd /tmp && rm -rf /tmp/kernel-notify
-echo "Done, reboot for the update to take effect"
+for filename in /tmp/kernel-notify/*.deb; do
+    if ! file $filename | grep -q 'Debian binary package'; then
+      echo "$filename: Not a Debian package"
+      cd /tmp && rm -rf /tmp/kernel-notify
+      echo "Some packages were faulty, update aborted"
+      exit
+    fi
+done
+
+echo "" && echo "All packages verified, installing kernel version $installVersion..."
+sudo dpkg -i *.deb && cd /tmp && rm -rf /tmp/kernel-notify && echo "Done, reboot for the update to take effect"
