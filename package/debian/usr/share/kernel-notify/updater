@@ -10,6 +10,14 @@ latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/r
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   curl -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
+  for filename in /tmp/kernel-notify/*.deb; do
+    if ! file $filename | grep -q 'Debian binary package'; then
+      echo "$filename: Not a Debian package"
+      cd /tmp && rm -rf /tmp/kernel-notify
+      echo "Some packages were faulty, update aborted"
+      exit
+    fi
+  done
   sudo dpkg -i "kernel-notify-$latestVer""_all.deb"
 else
   echo "Program up-to-date"

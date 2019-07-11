@@ -10,6 +10,14 @@ latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/r
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
+  for filename in /tmp/kernel-notify/*.tar.gz; do
+    if ! file $filename | grep -q 'gzip compressed data'; then
+      echo "$filename: Not a Debian package"
+      cd /tmp && rm -rf /tmp/kernel-notify
+      echo "Some packages were faulty, update aborted"
+      exit
+    fi
+  done
   tar -xf v$latestVer.tar.gz && cd kernel-notify-$latestVer/ && ./install.sh
 else
   echo "Program up-to-date"
