@@ -57,9 +57,8 @@ echo "Enter a kernel version to install, or leave it blank to use the latest ($l
 read installVersion
 
 if [[ "$installVersion" == "" ]]; then
-  echo "Finding latest version..."
+  echo "Using latest version..."
   if [[ "$latestVersionFull" != "x.x.x" ]]; then
-  echo $installVersion
     if [ "$latestVersion" -eq "${currVersion//.}" ]; then
       echo "Kernel is already on the latest version"
       exit
@@ -70,6 +69,8 @@ if [[ "$installVersion" == "" ]]; then
   installVersion=$latestVersionFull
 else
   echo "Finding kernel version $installVersion..."
+  latestVersionFull=$installVersion
+  latestVersion=${latestVersionFull//.}
 fi
 
 installVersionLink=$installVersion
