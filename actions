@@ -30,8 +30,10 @@ removeKernel() {
   fi
 }
 
-if [ "$1" != "-l" ] | [ "$1" != "--list" ]; then
-  if [ ! -f "/usr/bin/dpkg" ] || [ ! -f "/usr/bin/dnf" ]; then
+if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
+  if [ -f "/usr/bin/dpkg" ] || [ -f "/usr/bin/dnf" ]; then
+    echo "" > /dev/null
+  else
     echo "Kernel installation / removal is not supported on this system"
     exit
   fi
@@ -56,6 +58,10 @@ case $1 in
     -i|--install);;
     *) echo "Use -i, -r or -l"; exit 1;;
 esac;
+
+if [ ! -f "/usr/bin/dpkg" ]; then
+  echo "Kernel installation is not supported on this system"
+fi
 
 echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
 read installVersion
