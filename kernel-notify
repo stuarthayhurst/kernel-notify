@@ -132,15 +132,39 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
 "Kernel $latestVersionFull is available" \
 "You are currently running Kernel $currVersionFull"
   fi
+  if [ "$autoupdate" -ne "0" ]; then
+    echo "" && echo "Auto-update is enabled, updating kernel"
+    ./actions -i $latestVersionFull -a
+      if which notify-send > /dev/null 2>&1; then
+        notify-send -u normal -i $iconPath \
+"Kernel updated to $latestVersionFull" \
+"Automatic upgrade complete, please reboot"
+      fi
+  fi
 fi
 
 latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
-  echo "Program outdated, v$latestProgVer is available" 
-  if which notify-send > /dev/null 2>&1; then
-    notify-send -u normal -i $iconPath \
+  echo "" && echo "Program outdated, v$latestProgVer is available" 
+  if [ "$autoupdate" -ne "0" ]; then
+    if which notify-send > /dev/null 2>&1; then
+      notify-send -u normal -i $iconPath \
+"Version v$latestProgVer is available" \
+"Auto-update enabled, updating"
+    fi
+    echo "Auto-update is enabled, updating kernel-notify" && echo ""
+    $workDir/updater
+    if which notify-send > /dev/null 2>&1; then
+      notify-send -u normal -i $iconPath \
+"Program updated to v$latestProgVer" \
+"Automatic upgrade complete"
+    fi
+  else
+    if which notify-send > /dev/null 2>&1; then
+      notify-send -u normal -i $iconPath \
 "Version v$latestProgVer is available" \
 "Update with 'kernel-notify -u'"
+    fi
   fi
 fi
 

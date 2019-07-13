@@ -2,3 +2,5 @@
 muted="0"
 #1 for majour, 2 for minor and 3 for patch version checking
 detail=""
+#Automatically update the kernel and program
+autoupdate="0"

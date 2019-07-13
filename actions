@@ -48,8 +48,10 @@ installKernel() {
     echo "Kernel installation is not supported on this system"
   fi
 
-  echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
-  read installVersion
+  if [ "$automatic" -ne "1" ]; then
+    echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
+    read installVersion
+  fi
 
   if [[ "$installVersion" == "" ]]; then
     echo "Using latest version..."
@@ -133,6 +135,12 @@ listKernels() {
   KERNELS=${KERNELS// /\n}
   printf "$KERNELS\n" |cat -n
 }
+
+if [ "$3" == "-a" ]; then
+  automatic="1"
+else
+  automatic="0"
+fi
 
 case $1 in
     -r|--remove) removeKernel; exit;;
