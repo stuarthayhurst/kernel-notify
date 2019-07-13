@@ -43,6 +43,88 @@ if [ ! "$(arch)" == "x86_64" ]; then
   exit
 fi
 
+installKernel() {
+  if [ ! -f "/usr/bin/dpkg" ]; then
+    echo "Kernel installation is not supported on this system"
+  fi
+
+  echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
+  read installVersion
+
+  if [[ "$installVersion" == "" ]]; then
+    echo "Using latest version..."
+    if [[ "$latestVersionFull" != "x.x.x" ]]; then
+      if [ "$latestVersion" -eq "${currVersion//.}" ]; then
+        echo "Kernel is already on the latest version"
+        exit
+      fi
+    else
+      exit
+    fi
+    installVersion=$latestVersionFull
+  else
+    echo "Finding kernel version $installVersion..."
+    latestVersionFull=$installVersion
+    latestVersion=${latestVersionFull//.}
+  fi
+
+  installVersionLink=$installVersion
+  if [ "$latestVersion" -le "99" ]; then
+    installVersion=$(echo "$installVersion"".0")
+  fi
+
+  if [ "${installVersion%%.*}" -lt "10" ]; then
+    installVersionShort="0${installVersion%%.*}"
+  else
+    installVersionShort="${installVersion%%.*}"
+  fi
+  installVersionTemp="${installVersion%.*}"
+  installVersionTemp="${installVersionTemp##*.}"
+  if [ "$installVersionTemp" -lt "10" ]; then
+    installVersionShort="$installVersionShort""0$installVersionTemp"
+  else
+    installVersionShort="$installVersionShort$installVersionTemp"
+  fi
+  if [ "${installVersion##*.}" -lt "10" ]; then
+    installVersionShort="$installVersionShort""0${installVersion##*.}"
+  else
+    installVersionShort="$installVersionShort${installVersion##*.}"
+  fi
+
+  archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
+  kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
+
+  if [ "$kernelDate" == "" ]; then
+    echo "Either that kernel doesn't have an entry, or you have no internet connection"
+    exit
+  fi
+
+  echo "Downloading kernel version $installVersion..." && echo ""
+  if [ -d "/tmp/kernel-notify" ]; then
+    rm -rf /tmp/kernel-notify/
+  fi
+  mkdir /tmp/kernel-notify
+  cd /tmp/kernel-notify
+
+  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
+  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+
+  for filename in /tmp/kernel-notify/*.deb; do
+    if ! file $filename | grep -q 'Debian binary package'; then
+      echo "$filename: Not a Debian package"
+      cd /tmp && rm -rf /tmp/kernel-notify
+      echo "Some packages were faulty, update aborted"
+      exit
+    fi
+  done
+
+  echo "" && echo "All packages verified, installing kernel version $installVersion..."
+  sudo dpkg -i *.deb && echo "Done, reboot for the update to take effect"
+  cd /tmp && rm -rf /tmp/kernel-notify
+}
+
 listKernels() {
   echo "Currently installed kernels:"
   KERNELS=$(ls /boot/ | grep vmlinuz)
@@ -55,86 +137,6 @@ listKernels() {
 case $1 in
     -r|--remove) removeKernel; exit;;
     -l|--list) listKernels; exit;;
-    -i|--install);;
+    -i|--install) installKernel;;
     *) echo "Use -i, -r or -l"; exit 1;;
 esac;
-
-if [ ! -f "/usr/bin/dpkg" ]; then
-  echo "Kernel installation is not supported on this system"
-fi
-
-echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
-read installVersion
-
-if [[ "$installVersion" == "" ]]; then
-  echo "Using latest version..."
-  if [[ "$latestVersionFull" != "x.x.x" ]]; then
-    if [ "$latestVersion" -eq "${currVersion//.}" ]; then
-      echo "Kernel is already on the latest version"
-      exit
-    fi
-  else
-    exit
-  fi
-  installVersion=$latestVersionFull
-else
-  echo "Finding kernel version $installVersion..."
-  latestVersionFull=$installVersion
-  latestVersion=${latestVersionFull//.}
-fi
-
-installVersionLink=$installVersion
-if [ "$latestVersion" -le "99" ]; then
-  installVersion=$(echo "$installVersion"".0")
-fi
-
-if [ "${installVersion%%.*}" -lt "10" ]; then
-  installVersionShort="0${installVersion%%.*}"
-else
-  installVersionShort="${installVersion%%.*}"
-fi
-installVersionTemp="${installVersion%.*}"
-installVersionTemp="${installVersionTemp##*.}"
-if [ "$installVersionTemp" -lt "10" ]; then
-  installVersionShort="$installVersionShort""0$installVersionTemp"
-else
-  installVersionShort="$installVersionShort$installVersionTemp"
-fi
-if [ "${installVersion##*.}" -lt "10" ]; then
-  installVersionShort="$installVersionShort""0${installVersion##*.}"
-else
-  installVersionShort="$installVersionShort${installVersion##*.}"
-fi
-
-archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
-kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-$installVersionShort\\\\_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
-
-if [ "$kernelDate" == "" ]; then
-  echo "Either that kernel doesn't have an entry, or you have no internet connection"
-  exit
-fi
-
-echo "Downloading kernel version $installVersion..." && echo ""
-if [ -d "/tmp/kernel-notify" ]; then
-  rm -rf /tmp/kernel-notify/
-fi
-mkdir /tmp/kernel-notify
-cd /tmp/kernel-notify
-
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-
-for filename in /tmp/kernel-notify/*.deb; do
-    if ! file $filename | grep -q 'Debian binary package'; then
-      echo "$filename: Not a Debian package"
-      cd /tmp && rm -rf /tmp/kernel-notify
-      echo "Some packages were faulty, update aborted"
-      exit
-    fi
-done
-
-echo "" && echo "All packages verified, installing kernel version $installVersion..."
-sudo dpkg -i *.deb && echo "Done, reboot for the update to take effect"
-cd /tmp && rm -rf /tmp/kernel-notify
