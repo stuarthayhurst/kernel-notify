@@ -1,6 +1,6 @@
 #!/bin/bash
-workDir="/usr/share/kernel-notify"
-iconPath="/usr/share/kernel-notify/icon.png"
+workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+iconPath="$workDir/icon.png"
 version="5.1.4"
 
 source $workDir/config
