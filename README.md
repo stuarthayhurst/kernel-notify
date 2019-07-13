@@ -39,7 +39,7 @@
 ## Dependencies:
  * curl
  * notify-send / libnotify4 / libnotify-bin (Used for notifications)
- * dpkg & apt (Optional for better system integration, used in kernel removal)
+ * dpkg & apt (Optional for better system integration, used in kernel installation / removal) / dnf (Used in kernel removal, does not support kernel installation)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGVALUE`
