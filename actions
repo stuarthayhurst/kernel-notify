@@ -102,10 +102,9 @@ installKernel() {
   fi
 
   echo "Downloading kernel version $installVersion..." && echo ""
-  if [ -d "/tmp/kernel-notify" ]; then
-    rm -rf /tmp/kernel-notify/
+  if [ ! -d "/tmp/kernel-notify" ]; then
+    mkdir /tmp/kernel-notify
   fi
-  mkdir /tmp/kernel-notify
   cd /tmp/kernel-notify
 
 #Make an array that hols package names
@@ -120,19 +119,29 @@ installKernel() {
     installList="$installList $filename"
     if ! file $filename | grep -q 'Debian binary package'; then
       echo "$filename: Not a Debian package"
-      cd /tmp && rm -rf /tmp/kernel-notify
+      clearFiles "$installList CHECKSUMS"
       exit
     fi
   done
   curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
   if ! shasum --ignore-missing -c CHECKSUMS; then
     echo "Downloaded kernel checksum invalid"
-    cd /tmp && rm -rf /tmp/kernel-notify
+    clearFiles "$installList CHECKSUMS"
   fi
 
   echo "" && echo "All packages verified, installing kernel version $installVersion..."
-  sudo dpkg -i $installList && echo "Done, reboot for the update to take effect"
-  cd /tmp && rm -rf /tmp/kernel-notify
+  #sudo dpkg -i $installList && echo "Done, reboot for the update to take effect"
+  clearFiles "$installList CHECKSUMS"
+}
+
+clearFiles() {
+  cd /tmp/kernel-notify
+  rm $1
+  if ! ls /tmp/kernel-notify |grep -q ".*"; then
+    rm -rf /tmp/kernel-notify
+  else
+    echo "/tmp/kernel-notify not removed as it is in use"
+  fi
 }
 
 listKernels() {
