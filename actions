@@ -116,8 +116,8 @@ installKernel() {
 
   for filename in "${packages[@]}"; do
     curl -O $filename
-    read conti
     filename="${filename##*/}"
+    installList="$installList $filename"
     if ! file $filename | grep -q 'Debian binary package'; then
       echo "$filename: Not a Debian package"
       cd /tmp && rm -rf /tmp/kernel-notify
@@ -131,7 +131,7 @@ installKernel() {
   fi
 
   echo "" && echo "All packages verified, installing kernel version $installVersion..."
-  sudo dpkg -i *.deb && echo "Done, reboot for the update to take effect"
+  sudo dpkg -i $installList && echo "Done, reboot for the update to take effect"
   cd /tmp && rm -rf /tmp/kernel-notify
 }
 
