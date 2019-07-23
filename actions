@@ -108,19 +108,27 @@ installKernel() {
   mkdir /tmp/kernel-notify
   cd /tmp/kernel-notify
 
-  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb"
-  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
-  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb"
+#Make an array that hols package names
+#Download package and then check it, iterating the array
+#Check CHECKSUMS
 
-  for filename in /tmp/kernel-notify/*.deb; do
+  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb")
+
+  for filename in "${packages[@]}"; do
+    curl -O $filename
+    read conti
+    filename="${filename##*/}"
     if ! file $filename | grep -q 'Debian binary package'; then
       echo "$filename: Not a Debian package"
       cd /tmp && rm -rf /tmp/kernel-notify
-      echo "Some packages were faulty, update aborted"
       exit
     fi
   done
+  curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
+  if ! shasum --ignore-missing -c CHECKSUMS; then
+    echo "Downloaded kernel checksum invalid"
+    cd /tmp && rm -rf /tmp/kernel-notify
+  fi
 
   echo "" && echo "All packages verified, installing kernel version $installVersion..."
   sudo dpkg -i *.deb && echo "Done, reboot for the update to take effect"
