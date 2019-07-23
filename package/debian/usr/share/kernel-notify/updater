@@ -1,6 +1,5 @@
 #!/bin/bash
 version="5.1.4"
-
 if [ ! -d "/tmp/kernel-notify" ]; then
   mkdir /tmp/kernel-notify
 fi
@@ -22,4 +21,11 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
 else
   echo "Program up-to-date"
 fi
-cd /tmp && rm -rf /tmp/kernel-notify
+if [ -f "kernel-notify-$latestVer""_all.deb" ]; then
+  rm "kernel-notify-$latestVer""_all.deb"
+fi
+if ! ls /tmp/kernel-notify |grep -q ".*"; then
+  rm -rf /tmp/kernel-notify
+else
+  echo "/tmp/kernel-notify not removed as it is in use"
+fi

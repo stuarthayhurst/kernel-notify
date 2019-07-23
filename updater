@@ -22,4 +22,11 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
 else
   echo "Program up-to-date"
 fi
-cd /tmp && rm -rf /tmp/kernel-notify
+if [ -f "v$latestVer.tar.gz" ]; then
+  rm v$latestVer.tar.gz
+fi
+if ! ls /tmp/kernel-notify |grep -q ".*"; then
+  rm -rf /tmp/kernel-notify
+else
+  echo "/tmp/kernel-notify not removed as it is in use"
+fi
