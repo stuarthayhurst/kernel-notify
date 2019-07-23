@@ -5,15 +5,24 @@ if [ ! -d "/tmp/kernel-notify" ]; then
 fi
 cd /tmp/kernel-notify
 echo "Checking for updates:";
-
+checkFiles() {
+  if [ -f "v$latestVer.tar.gz" ]; then
+    rm v$latestVer.tar.gz
+  fi
+  if ! ls /tmp/kernel-notify |grep -q ".*"; then
+    rm -rf /tmp/kernel-notify
+  else
+    echo "/tmp/kernel-notify not removed as it is in use"
+  fi
+}
 latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
   for filename in /tmp/kernel-notify/*.tar.gz; do
     if ! file $filename | grep -q 'gzip compressed data'; then
-      echo "$filename: Not a Debian package"
-      cd /tmp && rm -rf /tmp/kernel-notify
+      echo "$filename: Not a compressed archive"
+      checkFiles
       echo "Some packages were faulty, update aborted"
       exit
     fi
@@ -22,11 +31,4 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
 else
   echo "Program up-to-date"
 fi
-if [ -f "v$latestVer.tar.gz" ]; then
-  rm v$latestVer.tar.gz
-fi
-if ! ls /tmp/kernel-notify |grep -q ".*"; then
-  rm -rf /tmp/kernel-notify
-else
-  echo "/tmp/kernel-notify not removed as it is in use"
-fi
+checkFiles
