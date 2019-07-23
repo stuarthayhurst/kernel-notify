@@ -1,5 +1,5 @@
 #!/bin/bash
-workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+workDir="/usr/share/kernel-notify"
 iconPath="$workDir/icon.png"
 version="5.1.4"
 
