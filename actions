@@ -107,10 +107,6 @@ installKernel() {
   fi
   cd /tmp/kernel-notify
 
-#Make an array that hols package names
-#Download package and then check it, iterating the array
-#Check CHECKSUMS
-
   declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_amd64.deb")
 
   for filename in "${packages[@]}"; do
