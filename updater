@@ -1,20 +1,12 @@
 #!/bin/bash
 version="5.2.1"
-
-#Check filename instead of all .debs or .tar.gzs
-#Variable to hold packagename
-#Make as much as possible shared
-
-#Prepare workspace
 if [ ! -d "/tmp/kernel-notify" ]; then
   mkdir /tmp/kernel-notify
 fi
 cd /tmp/kernel-notify
 echo "Checking for updates:";
 
-#Safely cleanup
 checkFiles() {
-  #Source
   if [ -f "$package" ]; then
     rm $package
   fi
@@ -25,10 +17,8 @@ checkFiles() {
   fi
 }
 
-#Find latest version
 latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 
-#Detect installation method
 if which dpkg > /dev/null 2>&1; then
   if dpkg -s kernel-notify | grep Status |grep -q installed; then
     installation="dpkg"
@@ -42,7 +32,6 @@ else
   package="v$latestVer.tar.gz"
 fi
 
-#Download update
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   if [ "$installation" == "dpkg" ]; then
@@ -51,8 +40,16 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
     curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
   fi
 
-  #Check update
   if [ "$installation" == "dpkg" ]; then
+    for filename in /tmp/kernel-notify/$package; do
+      if ! file $filename | grep -q 'Debian binary package'; then
+        echo "$filename: Not a Debian package"
+        checkFiles
+        echo "Some packages were faulty, update aborted"
+        exit
+      fi
+    done
+  else
     for filename in /tmp/kernel-notify/*.tar.gz; do
       if ! file $filename | grep -q 'gzip compressed data'; then
         echo "$filename: Not a compressed archive"
@@ -61,18 +58,8 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
         exit
       fi
     done
-  else
-    for filename in /tmp/kernel-notify/*.deb; do
-      if ! file $filename | grep -q 'Debian binary package'; then
-        echo "$filename: Not a Debian package"
-        checkFiles
-        echo "Some packages were faulty, update aborted"
-        exit
-      fi
-    done
   fi
 
-  #Install update
   if [ "$installation" == "dpkg" ]; then
     sudo dpkg -i $package
   else
