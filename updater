@@ -45,7 +45,7 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
       if ! file $filename | grep -q 'Debian binary package'; then
         echo "$filename: Not a Debian package"
         checkFiles
-        echo "Some packages were faulty, update aborted"
+        echo "Downloaded update faulty, update aborted"
         exit
       fi
     done
@@ -54,7 +54,7 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
       if ! file $filename | grep -q 'gzip compressed data'; then
         echo "$filename: Not a compressed archive"
         checkFiles
-        echo "Some packages were faulty, update aborted"
+        echo "Downloaded update faulty, update aborted"
         exit
       fi
     done
