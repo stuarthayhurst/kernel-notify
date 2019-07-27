@@ -22,7 +22,7 @@ source $workDir/config
 cd $workDir
 
 if [ "$test" == "0" ]; then
-  if [ $muted -lt "1" ]; then
+  if [ "$muted" -lt "1" ]; then
     if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
       echo "Autostart file not found, creating"
       sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
