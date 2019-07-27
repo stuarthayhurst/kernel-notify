@@ -47,11 +47,10 @@ buildPackage() {
   chmod -v +x actions
   chmod -v +x updater
   chmod -v +x kernel-notify
-  chmod -v +x package/debian/usr/share/kernel-notify/updater
 
   if which dpkg > /dev/null 2>&1; then
     debianPath="package/debian/usr/share/kernel-notify"
-    mkdir -v package/debian/usr && mkdir -v package/debian/usr/share mkdir -v package/debian/usr/share/kernel-notify
+    mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
     cp -v actions $debianPath/
@@ -61,6 +60,7 @@ buildPackage() {
     cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp -v kernel-notify package/debian/usr/bin/
     cp -v updater $debianPath/
+    chmod -v +x $debianPath/updater
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
     rm -rfv package/debian/usr/bin/
