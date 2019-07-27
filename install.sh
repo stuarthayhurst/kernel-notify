@@ -26,7 +26,7 @@ options=("Yes" "No")
   done
 }
 
-buildRelease() {
+buildPackage() {
   echo "Enter the new version number: (Leave blank to only build package)"
   read newVersion
   if [[ "$newVersion" == "" ]]; then
@@ -79,7 +79,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-b  | --build     : Build and prepare the program for release"; echo "-v  | --version   : Display program version and exit"; echo "-ui | --uninstall : Uninstall the program"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
   -v|--version) ./kernel-notify -v; exit;;
-  -b|--build) buildRelease; exit;;
+  -b|--build) buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
