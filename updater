@@ -1,13 +1,22 @@
 #!/bin/bash
 version="5.2.1"
+
+#Check filename instead of all .debs or .tar.gzs
+#Variable to hold packagename
+#Make as much as possible shared
+
+#Prepare workspace
 if [ ! -d "/tmp/kernel-notify" ]; then
   mkdir /tmp/kernel-notify
 fi
 cd /tmp/kernel-notify
 echo "Checking for updates:";
+
+#Safely cleanup
 checkFiles() {
-  if [ -f "v$latestVer.tar.gz" ]; then
-    rm v$latestVer.tar.gz
+  #Source
+  if [ -f "$package" ]; then
+    rm $package
   fi
   if ! ls /tmp/kernel-notify |grep -q ".*"; then
     rm -rf /tmp/kernel-notify
@@ -15,19 +24,60 @@ checkFiles() {
     echo "/tmp/kernel-notify not removed as it is in use"
   fi
 }
+
+#Find latest version
 latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+
+#Detect installation method
+if which dpkg > /dev/null 2>&1; then
+  if dpkg -s kernel-notify | grep Status |grep -q installed; then
+    installation="dpkg"
+    package="kernel-notify-$latestVer""_all.deb"
+  else
+    installation="source"
+    package="v$latestVer.tar.gz"
+  fi
+else
+  installation="source"
+  package="v$latestVer.tar.gz"
+fi
+
+#Download update
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
-  curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
-  for filename in /tmp/kernel-notify/*.tar.gz; do
-    if ! file $filename | grep -q 'gzip compressed data'; then
-      echo "$filename: Not a compressed archive"
-      checkFiles
-      echo "Some packages were faulty, update aborted"
-      exit
-    fi
-  done
-  tar -xf v$latestVer.tar.gz && cd kernel-notify-$latestVer/ && ./install.sh
+  if [ "$installation" == "dpkg" ]; then
+    curl -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
+  else
+    curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
+  fi
+
+  #Check update
+  if [ "$installation" == "dpkg" ]; then
+    for filename in /tmp/kernel-notify/*.tar.gz; do
+      if ! file $filename | grep -q 'gzip compressed data'; then
+        echo "$filename: Not a compressed archive"
+        checkFiles
+        echo "Some packages were faulty, update aborted"
+        exit
+      fi
+    done
+  else
+    for filename in /tmp/kernel-notify/*.deb; do
+      if ! file $filename | grep -q 'Debian binary package'; then
+        echo "$filename: Not a Debian package"
+        checkFiles
+        echo "Some packages were faulty, update aborted"
+        exit
+      fi
+    done
+  fi
+
+  #Install update
+  if [ "$installation" == "dpkg" ]; then
+    sudo dpkg -i $package
+  else
+    tar -xf $package && cd kernel-notify-$latestVer/ && ./install.sh
+  fi
 else
   echo "Program up-to-date"
 fi
