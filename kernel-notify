@@ -1,7 +1,7 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
 iconPath="$workDir/icon.png"
-version="5.2"
+version="5.2.1"
 
 source $workDir/config
 cd $workDir
