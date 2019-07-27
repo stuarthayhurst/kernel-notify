@@ -2,20 +2,36 @@
 workDir="/usr/share/kernel-notify"
 iconPath="$workDir/icon.png"
 version="5.2.1"
+test="0"
+
+testMode() {
+  workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+  echo "Running kernel-notify in $workDir"
+  test="1"
+}
+case "$1" in
+  "-t") testMode;;
+  "--test") testMode;;
+esac
 
 source $workDir/config
 cd $workDir
 
-if [ $muted -lt "1" ]; then
-  if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    echo "Autostart file not found, creating"
-    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+if [ "$test" == "0" ]; then
+  if [ $muted -lt "1" ]; then
+    if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+      echo "Autostart file not found, creating"
+      sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+    fi
   fi
 fi
 
 uninstall() {
-PS3='Make your choice: '
-options=("Yes" "No")
+  if [ "$test" == "1" ]; then
+    echo "Uninstalling not supported in test mode"
+  fi
+  PS3='Make your choice: '
+  options=("Yes" "No")
   select opt in "${options[@]}"
   do
       case $opt in
@@ -108,6 +124,7 @@ else
     -a|--add-kernel) ./actions -i $latestVersion; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
+    -t|--test) ;;
     *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
   esac; shift; done
 fi
