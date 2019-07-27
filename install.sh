@@ -27,48 +27,49 @@ options=("Yes" "No")
 }
 
 buildRelease() {
-  echo "Enter the new version number: (Leave blank to only build packages)"
+  echo "Enter the new version number: (Leave blank to only build package)"
   read newVersion
   if [[ "$newVersion" == "" ]]; then
     newVersion=$(cat kernel-notify.desktop | sed -n '3p')
     newVersion=${newVersion//Version=}
-    echo "No new version found, building packages"
+    echo "Building package:"
   fi
   sed 's|.*version=".*|version="'$newVersion'"|' kernel-notify > kernel-notify.temp
-  mv kernel-notify.temp kernel-notify
+  mv -v kernel-notify.temp kernel-notify
   sed 's|.*Version=.*|Version='$newVersion'|' kernel-notify.desktop > kernel-notify.desktop.temp
-  mv kernel-notify.desktop.temp kernel-notify.desktop
+  mv -v kernel-notify.desktop.temp kernel-notify.desktop
   sed 's|.*version=".*|version="'$newVersion'"|' updater > updater.temp
-  mv updater.temp updater
+  mv -v updater.temp updater
 
   debianPath="package/debian/usr/share/kernel-notify"
   sed 's|.*version=".*|version="'$newVersion'"|' $debianPath/updater > $debianPath/updater.temp
-  mv $debianPath/updater.temp $debianPath/updater
+  mv -v $debianPath/updater.temp $debianPath/updater
   sed 's|.*Version:.*|Version: '$newVersion'|' package/debian/DEBIAN/control > package/debian/DEBIAN/control.temp
-  mv package/debian/DEBIAN/control.temp package/debian/DEBIAN/control
+  mv -v package/debian/DEBIAN/control.temp package/debian/DEBIAN/control
 
-  chmod +x actions
-  chmod +x updater
-  chmod +x kernel-notify
-  chmod +x package/debian/usr/share/kernel-notify/updater
+  chmod -v +x actions
+  chmod -v +x updater
+  chmod -v +x kernel-notify
+  chmod -v +x package/debian/usr/share/kernel-notify/updater
 
   if which dpkg > /dev/null 2>&1; then
-    mkdir package/debian/usr/bin/
-    mkdir package/debian/etc && mkdir package/debian/etc/xdg && mkdir package/debian/etc/xdg/autostart
-    cp actions $debianPath/
-    cp config $debianPath/
-    cp icon.png $debianPath/
-    cp kernel-notify.desktop $debianPath/
-    cp kernel-notify.desktop package/debian/etc/xdg/autostart/
-    cp kernel-notify package/debian/usr/bin/
+    mkdir -v package/debian/usr/bin/
+    mkdir -v package/debian/etc && mkdir package/debian/etc/xdg && mkdir package/debian/etc/xdg/autostart
+    cp -v actions $debianPath/
+    cp -v config $debianPath/
+    cp -v icon.png $debianPath/
+    cp -v kernel-notify.desktop $debianPath/
+    cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
+    cp -v kernel-notify package/debian/usr/bin/
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
-    rm -rf package/debian/usr/bin/
-    rm $debianPath/actions
-    rm $debianPath/config
-    rm $debianPath/icon.png
-    rm $debianPath/kernel-notify.desktop
-    rm -rf package/debian/etc/
+    rm -rfv package/debian/usr/bin/
+    rm -v $debianPath/actions
+    rm -v $debianPath/config
+    rm -v $debianPath/icon.png
+    rm -v $debianPath/kernel-notify.desktop
+    rm -rfv package/debian/etc/
+    echo "Done"
   else
     echo "Building Debian packages not supported on this system"
   fi
