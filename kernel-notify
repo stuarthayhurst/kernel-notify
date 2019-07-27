@@ -13,6 +13,10 @@ case "$1" in
   "-t") testMode;;
   "--test") testMode;;
 esac
+case "$2" in
+  "-t") testMode;;
+  "--test") testMode;;
+esac
 
 source $workDir/config
 cd $workDir
