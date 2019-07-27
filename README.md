@@ -1,6 +1,6 @@
 # kernel-notify
  - A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
- - Updating and removing the kernel is supported on systems with apt / dpkg, removal is also supported on systems using dnf
+ - Updating and removing the kernel is supported on systems with dpkg
  - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
 
 ## Installation:
@@ -39,7 +39,7 @@
 ## Dependencies:
  * curl
  * notify-send / libnotify4 / libnotify-bin (Used for notifications)
- * dpkg & apt (Optional for better system integration, used in kernel installation / removal) / dnf (Used in kernel removal, does not support kernel installation)
+ * dpkg (Used in program and kernel installation / removal)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGVALUE`

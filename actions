@@ -24,16 +24,15 @@ removeKernel() {
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
   done
   if [ -f "/usr/bin/dpkg" ]; then
-    sudo apt remove $REMOVESTR
-  elif [ -f "/usr/bin/dnf" ]; then
-    sudo dnf remove $REMOVESTR
+    read -r -p "Are you sure? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      sudo dpkg -r $REMOVESTR
+    fi
   fi
 }
 
 if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
-  if [ -f "/usr/bin/dpkg" ] || [ -f "/usr/bin/dnf" ]; then
-    echo "" > /dev/null
-  else
+  if [ ! -f "/usr/bin/dpkg" ]; then
     echo "Kernel installation / removal is not supported on this system"
     exit
   fi
