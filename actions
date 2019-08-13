@@ -114,10 +114,11 @@ installKernel() {
     installList="$installList $filename"
     if ! file $filename | grep -q 'Debian binary package'; then
       echo "$filename: Not a Debian package"
-      clearFiles "$installList CHECKSUMS"
+      clearFiles "$installList"
       exit
     fi
   done
+
   curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
   if ! shasum --ignore-missing -c CHECKSUMS; then
     echo "Downloaded kernel checksum invalid"
