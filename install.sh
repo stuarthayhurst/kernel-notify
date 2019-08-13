@@ -55,6 +55,7 @@ buildPackage() {
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
 
     g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`
+    echo "Built notifications"
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
