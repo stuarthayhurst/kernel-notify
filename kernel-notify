@@ -112,6 +112,10 @@ unmute() {
   echo "Done";
 }
 
+sendNotification() {
+  $workDir/notifications $1 $2 $iconPath
+}
+
 latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
@@ -148,19 +152,15 @@ if [ "$latestVersion" -le "99" ]; then
 fi
 
 if [ "$latestVersion" -ne "${currVersion//.}" ]; then
-  if which notify-send > /dev/null 2>&1; then
-    notify-send -u normal -i $iconPath \
-"Kernel $latestVersionFull is available" \
-"You are currently running Kernel $currVersionFull"
-  fi
+  notify-send -u normal -i $iconPath \
+  "Kernel $latestVersionFull is available" \
+  "You are currently running Kernel $currVersionFull"
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
     ./actions -i $latestVersionFull -a
-      if which notify-send > /dev/null 2>&1; then
-        notify-send -u normal -i $iconPath \
+    notify-send -u normal -i $iconPath \
 "Kernel updated to $latestVersionFull" \
 "Automatic upgrade complete, please reboot"
-      fi
   fi
 fi
 
@@ -168,24 +168,17 @@ latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/
 if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   echo "" && echo "Program outdated, v$latestProgVer is available" 
   if [ "$autoupdate" -ne "0" ]; then
-    if which notify-send > /dev/null 2>&1; then
-      notify-send -u normal -i $iconPath \
-"Version v$latestProgVer is available" \
-"Auto-update enabled, updating"
-    fi
+    notify-send -u normal -i $iconPath \
+    "Version v$latestProgVer is available" \
+    "Auto-update enabled, updating"
     echo "Auto-update is enabled, updating kernel-notify" && echo ""
     $workDir/updater
-    if which notify-send > /dev/null 2>&1; then
-      notify-send -u normal -i $iconPath \
-"Program updated to v$latestProgVer" \
-"Automatic upgrade complete"
-    fi
+    notify-send -u normal -i $iconPath \
+    "Program updated to v$latestProgVer" \
+    "Automatic upgrade complete"
   else
-    if which notify-send > /dev/null 2>&1; then
-      notify-send -u normal -i $iconPath \
-"Version v$latestProgVer is available" \
-"Update with 'kernel-notify -u'"
-    fi
+    notify-send -u normal -i $iconPath \
+    "Version v$latestProgVer is available" \
+    "Update with 'kernel-notify -u'"
   fi
 fi
-
