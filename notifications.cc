@@ -5,10 +5,10 @@ int main(int argc, char * argv[] )
 {
     GError *error = NULL;
     GdkPixbuf *icon;
-    icon = gdk_pixbuf_new_from_file("/usr/share/kernel-notify/icon.png", &error);
+    icon = gdk_pixbuf_new_from_file(argv[3], &error);
     notify_init("Basics");
-    NotifyNotification* n = notify_notification_new ("Hello world", 
-                                 "some message text... bla bla",
+    NotifyNotification* n = notify_notification_new (argv[1], 
+                                 argv[2],
                                   0);
     notify_notification_set_icon_from_pixbuf
                                                             (n,
