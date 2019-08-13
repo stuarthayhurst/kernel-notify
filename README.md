@@ -43,6 +43,7 @@
 ## Dependencies:
  * curl
  * notify-send / libnotify4 / libnotify-bin (Used for notifications)
+ * libnotify-dev (Used in package building (.deb), installing and updating (source))
  * dpkg (Used in program and kernel installation / removal)
 
 ## Config:
