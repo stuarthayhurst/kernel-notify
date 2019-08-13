@@ -55,8 +55,7 @@ buildPackage() {
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
 
-    g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`
-    echo "g++: built notifications"
+    buildNotifications
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
@@ -80,6 +79,14 @@ buildPackage() {
     echo "Done"
   else
     echo "Building Debian packages not supported on this system"
+  fi
+}
+
+buildNotifications() {
+  if g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
+    echo "g++: built notifications"
+  else
+    echo "g++: failed to build notifications"
   fi
 }
 
@@ -125,8 +132,7 @@ installPackage() {
     echo "Created directory"
   fi
 
-  g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`
-  echo "Built notifications"
+  buildNotifications
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
   sudo cp config /usr/share/kernel-notify/config
@@ -145,7 +151,7 @@ installPackage() {
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help          : Display this page"; echo "-b  | --build         : Build and prepare the program for release"; echo "-v  | --version       : Display program version"; echo "-ui | --uninstall     : Uninstall the program"; echo "-n  | --notifications : Build the notifications"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
-  -n|--notifications) g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; echo "g++: built notifications"; exit;;
+  -n|--notifications) buildNotifications; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -b|--build) buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
