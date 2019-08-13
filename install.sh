@@ -1,10 +1,9 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $DIR
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
 uninstall() {
-PS3='Make your choice: '
-options=("Yes" "No")
+  PS3='Make your choice: '
+  options=("Yes" "No")
   select opt in "${options[@]}"
   do
       case $opt in
@@ -76,6 +75,45 @@ buildPackage() {
   fi
 }
 
+checkDeps() {
+  if which curl > /dev/null 2>&1; then
+    echo "Curl found"
+  else
+    echo "Curl not installed, exiting"
+    exit
+  fi
+  if which notify-send > /dev/null 2>&1; then
+    echo "Notify-send found"
+  else
+    echo "Notify-send not installed"
+    exit
+  fi
+}
+
+installPackage() {
+  sudo cp kernel-notify /usr/bin/kernel-notify
+  if [ -d "/usr/share/kernel-notify" ]; then
+    echo "/usr/share/kernel-notify was found, not creating it"
+    sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
+  else
+    echo "/usr/share/kernel-notify not found, creating it"
+    sudo mkdir /usr/share/kernel-notify
+    echo "Created directory"
+  fi
+
+  sudo cp icon.png /usr/share/kernel-notify/icon.png
+  sudo cp config /usr/share/kernel-notify/config
+  sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
+  sudo cp updater /usr/share/kernel-notify/updater
+  sudo cp actions /usr/share/kernel-notify/actions
+  echo "Installed app files"
+
+  kernel-notify -o
+  kernel-notify -v
+
+  echo "Successfully installed / updated program"
+}
+
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Help:"; echo "-h  | --help      : Display this page and exit"; echo "-b  | --build     : Build and prepare the program for release"; echo "-v  | --version   : Display program version and exit"; echo "-ui | --uninstall : Uninstall the program"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
@@ -84,37 +122,5 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-if which curl > /dev/null 2>&1; then
-  echo "Curl found"
-else
-  echo "Curl not installed, exiting"
-  exit
-fi
-if which notify-send > /dev/null 2>&1; then
-  echo "Notify-send found"
-else
-  echo "Notify-send not installed"
-  exit
-fi
-
-sudo cp kernel-notify /usr/bin/kernel-notify
-if [ -d "/usr/share/kernel-notify" ]; then
-  echo "/usr/share/kernel-notify was found, not creating it"
-  sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
-else
-  echo "/usr/share/kernel-notify not found, creating it"
-  sudo mkdir /usr/share/kernel-notify
-  echo "Created directory"
-fi
-
-sudo cp icon.png /usr/share/kernel-notify/icon.png
-sudo cp config /usr/share/kernel-notify/config
-sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
-sudo cp updater /usr/share/kernel-notify/updater
-sudo cp actions /usr/share/kernel-notify/actions
-echo "Installed app files"
-
-kernel-notify -o
-kernel-notify -v
-
-echo "Successfully installed / updated program"
+checkDeps
+installPackage
