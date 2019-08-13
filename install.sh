@@ -28,6 +28,7 @@ uninstall() {
 buildPackage() {
   echo "Enter the new version number: (Leave blank to only build package)"
   read newVersion
+  checkBuildDeps
   if [[ "$newVersion" == "" ]]; then
     newVersion=$(cat kernel-notify.desktop | sed -n '3p')
     newVersion=${newVersion//Version=}
@@ -55,7 +56,7 @@ buildPackage() {
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
 
     g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`
-    echo "Built notifications"
+    echo "g++: built notifications"
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
@@ -97,10 +98,23 @@ checkDeps() {
   fi
 }
 
+checkBuildDeps() {
+  if which g++ > /dev/null 2>&1; then
+    echo "G++ found"
+  else
+    echo "G++ not installed, exiting"
+    exit
+  fi
+  if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
+    echo "libnotify-dev found"
+  else
+    echo "libnotify-dev not installed, exiting"
+    exit
+  fi
+}
+
 installPackage() {
-
-  #Check for g++ and libnotify-dev
-
+  checkBuildDeps
   sudo cp kernel-notify /usr/bin/kernel-notify
   if [ -d "/usr/share/kernel-notify" ]; then
     echo "/usr/share/kernel-notify was found, not creating it"
