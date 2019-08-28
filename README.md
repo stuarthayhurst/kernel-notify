@@ -47,8 +47,8 @@
  * dpkg (Used in program and kernel installation / removal)
 
 ## Config:
- * Read a value:   `kernel-notify -c CFGVALUE`
- * Change a value: `kernel-notify -c CFGVALUE NEWCFGVALUE`
+ * Read a value:   `kernel-notify -c CFGOPTION`
+ * Change a value: `kernel-notify -c CFGOPTION NEWCFGVALUE`
 
  - Example:
  * Change the value of 'example' to 'example-complete': `kernel-notify -c example example-complete`
