@@ -4,10 +4,6 @@ latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
 installKernel() {
-  if [ ! -f "/usr/bin/dpkg" ]; then
-    echo "Kernel installation is not supported on this system"
-  fi
-
   if [ "$automatic" -ne "1" ]; then
     echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
     read installVersion
@@ -86,7 +82,8 @@ installKernel() {
     clearFiles "$installList CHECKSUMS"
   fi
 
-  echo "" && echo "All packages verified, installing kernel version $installVersion..."
+  echo ""; echo "All packages verified, installing kernel version $installVersion..."
+  checkDpkg
   sudo dpkg -i $installList && echo "Done, reboot for the update to take effect"
   clearFiles "$installList CHECKSUMS"
 }
@@ -110,6 +107,7 @@ removeKernel() {
   if [ -f "/usr/bin/dpkg" ]; then
     read -r -p "Are you sure? [y/N] " response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      checkDpkg
       sudo dpkg -r $REMOVESTR
     fi
   fi
@@ -135,7 +133,21 @@ clearFiles() {
 }
 
 checkDpkg() {
-  echo "DPKG"
+  i=0
+  tput sc
+  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+    case $(($i % 4)) in
+      0 ) j="-" ;;
+      1 ) j="\\" ;;
+      2 ) j="|" ;;
+      3 ) j="/" ;;
+    esac
+    tput rc
+    echo -en "\r[$j] Waiting for other software managers to finish... "
+    sleep 1
+    ((i=i+1))
+  done
+  echo "Done"
 }
 
 if [[ "$2" == "" ]]; then
