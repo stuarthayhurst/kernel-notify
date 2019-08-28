@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
 Version: 5.3
-Architecture: all
+Architecture: amd64
 Depends: curl, gawk, sed, ncurses-bin, psmisc
 Recommends: libnotify-bin, libnotify4
 Homepage: <https://github.com/Dragon8oy/kernel-notify>
