@@ -50,31 +50,45 @@ if [ "$test" == "0" ]; then
   fi
 fi
 
+checkDpkg() {
+  i=0
+  tput sc
+  echo "Checking dpkg lock..."
+  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+    case $(($i % 4)) in
+      0 ) j="-" ;;
+      1 ) j="\\" ;;
+      2 ) j="|" ;;
+      3 ) j="/" ;;
+    esac
+    tput rc
+    echo -en "\r[$j] Waiting for other software managers to finish... "
+    sleep 1
+    ((i=i+1))
+  done
+  echo "Done"
+}
+
 uninstall() {
   if [ "$test" == "1" ]; then
     echo "Uninstalling not supported in test mode"
+    exit
   fi
-  PS3='Make your choice: '
-  options=("Yes" "No")
-  select opt in "${options[@]}"
-  do
-      case $opt in
-          "Yes")
-              echo "Uninstalling:"
-              if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-                sudo rm /etc/xdg/autostart/kernel-notify.desktop
-              fi
-              sudo rm /usr/bin/kernel-notify
-              sudo rm -rf /usr/share/kernel-notify
-              echo "Done"
-              break
-              ;;
-          "No")
-              exit
-              ;;
-          *) echo "invalid option $REPLY";;
-      esac
-  done
+  read -r -p "Are you sure? [y/N] " response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    echo "Uninstalling:"
+    if dpkg -s kernel-notify | grep Status |grep -q installed; then
+      checkDpkg
+      sudo dpkg -r kernel-notify
+    else
+      if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+        sudo rm /etc/xdg/autostart/kernel-notify.desktop
+      fi
+      sudo rm /usr/bin/kernel-notify
+      sudo rm -rf /usr/share/kernel-notify
+      echo "Done"
+    fi
+  fi
 }
 
 listConfig() {
@@ -128,7 +142,7 @@ else
     -h|--help) echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -u|--update) $workDir/updater; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-    -i|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+    -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
     -r|--remove-kernel) ./actions -r $latestVersion; exit;;
     -l|--list-kernels) ./actions -l $latestVersion; exit;;
