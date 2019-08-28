@@ -3,45 +3,6 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
-if [[ "$2" == "" ]]; then
-  latestVersionFull="x.x.x"
-fi
-
-removeKernel() {
-  echo "Currently installed kernels:"
-  KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS// /\n}
-  printf "$KERNELS\n" |cat -n
-  echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
-  read DELVERSION
-  read -ra ARR <<< $DELVERSION
-  for i in "${ARR[@]}"; do
-    if [ $(expr length "$i") == 1 ]; then
-      i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
-    fi
-    REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
-  done
-  if [ -f "/usr/bin/dpkg" ]; then
-    read -r -p "Are you sure? [y/N] " response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      sudo dpkg -r $REMOVESTR
-    fi
-  fi
-}
-
-if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
-  if [ ! -f "/usr/bin/dpkg" ]; then
-    echo "Kernel installation / removal is not supported on this system"
-    exit
-  fi
-fi
-if [ ! "$(arch)" == "x86_64" ]; then
-  echo "Architecture not supported"
-  exit
-fi
-
 installKernel() {
   if [ ! -f "/usr/bin/dpkg" ]; then
     echo "Kernel installation is not supported on this system"
@@ -130,13 +91,27 @@ installKernel() {
   clearFiles "$installList CHECKSUMS"
 }
 
-clearFiles() {
-  cd /tmp/kernel-notify
-  rm $1
-  if ! ls /tmp/kernel-notify |grep -q ".*"; then
-    rm -rf /tmp/kernel-notify
-  else
-    echo "/tmp/kernel-notify not removed as it is in use"
+removeKernel() {
+  echo "Currently installed kernels:"
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  KERNELS=${KERNELS// /\n}
+  printf "$KERNELS\n" |cat -n
+  echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
+  read DELVERSION
+  read -ra ARR <<< $DELVERSION
+  for i in "${ARR[@]}"; do
+    if [ $(expr length "$i") == 1 ]; then
+      i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
+    fi
+    REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
+  done
+  if [ -f "/usr/bin/dpkg" ]; then
+    read -r -p "Are you sure? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      sudo dpkg -r $REMOVESTR
+    fi
   fi
 }
 
@@ -148,6 +123,35 @@ listKernels() {
   KERNELS=${KERNELS// /\n}
   printf "$KERNELS\n" |cat -n
 }
+
+clearFiles() {
+  cd /tmp/kernel-notify
+  rm $1
+  if ! ls /tmp/kernel-notify |grep -q ".*"; then
+    rm -rf /tmp/kernel-notify
+  else
+    echo "/tmp/kernel-notify not removed as it is in use"
+  fi
+}
+
+checkDpkg() {
+  echo "DPKG"
+}
+
+if [[ "$2" == "" ]]; then
+  latestVersionFull="x.x.x"
+fi
+
+if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
+  if [ ! -f "/usr/bin/dpkg" ]; then
+    echo "Kernel installation / removal is not supported on this system"
+    exit
+  fi
+fi
+if [ ! "$(arch)" == "x86_64" ]; then
+  echo "Architecture not supported"
+  exit
+fi
 
 if [ "$3" == "-a" ]; then
   automatic="1"
