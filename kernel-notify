@@ -79,7 +79,8 @@ uninstall() {
     echo "Uninstalling:"
     if dpkg -s kernel-notify | grep Status |grep -q installed; then
       checkDpkg
-      sudo dpkg -r kernel-notify
+      cd /; sudo dpkg -r kernel-notify
+      exit
     else
       if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
         sudo rm /etc/xdg/autostart/kernel-notify.desktop
@@ -87,6 +88,7 @@ uninstall() {
       sudo rm /usr/bin/kernel-notify
       sudo rm -rf /usr/share/kernel-notify
       echo "Done"
+      exit
     fi
   fi
 }
