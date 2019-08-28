@@ -42,9 +42,11 @@
 
 ## Dependencies:
  * curl
- * notify-send / libnotify4 / libnotify-bin (Used for notifications)
+ * gawk & sed
+ * psmisc
+ * libnotify-bin (Used for notifications)
  * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source))
- * dpkg (Used in program and kernel installation / removal)
+ * dpkg (Used in package building and program + kernel installation / removal)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
