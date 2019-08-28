@@ -18,12 +18,32 @@ case "$2" in
   "--test") testMode;;
 esac
 
+editConfig() {
+  if [ "$2" == "" ]; then
+    echo "Config:" && echo ""
+    cat $workDir/config
+  else
+    if [ "$3" == "" ]; then
+      echo "Config:" && echo ""
+      cat $workDir/config | grep $2
+    else
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
+      sudo mv $workDir/config.temp $workDir/config
+      echo "Saved new config"
+    fi
+  fi
+  exit
+}
+
 source $workDir/config
 cd $workDir
 
 if [ "$test" == "0" ]; then
   if [ "$muted" -lt "1" ]; then
-    if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+    if [ ! -d /etc/xdg/autostart/ ]; then
+      echo "Autostart directory not found, muting program"
+      editConfig "-c" "muted" "1"
+    elif [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
       echo "Autostart file not found, creating"
       sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
     fi
@@ -75,23 +95,6 @@ listConfig() {
   else
     echo "No old config file found"
   fi
-}
-
-editConfig() {
-  if [ "$2" == "" ]; then
-    echo "Config:" && echo ""
-    cat $workDir/config
-  else
-    if [ "$3" == "" ]; then
-      echo "Config:" && echo ""
-      cat $workDir/config | grep $2
-    else
-      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
-      sudo mv $workDir/config.temp $workDir/config
-      echo "Saved new config"
-    fi
-  fi
-  exit
 }
 
 mute() {
