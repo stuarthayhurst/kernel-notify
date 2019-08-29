@@ -99,10 +99,22 @@ checkDeps() {
     echo "Curl not installed, exiting"
     exit
   fi
-  if which notify-send > /dev/null 2>&1; then
-    echo "Notify-send found"
+  if which pkexec > /dev/null 2>&1; then
+    echo "Policykit-1 found"
   else
-    echo "Notify-send not installed"
+    echo "Policykit-1 not installed, exiting"
+    exit
+  fi
+  if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
+    echo "Gawk found"
+  else
+    echo "Gawk not installed, exiting"
+    exit
+  fi
+  if which fuser > /dev/null 2>&1; then
+    echo "Psmisc found"
+  else
+    echo "Psmisc not installed, exiting"
     exit
   fi
 }
