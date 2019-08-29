@@ -47,6 +47,10 @@ int main(int argc, char * argv[] ) {
     }
 
     notify_notification_set_timeout(n, 10000);
-    notify_notification_show(n, NULL);
+    if (!notify_notification_show(n, 0)) 
+    {
+        std::cerr << "Notification failed" << std::endl;
+        return 1;
+    }
     return 0;
 }
