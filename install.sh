@@ -61,6 +61,7 @@ buildPackage() {
     cp -v config $debianPath/
     cp -v icon.png $debianPath/
     cp -v notifications $debianPath/
+    cp -v notifications.cc $debianPath/
     cp -v kernel-notify.desktop $debianPath/
     cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp -v kernel-notify package/debian/usr/bin/
@@ -71,8 +72,9 @@ buildPackage() {
     rm -v $debianPath/actions
     rm -v $debianPath/config
     rm -v $debianPath/icon.png
-    rm -v $debianPath/notifications
     rm -v notifications
+    rm -v $debianPath/notifications
+    rm -v $debianPath/notifications.cc
     rm -v $debianPath/kernel-notify.desktop
     rm -rfv package/debian/etc/
     rm -rfv package/debian/usr/
@@ -139,7 +141,7 @@ installPackage() {
   sudo cp kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
   sudo cp updater /usr/share/kernel-notify/updater
   sudo cp actions /usr/share/kernel-notify/actions
-  sudo cp notifications /usr/share/kernel-notify/notifications
+  sudo mv notifications /usr/share/kernel-notify/notifications
   echo "Installed app files"
 
   kernel-notify -o
