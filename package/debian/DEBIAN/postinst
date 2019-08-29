@@ -1,4 +1,17 @@
 #!/bin/bash
+
+if [ ! "$(arch)" == "x86_64" ]; then
+  if which g++ > /dev/null 2>&1; then
+    if sudo g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications `pkg-config --cflags --libs libnotify`; then
+      echo "g++: built notifications"
+    else
+      echo "g++: failed to build notifications"
+    fi
+  else
+    echo "g++ is required to build the notifications for this system"
+  fi
+fi
+
 kernel-notify -v
 echo "Successfully installed"
 echo "ATTENTION: Please run 'kernel-notify -o' to check the config"
