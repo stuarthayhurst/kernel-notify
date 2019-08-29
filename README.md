@@ -43,7 +43,7 @@
 ## Dependencies:
  * curl
  * gawk & sed
- * psmisc
+ * psmisc & policykit-1
  * libnotify-bin (Used for notifications)
  * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source))
  * dpkg (Used in package building and program + kernel installation / removal)
