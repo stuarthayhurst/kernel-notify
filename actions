@@ -99,7 +99,7 @@ removeKernel() {
   read DELVERSION
   read -ra ARR <<< $DELVERSION
   for i in "${ARR[@]}"; do
-    if [ $(expr length "$i") == 1 ]; then
+    if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
