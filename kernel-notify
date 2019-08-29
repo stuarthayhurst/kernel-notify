@@ -132,7 +132,7 @@ unmute() {
 }
 
 sendNotification() {
-  if $workDir/notifications "$1" "$2" "$iconPath" "$3" "mute" > /dev/null 2>&1; then
+  if ! $workDir/notifications "$1" "$2" "$iconPath" "$3" "mute" > /dev/null 2>&1; then
     echo "$1, $2"
   fi
 }
@@ -149,7 +149,7 @@ else
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
-    -r|--remove-kernel) ./actions -r $latestVersion "${args[@]:2}"; exit;;
+    -r|--remove-kernel) ./actions -r $latestVersion "${args[@]:1}"; exit;;
     -l|--list-kernels) ./actions -l $latestVersion; exit;;
     -a|--add-kernel) ./actions -i $latestVersion $2; exit;;
     -um|--unmute) unmute; exit;;
@@ -177,7 +177,7 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
   sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull"
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
-    ./actions -i $latestVersionFull -a
+    ./actions -i $latestVersionFull "" -a
     sendNotification "Kernel updated to $latestVersionFull" "Automatic upgrade complete, please reboot"
   fi
 fi

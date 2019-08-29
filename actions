@@ -96,14 +96,14 @@ installKernel() {
 }
 
 removeKernel() {
-  if [ "$@" != "" ]; then
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  KERNELS=${KERNELS// /\n}
+  if [ "$(echo "$@")" != "" ]; then
     DELVERSION="$@"
   else
     echo "Currently installed kernels:"
-    KERNELS=$(ls /boot/ | grep vmlinuz)
-    KERNELS=${KERNELS//vmlinuz-}
-    KERNELS=${KERNELS//-generic}
-    KERNELS=${KERNELS// /\n}
     printf "$KERNELS\n" |cat -n
     echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
     read DELVERSION
@@ -172,7 +172,7 @@ if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
   fi
 fi
 
-if [ "$3" == "-a" ]; then
+if [ "$4" == "-a" ]; then
   automatic="1"
 else
   automatic="0"
