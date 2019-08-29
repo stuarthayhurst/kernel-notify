@@ -139,6 +139,7 @@ sendNotification() {
 
 latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
 
+read -ra args <<< $@
 if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig "$1" "$2" "$3"
 else
@@ -148,7 +149,7 @@ else
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
-    -r|--remove-kernel) ./actions -r $latestVersion; exit;;
+    -r|--remove-kernel) ./actions -r $latestVersion "${args[@]:2}"; exit;;
     -l|--list-kernels) ./actions -l $latestVersion; exit;;
     -a|--add-kernel) ./actions -i $latestVersion $2; exit;;
     -um|--unmute) unmute; exit;;

@@ -3,10 +3,11 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
-echo $3
-if [ "$3" != "" ]; then
-  latestVersionFull=$3
-  latestVersion=${latestVersionFull//.}
+if [ "$1" == "-i" ]; then
+  if [ "$3" != "" ]; then
+    latestVersionFull=$3
+    latestVersion=${latestVersionFull//.}
+  fi
 fi
 
 installKernel() {
@@ -95,14 +96,18 @@ installKernel() {
 }
 
 removeKernel() {
-  echo "Currently installed kernels:"
-  KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS// /\n}
-  printf "$KERNELS\n" |cat -n
-  echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
-  read DELVERSION
+  if [ "$@" != "" ]; then
+    DELVERSION="$@"
+  else
+    echo "Currently installed kernels:"
+    KERNELS=$(ls /boot/ | grep vmlinuz)
+    KERNELS=${KERNELS//vmlinuz-}
+    KERNELS=${KERNELS//-generic}
+    KERNELS=${KERNELS// /\n}
+    printf "$KERNELS\n" |cat -n
+    echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
+    read DELVERSION
+  fi
   DELVERSION=${DELVERSION//,/ }
   read -ra ARR <<< $DELVERSION
   for i in "${ARR[@]}"; do
@@ -111,12 +116,10 @@ removeKernel() {
     fi
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
   done
-  if [ -f "/usr/bin/dpkg" ]; then
-    read -r -p "Are you sure? [y/N] " response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      checkDpkg
-      sudo dpkg -r $REMOVESTR
-    fi
+  read -r -p "Are you sure? [y/N] " response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    checkDpkg
+    sudo dpkg -r $REMOVESTR
   fi
 }
 
@@ -175,8 +178,9 @@ else
   automatic="0"
 fi
 
+read -ra args <<< $@
 case $1 in
-    -r|--remove) removeKernel; exit;;
+    -r|--remove) removeKernel "${args[@]:2}"; exit;;
     -l|--list) listKernels; exit;;
     -i|--install) installKernel;;
     *) echo "Use -i, -r or -l"; exit 1;;
