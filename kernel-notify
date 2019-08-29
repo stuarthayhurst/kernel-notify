@@ -132,7 +132,9 @@ unmute() {
 }
 
 sendNotification() {
-  $workDir/notifications "$1" "$2" "$iconPath" "$3" "mute"
+  if $workDir/notifications "$1" "$2" "$iconPath" "$3" "mute" > /dev/null 2>&1; then
+    echo "$1, $2"
+  fi
 }
 
 latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
@@ -152,7 +154,7 @@ else
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
     -t|--test) ;;
-    *) echo "Unknown parameter passed: $1"; kernel-notify --help; exit 1;;
+    *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
   esac; shift; done
 fi
 
