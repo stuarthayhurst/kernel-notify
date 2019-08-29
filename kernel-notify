@@ -148,7 +148,7 @@ else
     -o|--old-config) listConfig; exit;;
     -r|--remove-kernel) ./actions -r $latestVersion; exit;;
     -l|--list-kernels) ./actions -l $latestVersion; exit;;
-    -a|--add-kernel) ./actions -i $latestVersion; exit;;
+    -a|--add-kernel) ./actions -i $latestVersion $2; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
     -t|--test) ;;

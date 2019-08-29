@@ -3,9 +3,15 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
+echo $3
+if [ "$3" != "" ]; then
+  latestVersionFull=$3
+  latestVersion=${latestVersionFull//.}
+fi
+
 installKernel() {
   if [ "$automatic" -ne "1" ]; then
-    echo "Enter a kernel version to install, or leave it blank to use the latest ($latestVersionFull):"
+    echo "Enter a kernel version to install, leave blank to use selected kernel ($latestVersionFull):"
     read installVersion
   fi
 
