@@ -174,11 +174,12 @@ if [ "$latestVersion" -le "99" ]; then
 fi
 
 if [ "$latestVersion" -ne "${currVersion//.}" ]; then
-  sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull"
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
     ./actions -i $latestVersionFull "" -a
     sendNotification "Kernel updated to $latestVersionFull" "Automatic upgrade complete, please reboot"
+  else
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull"
   fi
 fi
 
