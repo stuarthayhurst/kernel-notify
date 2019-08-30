@@ -3,10 +3,10 @@ Section: utility
 Priority: optional
 Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
-Version: 5.4
+Version: 5.4.1
 Architecture: all
 Depends: curl, gawk | awk, sed, ncurses-bin, psmisc, policykit-1
-Recommends: libnotify4, libnotify-dev [!amd64], g++ [!amd64]
+Recommends: libnotify4, libnotify-dev
 Homepage: <https://github.com/Dragon8oy/kernel-notify>
 Description: Kernel updater, checker and remover
  A small package to check the latest kernel version and notify user of an update, supports installing and removing kernels
