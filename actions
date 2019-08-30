@@ -17,10 +17,10 @@ installKernel() {
   fi
 
   if [[ "$installVersion" == "" ]]; then
-    echo "Using latest version..."
+    echo "Using selected version..."
     if [[ "$latestVersionFull" != "x.x.x" ]]; then
       if [ "$latestVersion" -eq "${currVersion//.}" ]; then
-        echo "Kernel is already on the latest version"
+        echo "Kernel is already on the selected version"
         exit
       fi
     else
@@ -119,7 +119,6 @@ removeKernel() {
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
   done
   read -r -p "Are you sure you want to remove kernels:$DELSTR? [y/N] " response
-  exit
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
     sudo dpkg -r $REMOVESTR
@@ -138,7 +137,17 @@ listKernels() {
 
 clearFiles() {
   cd /tmp/kernel-notify
-  rm $1
+  echo "$1"
+  read -ra ARR <<< $1
+  echo "ARRAY LENGTH: ${#ARR[@]}"
+  echo "ARRAY: ${ARR[@]}"
+  for i in "${ARR[@]}"; do
+    if [ -f "$i" ]; then
+      rm $i
+    else
+      echo "File $i doesn't exist, not deleting"
+    fi
+  done
   if ! ls /tmp/kernel-notify |grep -q ".*"; then
     rm -rf /tmp/kernel-notify
   else
