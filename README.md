@@ -18,11 +18,12 @@
 ## Updating:
  * Run `kernel-notify -u`
  - WARNING: Config will be reset after an update
- - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs or can be displayed any time with `kernel-notify -o`
+ - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs, or can be displayed any time with `kernel-notify -o`
 
 ## Notes:
- * The program starting on login can be toggled with `kernel-notify --mute` and `kernel-notify --unmute`
- * The program and kernel can be automatically updated if the program is unmuted and autoupdate is set to 1 in the config
+ * The program sending update notifications can be toggled with `kernel-notify --mute` and `kernel-notify --unmute`
+ * The program and kernel can be automatically updated if autoupdate is set to 1 in the config
+ * On .deb installation, the package will attempt to rebuild the notifications program if the architecture is not amd64
 
 ## Help:
  - ### Program Help:
@@ -51,6 +52,7 @@
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
  * Change a value: `kernel-notify -c CFGOPTION NEWCFGVALUE`
+ * The config can also be changed by editing `/usr/share/kernel-notify/config`
 
  - Example:
  * Change the value of 'example' to 'example-complete': `kernel-notify -c example example-complete`
