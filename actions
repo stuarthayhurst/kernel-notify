@@ -105,6 +105,7 @@ removeKernel() {
   else
     echo "Currently installed kernels:"
     printf "$KERNELS\n" |cat -n
+    echo "The config is set to keep $maxkernelcount kernels before notifying users"
     echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
     read DELVERSION
   fi
@@ -114,9 +115,11 @@ removeKernel() {
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
+    DELSTR="$DELSTR $i"
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
   done
-  read -r -p "Are you sure? [y/N] " response
+  read -r -p "Are you sure you want to remove kernels:$DELSTR? [y/N] " response
+  exit
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
     sudo dpkg -r $REMOVESTR
@@ -130,6 +133,7 @@ listKernels() {
   KERNELS=${KERNELS//-generic}
   KERNELS=${KERNELS// /\n}
   printf "$KERNELS\n" |cat -n
+  echo "The config is set to keep $maxkernelcount kernels before notifying users"
 }
 
 clearFiles() {
@@ -178,9 +182,10 @@ else
   automatic="0"
 fi
 
+maxkernelcount=$3
 read -ra args <<< $@
 case $1 in
-    -r|--remove) removeKernel "${args[@]:2}"; exit;;
+    -r|--remove) removeKernel "${args[@]:3}"; exit;;
     -l|--list) listKernels; exit;;
     -i|--install) installKernel;;
     *) echo "Use -i, -r or -l"; exit 1;;

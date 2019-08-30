@@ -6,7 +6,7 @@ test="0"
 
 testMode() {
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-  echo "Running kernel-notify in $workDir"
+  echo "Running kernel-notify in $workDir/"
   test="1"
 }
 case "$1" in
@@ -113,6 +113,18 @@ listConfig() {
   fi
 }
 
+checkKernelCount() {
+  KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=${KERNELS//vmlinuz-}
+  KERNELS=${KERNELS//-generic}
+  KERNELS=${KERNELS// /\n }
+  read -ra ARR <<< $(echo $KERNELS)
+  if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
+    sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
+    echo "Too many kernels installed, remove kernels to avoid this message, or raise the limit in the config"
+  fi
+}
+
 mute() {
   echo "Muting Kernel-notify:"
   kernel-notify -c muted 1
@@ -132,7 +144,7 @@ unmute() {
 }
 
 sendNotification() {
-  if ! $workDir/notifications "$1" "$2" "$iconPath" "$3" "mute" > /dev/null 2>&1; then
+  if ! $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" > /dev/null 2>&1; then
     echo "$1, $2"
   fi
 }
@@ -149,9 +161,9 @@ else
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "Program written by: Dragon8oy"; exit;;
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
-    -r|--remove-kernel) ./actions -r $latestVersion "${args[@]:1}"; exit;;
+    -r|--remove-kernel) ./actions -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
     -l|--list-kernels) ./actions -l $latestVersion; exit;;
-    -a|--add-kernel) ./actions -i $latestVersion $2; exit;;
+    -a|--add-kernel) ./actions -i $latestVersion $2; checkKernelCount; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
     -t|--test) ;;
@@ -179,7 +191,7 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
     ./actions -i $latestVersionFull "" -a
     sendNotification "Kernel updated to $latestVersionFull" "Automatic upgrade complete, please reboot"
   else
-    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull"
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "" "mute"
   fi
 fi
 
@@ -191,6 +203,8 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     $workDir/updater
     sendNotification "Program updated to v$latestProgVer" "Automatic upgrade complete"
   else
-    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'"
+    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "" "mute"
   fi
 fi
+
+checkKernelCount
