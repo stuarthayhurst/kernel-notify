@@ -23,5 +23,5 @@ if [ ! "$(arch)" == "x86_64" ]; then
 fi
 
 kernel-notify -v
-echo "Successfully installed"
 echo "  ATTENTION: Please run 'kernel-notify -o' to check the config"
+echo "Successfully installed"
