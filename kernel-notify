@@ -191,7 +191,7 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
     ./actions -i $latestVersionFull "" -a
     sendNotification "Kernel updated to $latestVersionFull" "Automatic upgrade complete, please reboot"
   else
-    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "" "mute"
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
   fi
 fi
 
@@ -203,7 +203,7 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     $workDir/updater
     sendNotification "Program updated to v$latestProgVer" "Automatic upgrade complete"
   else
-    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "" "mute"
+    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
   fi
 fi
 

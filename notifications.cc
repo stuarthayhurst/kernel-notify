@@ -21,6 +21,8 @@ int main(int argc, char * argv[] ) {
                                  argv[2],
                                  argv[3]);
 
+    argv[4] = "--";
+    argv[5] = "--";
     if (argv[4] == std::string("program")) {
       notify_notification_add_action (n,
         "action_click",
