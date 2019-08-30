@@ -1,7 +1,8 @@
 # kernel-notify
  - A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
- - Updating and removing the kernel is supported on systems with dpkg
+ - Updating and removing the kernel is supported on systems with dpkg installed
  - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
+ - GitHub Link: https://github.com/Dragon8oy/kernel-notify
 
 ## Installation:
  * Run `./install.sh`
