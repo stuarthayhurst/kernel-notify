@@ -105,6 +105,12 @@ checkDeps() {
     echo "Policykit-1 not installed, exiting"
     exit
   fi
+  if which sed > /dev/null 2>&1; then
+    echo "Sed found"
+  else
+    echo "Sed not installed, exiting"
+    exit
+  fi
   if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
     echo "Gawk found"
   else
