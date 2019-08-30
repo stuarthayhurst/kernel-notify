@@ -3,15 +3,15 @@
 
 void callback_update_program(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Program" << std::endl;
-  system("kernel-notify -au");
+  system("pkexec kernel-notify -au");
 }
 void callback_update_kernel(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Kernel" << std::endl;
-  system("kernel-notify -aa");
+  system("pkexec kernel-notify -aa");
 }
 void callback_mute(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Muting Program" << std::endl;
-  system("kernel-notify -am");
+  system("pkexec kernel-notify -am");
 }
 
 int main(int argc, char * argv[] ) {
