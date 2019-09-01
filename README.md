@@ -3,6 +3,7 @@
  - Updating and removing the kernel is supported on systems with dpkg installed
  - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
  - GitHub Link: https://github.com/Dragon8oy/kernel-notify
+ - 'kernel-notify -l' is know to fail on a Raspberry Pi / Raspbian
 
 ## Installation:
  * Run `./install.sh`
