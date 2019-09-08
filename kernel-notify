@@ -205,8 +205,8 @@ fi
 if [ "$latestVersion" -ne "${currVersion//.}" ]; then
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
-    ./actions -i $latestVersionFull "" -a
-    sendNotification "Kernel updated to $latestVersionFull" "Automatic upgrade complete, please reboot"
+    sleep 5
+    pkexec kernel-notify -aa
   else
     sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
   fi
@@ -217,8 +217,8 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   echo "" && echo "Program outdated, v$latestProgVer is available" 
   if [ "$autoupdate" -ne "0" ]; then
     echo "Auto-update is enabled, updating kernel-notify" && echo ""
-    $workDir/updater
-    sendNotification "Program updated to v$latestProgVer" "Automatic upgrade complete"
+    sleep 5
+    pkexec kernel-notify -au
   else
     sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
   fi
