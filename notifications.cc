@@ -2,16 +2,21 @@
 #include <gtk/gtk.h>
 #include <iostream>
 
+int action_triggered = 0;
+
 void callback_update_program(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Program" << std::endl;
+  action_triggered = 1;
   system("pkexec kernel-notify -au");
 }
 void callback_update_kernel(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Kernel" << std::endl;
+  action_triggered = 1;
   system("pkexec kernel-notify -aa");
 }
 void callback_mute(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Muting Program" << std::endl;
+  action_triggered = 1;
   system("pkexec kernel-notify -am");
 }
 
@@ -53,7 +58,9 @@ int main(int argc, char * argv[] ) {
         std::cerr << "Notification failed" << std::endl;
         return 1;
     }
-    g_usleep(5000000);
+    while(action_triggered != 1) {
+      gtk_main_iteration_do(FALSE);
+    }
     gtk_main_iteration_do(FALSE);
     g_object_unref(G_OBJECT(n));
     notify_uninit();
