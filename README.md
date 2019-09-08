@@ -48,7 +48,7 @@
  * gawk & sed
  * psmisc & policykit-1
  * libnotify4
- * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (Non-amd46))
+ * libnotify-dev & libgtk-3-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (Non-amd46))
  * dpkg (Used in package building and program + kernel installation / removal)
 
 ## Config:
