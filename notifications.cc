@@ -51,6 +51,8 @@ int main(int argc, char * argv[] ) {
          NOTIFY_ACTION_CALLBACK(callback_mute),
          NULL,
          NULL);
+    } else {
+      action_triggered = 1;
     }
 
     notify_notification_set_timeout(n, 10000);
@@ -61,7 +63,6 @@ int main(int argc, char * argv[] ) {
     while(action_triggered != 1) {
       gtk_main_iteration_do(FALSE);
     }
-    gtk_main_iteration_do(FALSE);
     g_object_unref(G_OBJECT(n));
     notify_uninit();
     return 0;
