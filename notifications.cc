@@ -1,4 +1,5 @@
 #include <libnotify/notify.h>
+#include <gtk/gtk.h>
 #include <iostream>
 
 void callback_update_program(NotifyNotification* n, char* action, gpointer user_data) {
@@ -16,13 +17,12 @@ void callback_mute(NotifyNotification* n, char* action, gpointer user_data) {
 
 int main(int argc, char * argv[] ) {
     GError *error = NULL;
+    gtk_init(&argc, &argv);
     notify_init("Basics");
     NotifyNotification* n = notify_notification_new (argv[1],
                                  argv[2],
                                  argv[3]);
 
-    argv[4] = "--";
-    argv[5] = "--";
     if (argv[4] == std::string("program")) {
       notify_notification_add_action (n,
         "action_click",
@@ -53,5 +53,9 @@ int main(int argc, char * argv[] ) {
         std::cerr << "Notification failed" << std::endl;
         return 1;
     }
+    g_usleep(5000000);
+    gtk_main_iteration_do(FALSE);
+    g_object_unref(G_OBJECT(n));
+    notify_uninit();
     return 0;
 }
