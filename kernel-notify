@@ -128,8 +128,8 @@ checkKernelCount() {
 automaticFeatures() {
   case $1 in
     am) mute; sendNotification "Program muted" "Run 'kernel-notify -um' to unmute";;
-    aa) $workDir/actions -i $latestVersionFull "" -a; sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
-    au) $workDir/updater; sendNotification "Program updated" "Run 'kernel-notify -v' to check version";;
+    aa) $workDir/actions -i "$latestVersion" "" -a && checkKernelCount && sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
+    au) $workDir/updater && sendNotification "Program updated" "Run 'kernel-notify -v' to check version";;
   esac
 }
 
