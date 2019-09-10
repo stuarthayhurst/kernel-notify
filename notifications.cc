@@ -30,14 +30,14 @@ int main(int argc, char * argv[] ) {
 
     if (argv[4] == std::string("program")) {
       notify_notification_add_action (n,
-        "action_click",
+        "action_update",
         "Update Program",
          NOTIFY_ACTION_CALLBACK(callback_update_program),
          NULL,
          NULL);
     } else if (argv[4] == std::string("kernel")){
       notify_notification_add_action (n,
-        "action_click",
+        "action_update",
         "Update Kernel",
          NOTIFY_ACTION_CALLBACK(callback_update_kernel),
          NULL,
@@ -46,7 +46,7 @@ int main(int argc, char * argv[] ) {
 
     if (argv[5] == std::string("mute")) {
       notify_notification_add_action (n,
-        "action_click",
+        "action_mute",
         "Mute",
          NOTIFY_ACTION_CALLBACK(callback_mute),
          NULL,
