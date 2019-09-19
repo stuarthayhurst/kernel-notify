@@ -24,9 +24,7 @@ int main(int argc, char * argv[] ) {
     GError *error = NULL;
     gtk_init(&argc, &argv);
     notify_init("Basics");
-    NotifyNotification* n = notify_notification_new (argv[1],
-                                 argv[2],
-                                 argv[3]);
+    NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
     if (argv[4] == std::string("program")) {
       notify_notification_add_action (n,
@@ -61,6 +59,10 @@ int main(int argc, char * argv[] ) {
         return 1;
     }
     while(action_triggered != 1) {
+      if(notify_notification_get_closed_reason(n) != -1) {
+        std::cerr << "Closed" << std::endl;
+        action_triggered = 1;
+      }
       gtk_main_iteration_do(FALSE);
     }
     g_object_unref(G_OBJECT(n));
