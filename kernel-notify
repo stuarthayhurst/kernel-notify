@@ -39,14 +39,11 @@ source $workDir/config
 cd $workDir
 
 if [ "$test" == "0" ]; then
-  if [ "$muted" -lt "1" ]; then
-    if [ ! -d /etc/xdg/autostart/ ]; then
-      echo "Autostart directory not found, muting program"
-      editConfig "-c" "muted" "1"
-    elif [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-      echo "Autostart file not found, creating"
-      sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-    fi
+  if [ ! -d /etc/xdg/autostart/ ]; then
+    echo "Autostart directory not found, program will not automatically start"
+  elif [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+    echo "Autostart file not found, creating"
+    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
   fi
 fi
 
@@ -134,32 +131,30 @@ automaticFeatures() {
 }
 
 mute() {
-  echo "Muting Kernel-notify:"
-  kernel-notify -c muted 1
-  if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    sudo rm /etc/xdg/autostart/kernel-notify.desktop
-  fi
+  echo "Muting kernel-notify:"
+  editConfig "-c" "muted" "1"
   echo "Done";
 }
 
 unmute() {
   echo "Unmuting kernel-notify:"
-  kernel-notify -c muted 0
-  if [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-  fi
+  editConfig "-c" "muted" "0"
   echo "Done";
 }
 
 sendNotification() {
-  display=$(ps -u $(id -u) -o pid= | \
-    while read pid; do
-      cat /proc/$pid/environ 2>/dev/null | tr '\0' '\n' | grep '^DISPLAY=:'
-    done | grep -o ':[0-9]*' | sort -u)
-  user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
-  if ! sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" > /dev/null 2>&1 &
-  then
+  if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
+  else
+    display=$(ps -u $(id -u) -o pid= | \
+      while read pid; do
+        cat /proc/$pid/environ 2>/dev/null | tr '\0' '\n' | grep '^DISPLAY=:'
+      done | grep -o ':[0-9]*' | sort -u)
+    user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
+    if ! sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" > /dev/null 2>&1 &
+    then
+      echo "$1, $2"
+    fi
   fi
 }
 
