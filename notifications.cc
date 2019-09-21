@@ -52,8 +52,8 @@ int main(int argc, char * argv[] ) {
     } else {
       action_triggered = 1;
     }
-
-    notify_notification_set_timeout(n, 10000);
+    notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
+    notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
     if (!notify_notification_show(n, 0)) {
         std::cerr << "Notification failed" << std::endl;
         return 1;
