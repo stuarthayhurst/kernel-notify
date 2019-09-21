@@ -118,7 +118,7 @@ removeKernel() {
     DELSTR="$DELSTR $i"
     REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
   done
-  read -r -p "Are you sure you want to remove kernels:$DELSTR? [y/N] " response
+  read -r -p "Are you sure you want to remove kernel(s):$DELSTR? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
     sudo dpkg -r $REMOVESTR
