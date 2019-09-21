@@ -112,9 +112,9 @@ checkDeps() {
     exit
   fi
   if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
-    echo "Gawk found"
+    echo "Awk found"
   else
-    echo "Gawk not installed, exiting"
+    echo "Awk not installed, exiting"
     exit
   fi
   if which fuser > /dev/null 2>&1; then
