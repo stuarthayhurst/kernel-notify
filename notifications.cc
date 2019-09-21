@@ -27,6 +27,7 @@ int main(int argc, char * argv[] ) {
     NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
     if (argv[4] == std::string("program")) {
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
       notify_notification_add_action (n,
         "action_update",
         "Update Program",
@@ -34,6 +35,7 @@ int main(int argc, char * argv[] ) {
          NULL,
          NULL);
     } else if (argv[4] == std::string("kernel")){
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
       notify_notification_add_action (n,
         "action_update",
         "Update Kernel",
@@ -53,7 +55,6 @@ int main(int argc, char * argv[] ) {
       action_triggered = 1;
     }
     notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
-    notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
     if (!notify_notification_show(n, 0)) {
         std::cerr << "Notification failed" << std::endl;
         return 1;
