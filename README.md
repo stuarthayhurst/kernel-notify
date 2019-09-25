@@ -58,4 +58,13 @@
  * The config can also be changed by editing `/usr/share/kernel-notify/config`
 
  - Example:
- * Change the value of 'example' to 'example-complete': `kernel-notify -c example example-complete`
+  * Show all configs and their values: `kernel-notify -c`
+  * Change the value of 'example' to 'example-complete': `kernel-notify -c example example-complete`
+ 
+ - Configs:
+   * '/' shows multiple options
+   * '-' shows a range of values
+  * muted="0/1" - This value shouldn't be editied, use -m to mute and -um to unmute
+  * detail="1/2" - Set to 1 for minor and 2 for patch kernel version checking
+  * autoupdate="0/1" - Set to 0 to ask before updates, set to 1 to automatically update when the program is run
+  * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
