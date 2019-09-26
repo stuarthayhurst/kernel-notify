@@ -64,7 +64,8 @@ installKernel() {
     exit
   fi
 
-  echo "Downloading kernel version $installVersion..." && echo ""
+  #Zenity input start
+  ( echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
   if [ ! -d "/tmp/kernel-notify" ]; then
     mkdir /tmp/kernel-notify
   fi
@@ -73,26 +74,58 @@ installKernel() {
   declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
 
   for filename in "${packages[@]}"; do
+    let progress=$progress+20
+    echo "# Downloading ${filename##*/}..."
     curl -O $filename
+    echo "$progress"
     filename="${filename##*/}"
     installList="$installList $filename"
     if ! file $filename | grep -q 'Debian binary package'; then
-      echo "$filename: Not a Debian package"
+      echo "$filename: Not a Debian package" 1>&2
       clearFiles "$installList"
       exit
     fi
   done
 
+  echo "# Downloading & verifying checksums..."
   curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
-  if ! shasum --ignore-missing -c CHECKSUMS; then
-    echo "Downloaded kernel checksum invalid"
+  echo "90"
+  if ! shasum --ignore-missing -c CHECKSUMS 1>&2; then
+    echo "Downloaded kernel checksum invalid" 1>&2
     clearFiles "$installList CHECKSUMS"
   fi
+  echo "100"
 
-  echo ""; echo "All packages verified, installing kernel version $installVersion..."
+  echo "" 1>&2; echo "All packages verified, installing kernel version $installVersion..." 1>&2
   checkDpkg
-  sudo dpkg -i $installList && echo "Done, reboot for the update to take effect"
-  clearFiles "$installList CHECKSUMS"
+
+  progress=0
+  echo "$progress"
+  read -ra installArray <<< $installList
+  for filename in "${installArray[@]}"; do
+    let progress=$progress+25
+    echo "# Installing ${filename##*/}..."
+    sudo dpkg -i $filename 1>&2
+    echo "$progress"
+  done
+  echo "# Installed kernel $installVersion"
+  echo "Done, reboot for the update to take effect" 1>&2
+
+  clearFiles "$installList CHECKSUMS") |
+  zenity --progress \
+    --window-icon="/usr/share/kernel-notify/icon.png" \
+    --title="Kernel Updater" \
+    --text="Starting update..." \
+    --width=400 \
+    --height=100 \
+    --percentage=0
+
+  if [ "$?" == "1" ]; then
+    echo "Cancelled"
+    #Cleanup files and programs
+    #Exit with an error code
+    #Add 100% progress to clearFiles
+  fi
 }
 
 removeKernel() {
