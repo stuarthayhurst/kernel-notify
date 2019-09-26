@@ -123,6 +123,12 @@ checkDeps() {
     echo "Psmisc not installed, exiting"
     exit
   fi
+  if which zenity > /dev/null 2>&1; then
+    echo "Zenity found"
+  else
+    echo "Zenity not installed, exiting"
+    exit
+  fi
 }
 
 checkBuildDeps() {
