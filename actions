@@ -64,7 +64,6 @@ installKernel() {
     exit
   fi
 
-  #Zenity input start
   ( echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
   if [ ! -d "/tmp/kernel-notify" ]; then
     mkdir /tmp/kernel-notify
@@ -108,7 +107,7 @@ installKernel() {
     sudo dpkg -i $filename 1>&2
     echo "$progress"
   done
-  echo "# Installed kernel $installVersion"
+  echo "# Installed Kernel v$installVersion"
   echo "Done, reboot for the update to take effect" 1>&2
 
   clearFiles "$installList CHECKSUMS") |
@@ -122,9 +121,9 @@ installKernel() {
 
   if [ "$?" == "1" ]; then
     echo "Cancelled"
-    #Cleanup files and programs
-    #Exit with an error code
-    #Add 100% progress to clearFiles
+    clearFiles "$installList CHECKSUMS"
+    sudo dpkg -r linux-headers-$installVersion-generic linux-headers-$installVersion linux-image-unsigned-$installVersion-generic linux-modules-$installVersion-generic
+    exit 1
   fi
 }
 
