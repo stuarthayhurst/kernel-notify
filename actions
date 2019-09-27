@@ -94,7 +94,7 @@ installKernel() {
     echo "Downloaded kernel checksum invalid" 1>&2
     clearFiles "$installList CHECKSUMS"
   fi
-  echo "100"
+  echo "99"
 
   echo "" 1>&2; echo "All packages verified, installing kernel version $installVersion..." 1>&2
   checkDpkg
@@ -112,7 +112,7 @@ installKernel() {
   echo "Done, reboot for the update to take effect" 1>&2
 
   clearFiles "$installList CHECKSUMS") |
-  zenity --progress \
+  zenity --progress --auto-close \
     --window-icon="/usr/share/kernel-notify/icon.png" \
     --title="Kernel Updater" \
     --text="Starting update..." \
