@@ -64,13 +64,13 @@ installKernel() {
     exit
   fi
 
+  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
+
   ( echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
   if [ ! -d "/tmp/kernel-notify" ]; then
     mkdir /tmp/kernel-notify
   fi
   cd /tmp/kernel-notify
-
-  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
 
   for filename in "${packages[@]}"; do
     let progress=$progress+20
@@ -121,6 +121,11 @@ installKernel() {
 
   if [ "$?" == "1" ]; then
     echo "Cancelled"
+    for filename in "${packages[@]}"; do
+      filename="${filename##*/}"
+      installList="$installList $filename"
+    done
+    echo "Install list: $installList"
     clearFiles "$installList CHECKSUMS"
     sudo dpkg -r linux-headers-$installVersion-generic linux-headers-$installVersion linux-image-unsigned-$installVersion-generic linux-modules-$installVersion-generic
     exit 1
@@ -169,8 +174,8 @@ listKernels() {
 
 clearFiles() {
   cd /tmp/kernel-notify
-  echo "$1"
-  read -ra ARR <<< $1
+  echo "$@"
+  read -ra ARR <<< $@
   echo "ARRAY LENGTH: ${#ARR[@]}"
   echo "ARRAY: ${ARR[@]}"
   for i in "${ARR[@]}"; do
@@ -185,6 +190,7 @@ clearFiles() {
   else
     echo "/tmp/kernel-notify not removed as it is in use"
   fi
+  cd ../
 }
 
 checkDpkg() {
