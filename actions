@@ -125,7 +125,6 @@ installKernel() {
       filename="${filename##*/}"
       installList="$installList $filename"
     done
-    echo "Install list: $installList"
     clearFiles "$installList CHECKSUMS"
     sudo dpkg -r linux-headers-$installVersion-generic linux-headers-$installVersion linux-image-unsigned-$installVersion-generic linux-modules-$installVersion-generic
     exit 1
@@ -176,8 +175,6 @@ clearFiles() {
   cd /tmp/kernel-notify
   echo "$@"
   read -ra ARR <<< $@
-  echo "ARRAY LENGTH: ${#ARR[@]}"
-  echo "ARRAY: ${ARR[@]}"
   for i in "${ARR[@]}"; do
     if [ -f "$i" ]; then
       rm $i
