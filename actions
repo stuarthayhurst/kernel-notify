@@ -126,7 +126,7 @@ installKernel() {
       installList="$installList $filename"
     done
     clearFiles "$installList CHECKSUMS"
-    sudo dpkg -r linux-headers-$installVersion-generic linux-headers-$installVersion linux-image-unsigned-$installVersion-generic linux-modules-$installVersion-generic
+    sudo dpkg -r linux-headers-$installVersion-$installVersionShort-generic linux-headers-$installVersion-$installVersionShort linux-image-unsigned-$installVersion-$installVersionShort-generic linux-modules-$installVersion-$installVersionShort-generic
     exit 1
   fi
 }
