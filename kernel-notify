@@ -211,16 +211,6 @@ if [ "$latestVersion" -le "99" ]; then
   latestVersion=$(echo "$latestVersion""0")
 fi
 
-if [ "$latestVersion" -ne "${currVersion//.}" ]; then
-  if [ "$autoupdate" -ne "0" ]; then
-    echo "" && echo "Auto-update is enabled, updating kernel"
-    sleep 5
-    pkexec kernel-notify -aa
-  else
-    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
-  fi
-fi
-
 latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   echo "" && echo "Program outdated, v$latestProgVer is available" 
@@ -230,6 +220,16 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     pkexec kernel-notify -au
   else
     sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
+  fi
+fi
+
+if [ "$latestVersion" -ne "${currVersion//.}" ]; then
+  if [ "$autoupdate" -ne "0" ]; then
+    echo "" && echo "Auto-update is enabled, updating kernel"
+    sleep 5
+    pkexec kernel-notify -aa
+  else
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
   fi
 fi
 
