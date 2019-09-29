@@ -119,7 +119,7 @@ installKernel() {
       installList="$installList $filename"
     done
     clearFiles "$installList CHECKSUMS"
-    sudo dpkg -r linux-headers-$installVersion-$installVersionShort-generic linux-headers-$installVersion-$installVersionShort linux-image-unsigned-$installVersion-$installVersionShort-generic linux-modules-$installVersion-$installVersionShort-generic
+    sudo dpkg -r linux-headers-$installVersion-$installVersionShort linux-headers-$installVersion-$installVersionShort-generic linux-modules-$installVersion-$installVersionShort-generic linux-image-unsigned-$installVersion-$installVersionShort-generic
     exit 1
   fi
 }
@@ -145,7 +145,7 @@ removeKernel() {
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
     DELSTR="$DELSTR $i"
-    REMOVESTR="$REMOVESTR linux-headers-$i-generic linux-headers-$i linux-image-unsigned-$i-generic linux-modules-$i-generic"
+    REMOVESTR="$REMOVESTR linux-headers-$i linux-headers-$i-generic linux-modules-$i-generic linux-image-unsigned-$i-generic"
   done
   read -r -p "Are you sure you want to remove kernel(s):$DELSTR? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
