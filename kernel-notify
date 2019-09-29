@@ -164,7 +164,7 @@ if [ "$latestVersion" == "" ]; then
   sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
   latestVersion="x.x.x"
   if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
-    echo "Likely a network error, action cancelled"
+    echo "Likely a network issue, action cancelled"
     exit
   fi
 else
