@@ -6,6 +6,6 @@ Hidden=false
 NoDisplay=false
 Icon=/usr/share/kernel-notify/icon.png
 X-GNOME-Autostart-enabled=true
-Name=Kernel Update Notifier
+Name=Kernel Updater
 Comment=Notifies the user of kernel updates
 Keywords=kernel; system; update; updater
