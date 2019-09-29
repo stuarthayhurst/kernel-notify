@@ -166,7 +166,7 @@ installPackage() {
 
   if [ -d "/etc/xdg/autostart" ]; then
     sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-  else
+  fi
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
   sudo cp config /usr/share/kernel-notify/config
