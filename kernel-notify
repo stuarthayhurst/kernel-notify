@@ -128,6 +128,20 @@ automaticFeatures() {
   esac
 }
 
+zenityNotify() {
+  currVersion=$(uname -r | sed 's/-.*/ /g')
+  latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+  if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
+  zenity --info \
+    --window-icon="/usr/share/kernel-notify/icon.png" \
+    --title="Kernel Updater" \
+    --text="No updates available" \
+    --width=200 \
+    --height=50
+  fi
+
+}
+
 mute() {
   echo "Muting kernel-notify:"
   editConfig "-c" "muted" "1"
@@ -161,6 +175,7 @@ latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'
 if [ "$latestVersion" == "" ]; then
   sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
   latestVersion="x.x.x"
+  sendNotification "Network error" "An error occured while checking latest version"
   if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
     echo "Likely a network issue, action cancelled"
     exit
@@ -188,10 +203,10 @@ else
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;
+    -zw) zenityNotify; exit;;
     *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
   esac; shift; done
 fi
-
 
 currVersion=$(uname -r | sed 's/-.*/ /g')
 latestVersionFull=$latestVersion
