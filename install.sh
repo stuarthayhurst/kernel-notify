@@ -2,27 +2,23 @@
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
 uninstall() {
-  PS3='Make your choice: '
-  options=("Yes" "No")
-  select opt in "${options[@]}"
-  do
-      case $opt in
-          "Yes")
-              echo "Uninstalling:"
-              if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-                sudo rm /etc/xdg/autostart/kernel-notify.desktop
-              fi
-              sudo rm /usr/bin/kernel-notify
-              sudo rm -rf /usr/share/kernel-notify
-              echo "Done"
-              break
-              ;;
-          "No")
-              exit
-              ;;
-          *) echo "invalid option $REPLY";;
-      esac
-  done
+  read -r -p "Are you sure you want to uninstall? [y/N] " response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    echo "Uninstalling:"
+    if dpkg -s kernel-notify | grep Status |grep -q installed; then
+      checkDpkg
+      sudo dpkg -r kernel-notify
+      exit
+    else
+      if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+        sudo rm /etc/xdg/autostart/kernel-notify.desktop
+      fi
+      sudo rm /usr/bin/kernel-notify
+      sudo rm -rf /usr/share/kernel-notify
+      echo "Done"
+      exit
+    fi
+  fi
 }
 
 buildPackage() {
