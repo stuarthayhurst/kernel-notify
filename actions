@@ -3,13 +3,6 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
-if [ "$1" == "-i" ]; then
-  if [ "$3" != "" ]; then
-    latestVersionFull=$3
-    latestVersion=${latestVersionFull//.}
-  fi
-fi
-
 installKernel() {
   if [ "$automatic" -ne "1" ]; then
     echo "Enter a kernel version to install, leave blank to use selected kernel ($latestVersionFull):"
@@ -64,7 +57,7 @@ installKernel() {
     exit
   fi
 
-  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
+  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
 
   ( echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
   if [ ! -d "/tmp/kernel-notify" ]; then
@@ -209,9 +202,6 @@ checkDpkg() {
   echo "Done"
 }
 
-if [[ "$2" == "" ]]; then
-  latestVersionFull="x.x.x"
-fi
 
 if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
@@ -220,9 +210,15 @@ if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
   fi
 fi
 
+if [ "$1" == "-i" ] && [ "$3" != "" ]; then
+  latestVersionFull=$3
+  latestVersion=${latestVersionFull//.}
+  automatic="1"
+fi
+
 if [ "$4" == "-a" ]; then
   automatic="1"
-else
+elif [ "$automatic" == "" ]; then
   automatic="0"
 fi
 
