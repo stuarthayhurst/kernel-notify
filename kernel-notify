@@ -38,13 +38,8 @@ editConfig() {
 source $workDir/config
 cd $workDir
 
-if [ "$test" == "0" ]; then
-  if [ ! -d /etc/xdg/autostart/ ]; then
+if [ "$test" == "0" ] && [ ! -d /etc/xdg/autostart/ ]; then
     echo "Autostart directory not found, program will not automatically start"
-  elif [ ! -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    echo "Autostart file not found, creating"
-    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-  fi
 fi
 
 checkDpkg() {
