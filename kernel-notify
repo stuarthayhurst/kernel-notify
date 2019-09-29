@@ -82,6 +82,9 @@ uninstall() {
       if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
         sudo rm /etc/xdg/autostart/kernel-notify.desktop
       fi
+      if [ -f /usr/share/applications/kernel-notify.desktop ]; then
+        sudo rm /usr/share/applications/kernel-notify.desktop
+      fi
       sudo rm /usr/bin/kernel-notify
       sudo rm -rf /usr/share/kernel-notify
       echo "Done"
