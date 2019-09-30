@@ -2,3 +2,4 @@ test.*
 debian.deb
 kernel-notify-*
 notifications
+icon.xcf
