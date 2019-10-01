@@ -59,6 +59,12 @@ installKernel() {
 
   declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort""_$installVersion-$installVersionShort.$kernelDate""_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.$kernelDate""_$(dpkg --print-architecture).deb")
 
+  display=$(ps -u $(id -u) -o pid= | \
+    while read pid; do
+      cat /proc/$pid/environ 2>/dev/null | tr '\0' '\n' | grep '^DISPLAY=:'
+    done | grep -o ':[0-9]*' | sort -u)
+  user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
+
   ( echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
   if [ ! -d "/tmp/kernel-notify" ]; then
     mkdir /tmp/kernel-notify
@@ -104,12 +110,13 @@ installKernel() {
   echo "Done, reboot for the update to take effect" 1>&2
 
   clearFiles "$installList CHECKSUMS") |
-  zenity --progress --auto-close \
+  sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --progress --auto-close \
     --window-icon="/usr/share/kernel-notify/icon.png" \
     --title="Kernel Updater" \
     --text="Starting update..." \
     --width=400 \
     --height=100 \
+    --display=$display \
     --percentage=0
 
   if [ "$?" == "1" ]; then
