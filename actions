@@ -88,7 +88,7 @@ installKernel() {
   echo "# Downloading & verifying checksums..."
   curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
   echo "90"
-  if ! shasum --ignore-missing -c CHECKSUMS 1>&2; then
+  if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
     echo "Downloaded kernel checksum invalid" 1>&2
     clearFiles "$installList CHECKSUMS"
   fi
