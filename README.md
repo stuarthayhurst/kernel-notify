@@ -45,18 +45,18 @@
    * -m  | --mute          : Mute the program on login and exit
 
 ## Dependencies:
- - Debian:
-  * curl
-  * gawk & sed
-  * psmisc & policykit-1
+ - ### Debian:
+   * curl
+   * gawk & sed
+   * psmisc & policykit-1
 
- - Optional:
-  * zenity
-  * libnotify4 (Notifications)
+ - ### Optional:
+   * zenity
+   * libnotify4 (Notifications)
 
- - Build:
-  * dpkg (Used in package building and program + kernel installation / removal)
-  * libnotify-dev & libgtk-3-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
+ - ### Build:
+   * dpkg (Used in package building and program + kernel installation / removal)
+   * libnotify-dev & libgtk-3-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
