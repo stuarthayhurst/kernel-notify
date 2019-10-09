@@ -46,7 +46,6 @@ buildPackage() {
   chmod -v +x actions
   chmod -v +x updater
   chmod -v +x kernel-notify
-  chmod -v +x updater
 
   if which dpkg > /dev/null 2>&1; then
     debianPath="package/debian/usr/share/kernel-notify"
