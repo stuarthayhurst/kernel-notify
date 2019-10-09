@@ -84,7 +84,7 @@ buildPackage() {
 }
 
 buildNotifications() {
-  if g++ notifications.cc -o notifications `pkg-config --cflags gtk+-3.0 --libs libnotify`; then
+  if g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
     echo "g++: built notifications"
   else
     echo "g++: failed to build notifications"
@@ -141,12 +141,6 @@ checkBuildDeps() {
     echo "libnotify-dev found"
   else
     echo "libnotify-dev not installed, exiting"
-    exit
-  fi
-  if ls /usr/include/gtk-3.0/gtk/gtk.h > /dev/null 2>&1; then
-    echo "libgtk-3-dev found"
-  else
-    echo "libgtk-3-dev not installed, exiting"
     exit
   fi
 }

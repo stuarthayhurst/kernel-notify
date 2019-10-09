@@ -1,5 +1,4 @@
 #include <libnotify/notify.h>
-#include <gtk/gtk.h>
 #include <iostream>
 
 int action_triggered = 0;
@@ -21,8 +20,9 @@ void callback_mute(NotifyNotification* n, char* action, gpointer user_data) {
 }
 
 int main(int argc, char * argv[] ) {
+    GMainLoop *loop;
     GError *error = NULL;
-    gtk_init(&argc, &argv);
+    loop = g_main_loop_new(nullptr, FALSE);
     notify_init("Basics");
     NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
@@ -34,7 +34,7 @@ int main(int argc, char * argv[] ) {
          NOTIFY_ACTION_CALLBACK(callback_update_program),
          NULL,
          NULL);
-    } else if (argv[4] == std::string("kernel")){
+    } else if (argv[4] == std::string("kernel")) {
       notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
       notify_notification_add_action (n,
         "action_update",
@@ -64,9 +64,13 @@ int main(int argc, char * argv[] ) {
         std::cerr << "Closed" << std::endl;
         action_triggered = 1;
       }
-      gtk_main_iteration_do(FALSE);
+      if(action_triggered == 1) {
+        g_main_loop_quit(loop);
+      }
+      g_main_context_iteration(g_main_loop_get_context(loop), TRUE);
     }
-    g_object_unref(G_OBJECT(n));
+    std::cerr << "Run" << std::endl;
+    g_main_loop_unref(loop);
     notify_uninit();
     return 0;
 }
