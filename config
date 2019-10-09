@@ -1,7 +1,5 @@
 #Use -m to mute and -um to unmute
 muted="0"
-#1 for minor and 2 for patch version checking
-detail=""
 #Automatically update the kernel and program
 autoupdate="0"
 #How many kernels should be installed before notifying users how to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
