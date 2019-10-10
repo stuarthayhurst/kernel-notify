@@ -4,16 +4,15 @@
  - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
  - GitHub Link: https://github.com/Dragon8oy/kernel-notify
  - The master branch is usually unstable, refer to the releases page for stable releases
- - 'kernel-notify -l' is know to fail on a Raspberry Pi / Raspbian
 
 ## Installation:
  * Run `./install.sh`
  - ### OR:
- * Run `./install.sh -b`
- * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
+   * Run `./install.sh -b`
+   * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
  - ### OR:
- * Download the latest deb from the Releases page
- * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
+   * Download the latest deb from the Releases page
+   * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
 ## Packaging:
  * Run `./install.sh -b`
@@ -73,3 +72,6 @@
   * muted="0/1" - This value shouldn't be editied, use -m to mute and -um to unmute
   * autoupdate="0/1" - Set to 0 to ask before updates, set to 1 to automatically update when the program is run
   * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
+
+## License
+ * GNU GENERAL PUBLIC LICENSE (v3)
