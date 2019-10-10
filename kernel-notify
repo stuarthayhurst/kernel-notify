@@ -163,7 +163,12 @@ sendNotification() {
         cat /proc/$pid/environ 2>/dev/null | tr '\0' '\n' | grep '^DISPLAY=:'
       done | grep -o ':[0-9]*' | sort -u)
     user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
-    if ! sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" > /dev/null 2>&1 &
+    if [ "$3" == "kernel" ] || [ "$3" == "program" ] || [ "$4" == "critical" ]; then
+      if [ "$priority" == "critical" ]; then
+        critical="true"
+      fi
+    fi
+    if ! sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" "$critical" > /dev/null 2>&1 &
     then
       echo "$1, $2"
     fi
