@@ -125,8 +125,7 @@ checkDeps() {
   if which zenity > /dev/null 2>&1; then
     echo "Zenity found"
   else
-    echo "Zenity not installed, exiting"
-    exit
+    echo "Zenity not installed, it is required for graphical menus"
   fi
 }
 
