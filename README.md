@@ -56,7 +56,7 @@
 
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)
-   * libnotify-dev & libgtk-3-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
+   * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
