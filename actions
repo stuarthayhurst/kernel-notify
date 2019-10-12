@@ -155,6 +155,10 @@ removeKernel() {
       echo "'$i' is not in the correct format"
       exit
     fi
+    if [ $i == $(uname -r | sed 's/-generic/ /g') ]; then
+      echo "Removing the booted kernel is not allowed"
+      exit
+    fi
     DELSTR="$DELSTR $i"
     REMOVESTR="$REMOVESTR linux-headers-$i linux-headers-$i-generic linux-modules-$i-generic linux-image-unsigned-$i-generic"
   done
