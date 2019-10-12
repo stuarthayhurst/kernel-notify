@@ -22,7 +22,7 @@ checkDpkg() {
     sleep 1
     ((i=i+1))
   done
-  echo "Done"
+  sleep 2; checkDpkg
 }
 
 checkFiles() {
