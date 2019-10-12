@@ -203,6 +203,10 @@ clearFiles() {
 }
 
 checkDpkg() {
+  checkLock; sleep 2; checkLock
+  echo "Done"
+}
+checkLock() {
   i=0
   tput sc
   echo "Checking dpkg lock..."
@@ -218,7 +222,6 @@ checkDpkg() {
     sleep 1
     ((i=i+1))
   done
-  sleep 2; checkDpkg
 }
 
 
