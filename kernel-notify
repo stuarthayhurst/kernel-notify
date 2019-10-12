@@ -2,6 +2,7 @@
 workDir="/usr/share/kernel-notify"
 iconPath="$workDir/icon.png"
 version="5.5.1"
+checkver="0"
 test="0"
 
 testMode() {
@@ -175,18 +176,28 @@ sendNotification() {
   fi
 }
 
-echo -n "Checking latest version..."
-latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
-if [ "$latestVersion" == "" ]; then
-  sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
-  latestVersion="x.x.x"
-  sendNotification "Network error" "An error occured while checking latest version"
-  if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
-    echo "Likely a network issue, action cancelled"
-    exit
+for i in $@; do
+  for argument in $(echo "-r --remove-kernel -a --add-kernel -t --test -aa -zw"); do
+    if [ "$i" == "$argument" ]; then
+      checkver="1"
+    fi
+  done
+done
+
+if [ "$checkver" == "1" ] || [[ "$@" == "" ]]; then
+  echo -n "Checking latest version..."
+  latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+  if [ "$latestVersion" == "" ]; then
+    sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
+    latestVersion="x.x.x"
+    sendNotification "Network error" "An error occured while checking latest version"
+    if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
+      echo "Likely a network issue, action cancelled"
+      exit
+    fi
+  else
+    echo ""
   fi
-else
-  echo ""
 fi
 
 read -ra args <<< $@
