@@ -162,6 +162,10 @@ removeKernel() {
 }
 
 listKernels() {
+  if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+    echo "Raspbian / Raspberry Pis are not supported"
+    return
+  fi
   echo "Currently installed kernels:"
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
