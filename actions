@@ -142,7 +142,7 @@ removeKernel() {
     echo "Currently installed kernels:"
     printf "$KERNELS\n" |cat -n
     echo "The config is set to keep $maxkernelcount kernels before notifying users"
-    echo "Please enter the kernels or numbers you want to remove: (x.x.x-xx): "
+    echo "Please enter the kernels or numbers you want to remove: (x.x.x-xXxXxX): "
     read DELVERSION
   fi
   DELVERSION=${DELVERSION//,/ }
@@ -150,6 +150,10 @@ removeKernel() {
   for i in "${ARR[@]}"; do
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
+    fi
+    if [[ $(expr length "$i") -ne 12 ]]; then
+      echo "'$i' is not in the correct format"
+      exit
     fi
     DELSTR="$DELSTR $i"
     REMOVESTR="$REMOVESTR linux-headers-$i linux-headers-$i-generic linux-modules-$i-generic linux-image-unsigned-$i-generic"
