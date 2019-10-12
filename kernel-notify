@@ -44,10 +44,6 @@ if [ "$test" == "0" ] && [ ! -d /etc/xdg/autostart/ ]; then
 fi
 
 checkDpkg() {
-  checkLock; sleep 2; checkLock
-  echo "Done"
-}
-checkLock() {
   i=0
   tput sc
   echo "Checking dpkg lock..."
@@ -63,6 +59,7 @@ checkLock() {
     sleep 1
     ((i=i+1))
   done
+  echo "Done"
 }
 
 uninstall() {
