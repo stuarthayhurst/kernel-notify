@@ -113,7 +113,6 @@ installKernel() {
     --text="Starting update..." \
     --width=400 \
     --height=100 \
-    --display=$display \
     --percentage=0
 
   if [ "$?" == "1" ]; then
