@@ -127,6 +127,12 @@ checkDeps() {
   else
     echo "Zenity not installed, it is required for graphical menus"
   fi
+  if which w > /dev/null 2>&1; then
+    echo "Procps found"
+  else
+    echo "Procps not installed, exiting"
+    exit
+  fi
 }
 
 checkBuildDeps() {

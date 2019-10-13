@@ -44,10 +44,11 @@
    * -m  | --mute          : Mute the program on login and exit
 
 ## Dependencies:
- - ### Debian:
+ - ### Required:
    * curl
    * gawk & sed
-   * psmisc & policykit-1
+   * psmisc & procps
+   * policykit-1
 
  - ### Optional:
    * zenity
