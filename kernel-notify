@@ -5,6 +5,9 @@ version="5.5.1"
 checkver="0"
 test="0"
 
+display=$(w -oush | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
+user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
+
 testMode() {
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
   echo "Running kernel-notify in $workDir/"
@@ -133,7 +136,7 @@ zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
-  zenity --info \
+  sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --info \
     --window-icon="/usr/share/kernel-notify/icon.png" \
     --title="Kernel Updater" \
     --text="No updates available" \
@@ -159,11 +162,6 @@ sendNotification() {
   if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
   else
-    display=$(ps -u $(id -u) -o pid= | \
-      while read pid; do
-        cat /proc/$pid/environ 2>/dev/null | tr '\0' '\n' | grep '^DISPLAY=:'
-      done | grep -o ':[0-9]*' | sort -u)
-    user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
     if [ "$3" == "kernel" ] || [ "$3" == "program" ] || [ "$4" == "critical" ]; then
       if [ "$priority" == "critical" ]; then
         critical="true"
