@@ -6,7 +6,7 @@ checkver="0"
 test="0"
 
 display=$(w -oush | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
-user=$(who | grep '('$display')' | awk '{print $1}' | head -n 1)
+user=$(w | grep $display | awk '{print $1}' | head -n 1)
 
 testMode() {
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -136,6 +136,7 @@ zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
+  #Replace with zenityWindow()
   sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --info \
     --window-icon="/usr/share/kernel-notify/icon.png" \
     --title="Kernel Updater" \
@@ -143,7 +144,31 @@ zenityNotify() {
     --width=200 \
     --height=50
   fi
+  #If there is an error code, send a notification about zenity
+}
 
+#Copy to actions and use with kernel installs
+zenityWindow() {
+  #Check zenity is installed
+  if ! which zenity > /dev/null 2>&1; then
+    echo "Zenity not installed, it is required for graphical menus"
+    #Exit if no code can be run
+  fi
+
+  #Check that a display exists
+  if [ $display == "" ]; then
+    echo "No display available"
+    #Exit if no code can be run
+  else
+    echo $display  
+  fi
+  exit
+  #If it's good to go and code can be run, launch zenity with root support and arguments and pipe code through it
+  #If it's good to go and code can't be run, launch zenity with root support and arguments
+  #If it isn't good to go and code can be run, run the code
+  #If it isn't good to go and code can't be run, exit with an error code
+
+  #Set a variable with zenity output if it had input
 }
 
 mute() {
@@ -261,3 +286,4 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
 fi
 
 checkKernelCount
+zenityWindow "zenityNotify"
