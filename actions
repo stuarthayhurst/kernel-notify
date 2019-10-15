@@ -170,6 +170,9 @@ listKernels() {
     echo "Raspbian / Raspberry Pis are not supported"
     return
   fi
+  if [ ! -d "/boot" ]; then
+    return
+  fi
   echo "Currently installed kernels:"
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
