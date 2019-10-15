@@ -113,6 +113,9 @@ listConfig() {
 }
 
 checkKernelCount() {
+  if [ ! -d "/boot" ]; then
+    return
+  fi
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
@@ -286,4 +289,3 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
 fi
 
 checkKernelCount
-zenityWindow "zenityNotify"
