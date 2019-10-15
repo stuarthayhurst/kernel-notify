@@ -128,16 +128,10 @@ installKernel() {
 }
 
 removeKernel() {
-  KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS// /\n}
   if [ "$(echo "$@")" != "" ]; then
     DELVERSION="$@"
   else
-    echo "Currently installed kernels:"
-    printf "$KERNELS\n" |cat -n
-    echo "The config is set to keep $maxkernelcount kernels before notifying users"
+    listKernels
     echo "Please enter the kernels or numbers you want to remove: (x.x.x-xXxXxX): "
     read DELVERSION
   fi
@@ -147,11 +141,11 @@ removeKernel() {
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
-    if [[ $(expr length "$i") -ne 12 ]]; then
+    if [[ $(expr length "$i") -ne 12 ]] || [ "$i" == "" ]; then
       echo "'$i' is not in the correct format"
       exit
     fi
-    if [ $i == $(uname -r | sed 's/-generic/ /g') ]; then
+    if [ "$i" == $(uname -r | sed 's/-generic/ /g') ]; then
       echo "Removing the booted kernel is not allowed"
       exit
     fi
@@ -173,11 +167,11 @@ listKernels() {
   if [ ! -d "/boot" ]; then
     return
   fi
-  echo "Currently installed kernels:"
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
   KERNELS=${KERNELS// /\n}
+  echo "Currently installed kernels:"
   printf "$KERNELS\n" |cat -n
   echo "The config is set to keep $maxkernelcount kernels before notifying users"
 }
