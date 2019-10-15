@@ -49,12 +49,12 @@ int main(int argc, char * argv[] ) {
          NOTIFY_ACTION_CALLBACK(callback_mute),
          NULL,
          NULL);
-    } else {
-      action_triggered = 1;
     }
 
     if (argv[6] == std::string("true")) {
       notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
+    } else {
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_NORMAL);
     }
 
     notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
