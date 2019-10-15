@@ -237,7 +237,7 @@ else
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
     -r|--remove-kernel) ./actions -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
-    -l|--list-kernels) ./actions -l $latestVersion $maxkernelcount; exit;;
+    -l|--list-kernels) ./actions -l $latestVersion $maxkernelcount; checkKernelCount; exit;;
     -a|--add-kernel) ./actions -i $latestVersion $2; checkKernelCount; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
