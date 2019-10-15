@@ -54,6 +54,7 @@ buildPackage() {
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
 
     buildNotifications
+    chmod +x notifications
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
@@ -167,6 +168,11 @@ installPackage() {
   if [ -d "/etc/xdg/autostart" ]; then
     sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
   fi
+
+  chmod +x kernel-notify
+  chmod +x notifications
+  chmod +x actions
+  chmod +x updater
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
   sudo cp config /usr/share/kernel-notify/config
