@@ -6,7 +6,7 @@ checkver="0"
 test="0"
 
 display=$(w -oush | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
-user=$(w -oush | grep $display | awk '{print $1}' | head -n 1)
+user=$(w -oush | grep "$display" | awk '{print $1}' | head -n 1)
 
 testMode() {
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
