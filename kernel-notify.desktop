@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Application
-Version=5.5.1
-Exec=kernel-notify
-Hidden=false
-NoDisplay=false
-Icon=/usr/share/kernel-notify/icon.png
-X-GNOME-Autostart-enabled=true
 Name=Kernel Updater
+Exec=kernel-notify
+Version=5.5.1
+Icon=/usr/share/kernel-notify/icon.png
 Comment=Notifies the user of kernel updates
 Keywords=kernel-notify; notify; kernel; system; update; updater
+Categories=Utility;
+X-GNOME-Autostart-enabled=true
+StartupNotify=false
+NoDisplay=false
+Hidden=false
