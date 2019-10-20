@@ -8,4 +8,4 @@ Icon=/usr/share/kernel-notify/icon.png
 X-GNOME-Autostart-enabled=true
 Name=Kernel Updater
 Comment=Notifies the user of kernel updates
-Keywords=kernel; system; update; updater
+Keywords=kernel-notify; notify; kernel; system; update; updater
