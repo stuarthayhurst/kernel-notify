@@ -146,6 +146,7 @@ removeKernel() {
   read -ra ARR <<< $DELVERSION
   for i in "${ARR[@]}"; do
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
+      i=$(expr $i + 1)
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
     if [[ $(expr length "$i") -ne 12 ]] || [ "$i" == "" ]; then
