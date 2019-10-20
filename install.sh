@@ -29,7 +29,7 @@ buildPackage() {
   read newVersion
   checkBuildDeps
   if [[ "$newVersion" == "" ]]; then
-    newVersion=$(cat kernel-notify.desktop | sed -n '3p')
+    newVersion=$(cat kernel-notify.desktop | sed -n '5p')
     newVersion=${newVersion//Version=}
     echo "Building package:"
   fi
