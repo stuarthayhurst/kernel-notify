@@ -176,13 +176,12 @@ installPackage() {
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
   sudo cp config /usr/share/kernel-notify/config
-  sudo cp kernel-notify.desktop /usr/share/applications/kernel-notify.desktop
   sudo cp updater /usr/share/kernel-notify/updater
   sudo cp actions /usr/share/kernel-notify/actions
   sudo mv notifications /usr/share/kernel-notify/notifications
 
-  sudo sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' /usr/share/applications/kernel-notify.desktop > /usr/share/applications/kernel-notify.desktop.temp
-  sudo mv -v /usr/share/applications/kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
+  sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' kernel-notify.desktop > kernel-notify.desktop.temp
+  sudo mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
 
   echo "Installed program files"
 
