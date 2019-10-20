@@ -134,6 +134,7 @@ installKernel() {
 removeKernel() {
   if [ "$(echo "$@")" != "" ]; then
     DELVERSION="$@"
+    listKernels "silent"
   else
     listKernels
     if [ "$?" == "1" ]; then
@@ -181,9 +182,11 @@ listKernels() {
   KERNELS=${KERNELS//vmlinuz}
   KERNELS=${KERNELS//.old}
   KERNELS=${KERNELS// /\n}
-  echo "Currently installed kernels:"
-  printf "$KERNELS" |grep . |cat -n
-  echo "The config is set to keep $maxkernelcount kernels before notifying users"
+  if [ "$1" != "silent" ]; then
+    echo "Currently installed kernels:"
+    printf "$KERNELS" |grep . |cat -n
+    echo "The config is set to keep $maxkernelcount kernels before notifying users"
+  fi
 }
 
 clearFiles() {
