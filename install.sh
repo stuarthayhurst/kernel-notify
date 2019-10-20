@@ -192,8 +192,8 @@ installPackage() {
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Help:"; echo "-h  | --help          : Display this page"; echo "-b  | --build         : Build and prepare the program for release"; echo "-v  | --version       : Display program version"; echo "-ui | --uninstall     : Uninstall the program"; echo "-n  | --notifications : Build the notifications"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -ui|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+  -h|--help) echo "Kernel-notify Copyright (C) 2019 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-b | --build         : Build and prepare the program for release"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-n | --notifications : Build the notifications"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -u|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -b|--build) buildPackage; exit;;
