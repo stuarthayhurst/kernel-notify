@@ -119,8 +119,10 @@ checkKernelCount() {
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS// /\n }
-  read -ra ARR <<< $(echo $KERNELS)
+  KERNELS=${KERNELS//vmlinuz}
+  KERNELS=${KERNELS//.old}
+  KERNELS=${KERNELS// /\n}
+  read -ra ARR <<< $(echo $KERNELS |grep .)
   if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
     sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
     echo "Too many kernels installed, remove kernels to avoid this message, or raise the limit in the config"
@@ -139,39 +141,43 @@ zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
-  #Replace with zenityWindow()
-  sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --info \
-    --window-icon="/usr/share/kernel-notify/icon.png" \
-    --title="Kernel Updater" \
-    --text="No updates available" \
-    --width=200 \
-    --height=50
+  zenityWindow "zenity --info --window-icon='/usr/share/kernel-notify/icon.png' --title='Kernel Updater' --text='No updates available' --width=200 --height=50"
   fi
   #If there is an error code, send a notification about zenity
 }
 
 #Copy to actions and use with kernel installs
 zenityWindow() {
-  #Check zenity is installed
+  zenityIssue="0"
   if ! which zenity > /dev/null 2>&1; then
     echo "Zenity not installed, it is required for graphical menus"
-    #Exit if no code can be run
+    zenityIssue="1"
+    if [ "$2" == "" ]; then
+      return 1
+    fi
   fi
-
-  #Check that a display exists
   if [ $display == "" ]; then
     echo "No display available"
-    #Exit if no code can be run
-  else
-    echo $display  
+    zenityIssue="1"
+    if [ "$2" == "" ]; then
+      return 2
+    fi
   fi
-  exit
-  #If it's good to go and code can be run, launch zenity with root support and arguments and pipe code through it
-  #If it's good to go and code can't be run, launch zenity with root support and arguments
-  #If it isn't good to go and code can be run, run the code
-  #If it isn't good to go and code can't be run, exit with an error code
-
-  #Set a variable with zenity output if it had input
+  #Fix code execution on all of them and test
+  if [ "$zenityIssue" == "0" ] && [ "$2" != "" ]; then #Root support zenity with code
+    echo "No issues, code to run"
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$2" | "$1"
+  elif [ "$zenityIssue" == "0" ] && [ "$2" == "" ]; then #Root support zenity
+    echo "No issues, no code to run $1"
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$1"
+  elif [ "$zenityIssue" == "1" ] && [ "$2" != "" ]; then #Run code
+    echo "Issues, code to run"
+    "$2"
+  else
+    echo "Shouldn't be here"
+    return 3
+  fi
+  #Set a variable with zenity output if it had an input window
 }
 
 mute() {
@@ -231,7 +237,7 @@ if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
   editConfig "$1" "$2" "$3"
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
-    -h|--help) echo "Kernel-notify Copyright (C) 2019 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: kernel-notify [-OPTION] [-OPTION]"; echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
+    -h|--help) echo "Kernel-notify Copyright (C) 2019 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: kernel-notify [-OPTION] [-t | --test]"; echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -u|--update) $workDir/updater; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -i|--uninstall) uninstall; exit;;
