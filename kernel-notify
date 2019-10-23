@@ -141,42 +141,23 @@ zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
-  zenityWindow "zenity --info --window-icon='/usr/share/kernel-notify/icon.png' --title='Kernel Updater' --text='No updates available' --width=200 --height=50"
+  zenityWindow 'zenity --info --window-icon=/usr/share/kernel-notify/icon.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
   fi
-  #If there is an error code, send a notification about zenity
+  if [ "$?" != "0" ]; then
+    sendNotification "Zenity issue detected" "An error occured while running zenity"
+  fi
 }
 
-#Copy to actions and use with kernel installs
 zenityWindow() {
-  zenityIssue="0"
   if ! which zenity > /dev/null 2>&1; then
     echo "Zenity not installed, it is required for graphical menus"
-    zenityIssue="1"
-    if [ "$2" == "" ]; then
-      return 1
-    fi
+    return 1
   fi
   if [ $display == "" ]; then
     echo "No display available"
-    zenityIssue="1"
-    if [ "$2" == "" ]; then
-      return 2
-    fi
+    return 1
   fi
-  #Fix code execution on all of them and test
-  if [ "$zenityIssue" == "0" ] && [ "$2" != "" ]; then #Root support zenity with code
-    echo "No issues, code to run"
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$2" | "$1"
-  elif [ "$zenityIssue" == "0" ] && [ "$2" == "" ]; then #Root support zenity
-    echo "No issues, no code to run $1"
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$1"
-  elif [ "$zenityIssue" == "1" ] && [ "$2" != "" ]; then #Run code
-    echo "Issues, code to run"
-    "$2"
-  else
-    echo "Shouldn't be here"
-    return 3
-  fi
+  sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
   #Set a variable with zenity output if it had an input window
 }
 
