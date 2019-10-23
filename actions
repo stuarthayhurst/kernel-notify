@@ -125,7 +125,6 @@ installKernel() {
   }
 
   if ! zenityWindow; then
-    echo "Zenity not supported"
     dpkgKernelInstall
   else
     dpkgKernelInstall | sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --progress --auto-close \
