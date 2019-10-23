@@ -208,7 +208,6 @@ listKernels() {
 
 clearFiles() {
   cd /tmp/kernel-notify
-  echo "$@"
   read -ra ARR <<< $@
   for i in "${ARR[@]}"; do
     if [ -f "$i" ]; then
