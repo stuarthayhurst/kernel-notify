@@ -15,7 +15,6 @@ zenityWindow() {
     echo "No display available"
     return 1
   fi
-  #Set a variable with zenity output if it had an input window
 }
 
 installKernel() {
