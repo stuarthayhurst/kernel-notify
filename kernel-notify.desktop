@@ -2,7 +2,7 @@
 Type=Application
 Name=Kernel Updater
 Exec=kernel-notify
-Version=5.5.1
+Version=5.6
 Icon=/usr/share/kernel-notify/icon.png
 Comment=Notifies the user of kernel updates
 Keywords=kernel-notify; notify; kernel; system; update; updater
