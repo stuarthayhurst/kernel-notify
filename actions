@@ -164,7 +164,6 @@ removeKernel() {
   read -ra ARR <<< $DELVERSION
   for i in "${ARR[@]}"; do
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
-      i=$(expr $i + 1)
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
     if [[ $(expr length "$i") -ne 12 ]] || [ "$i" == "" ]; then
@@ -199,9 +198,10 @@ listKernels() {
   KERNELS=${KERNELS//vmlinuz}
   KERNELS=${KERNELS//.old}
   KERNELS=${KERNELS// /\n}
+  KERNELS=$(echo "$KERNELS" |grep .)
   if [ "$1" != "silent" ]; then
     echo "Currently installed kernels:"
-    printf "$KERNELS" |grep . |cat -n
+    printf "$KERNELS\n" |cat -n
     echo "The config is set to keep $maxkernelcount kernels before notifying users"
   fi
 }

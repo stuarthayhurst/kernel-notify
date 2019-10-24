@@ -122,10 +122,11 @@ checkKernelCount() {
   KERNELS=${KERNELS//vmlinuz}
   KERNELS=${KERNELS//.old}
   KERNELS=${KERNELS// /\n}
+  KERNELS=$(echo "$KERNELS" |grep .)
   read -ra ARR <<< $(echo $KERNELS |grep .)
   if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
     sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
-    echo "Too many kernels installed, remove kernels to avoid this message, or raise the limit in the config"
+    echo "Remove kernels to avoid this message, or raise the limit in the config"
   fi
 }
 
