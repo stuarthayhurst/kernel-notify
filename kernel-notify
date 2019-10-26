@@ -84,6 +84,12 @@ uninstall() {
       if [ -f /usr/share/applications/kernel-notify.desktop ]; then
         sudo rm /usr/share/applications/kernel-notify.desktop
       fi
+      if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
+        sudo rm /usr/share/man/man1/kernel-notify.1.gz
+      fi
+      if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
+        sudo rm /usr/share/man/man1/kernel-notify.1
+      fi
       sudo rm /usr/bin/kernel-notify
       sudo rm -rf /usr/share/kernel-notify
       echo "Done"

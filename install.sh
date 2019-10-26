@@ -16,6 +16,12 @@ uninstall() {
       if [ -f /usr/share/applications/kernel-notify.desktop ]; then
         sudo rm /usr/share/applications/kernel-notify.desktop
       fi
+      if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
+        sudo rm /usr/share/man/man1/kernel-notify.1.gz
+      fi
+      if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
+        sudo rm /usr/share/man/man1/kernel-notify.1
+      fi
       sudo rm /usr/bin/kernel-notify
       sudo rm -rf /usr/share/kernel-notify
       echo "Done"
@@ -49,18 +55,20 @@ buildPackage() {
 
   if which dpkg > /dev/null 2>&1; then
     debianPath="package/debian/usr/share/kernel-notify"
-    mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications
+    mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications && mkdir -v package/debian/usr/share/man && mkdir -v package/debian/usr/share/man/man1
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
 
     buildNotifications
     chmod +x notifications
+    gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
     cp -v icon.png $debianPath/
     cp -v notifications $debianPath/
     cp -v notifications.cc $debianPath/
+    cp -v docs/kernel-notify.1.gz package/debian/usr/share/man/man1/
     cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
@@ -69,13 +77,8 @@ buildPackage() {
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
-    rm -rfv package/debian/usr/bin/
-    rm -v $debianPath/actions
-    rm -v $debianPath/config
-    rm -v $debianPath/icon.png
     rm -v notifications
-    rm -v $debianPath/notifications
-    rm -v $debianPath/notifications.cc
+    rm -v docs/kernel-notify.1.gz
     rm -rfv package/debian/etc/
     rm -rfv package/debian/usr/
     echo "Done"
@@ -173,6 +176,12 @@ installPackage() {
   chmod +x notifications
   chmod +x actions
   chmod +x updater
+
+  if [ -d "/etc/xdg/autostart" ]; then
+    gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
+    sudo cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
+    rm -v docs/kernel-notify.1.gz
+  fi
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
   sudo cp config /usr/share/kernel-notify/config
