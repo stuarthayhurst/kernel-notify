@@ -9,6 +9,7 @@
   
   **A more detailed description**
    - A detailed description of that the changes bring to the project, how it works and what changed / why
+   - Outline any note-worthy changes here clearly as well, this will make creating release notes easier down the line
   
   **Any other information**
    - List any other relevant information here
