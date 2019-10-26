@@ -3,8 +3,8 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
-display=$(w -oush | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
-user=$(w -oush | grep "$display" | awk '{print $1}' | head -n 1)
+display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
+user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
 
 zenityWindow() {
   if ! which zenity > /dev/null 2>&1; then
