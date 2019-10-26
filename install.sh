@@ -179,7 +179,7 @@ installPackage() {
   chmod +x actions
   chmod +x updater
 
-  if [ -d "/etc/xdg/autostart" ]; then
+  if [ -d "/usr/share/man/man1/" ]; then
     gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
     sudo cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
     rm -v docs/kernel-notify.1.gz
