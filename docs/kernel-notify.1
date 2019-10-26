@@ -1,0 +1,64 @@
+.\" Manpage for kernel-notify.
+.\" Contact stuart.a.hayhurst@gmail.com to correct errors or typos.
+.TH man 1 "26 October 2019" "5.6" "kernel-notify man page"
+.SH NAME
+kernel-notify \- Check for new kernel versions and manage installed kernels
+.SH SYNOPSIS
+kernel-notify [-OPTION] [-t | --test]
+.SH DESCRIPTION
+kernel-notify is a mainly-bash program for checking for the latest kernel and notifying users of updates. kernel-notify can also install, update, list and remove kernels. It features a self-updater for ease-of-use.
+.SH OPTIONS
+
+.B  Program options:
+
+-h, --help
+        Display the help page and exit
+
+-u, --update
+        Update the program and exit
+
+-v, --version
+        Display program version and exit
+
+-i, --uninstall
+        Uninstall the program
+
+-o, --old-config
+        List old and new config values
+
+-c, --config
+        Change / read a config value and exit
+
+.B  Feature options:
+
+-r, --remove-kernel
+        Remove a kernels from a menu and exit
+
+-l, --list-kernels
+        List installed kernels and exit
+
+-a, --add-kernel
+        Install a new kernel and exit
+
+-um, --unmute
+        Unmute the program on login
+
+-m, --mute
+        Mute the program on login
+
+.SH AUTHOR
+Written by Stuart Hayhurst (stuart.a.hayhurst@gmail.com)
+.SH REPORTING BUGS
+Report issues to: <https://github.com/Dragon8oy/kernel-notify/issues>
+.br
+Some bugs may already be known about or fixed in a newer build
+.SH COPYRIGHT
+Kernel-notify Copyright (C) 2019 Stuart Hayhurst
+.br
+This program comes with ABSOLUTELY NO WARRANTY.
+.br
+This is free software; see the source for copying conditions.
+.SH SEE ALSO
+zenity(1), curl(1)
+.br
+GitHub Source: <https://github.com/Dragon8oy/kernel-notify>

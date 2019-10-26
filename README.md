@@ -26,6 +26,7 @@
  * The program sending update notifications can be toggled with `kernel-notify --mute` and `kernel-notify --unmute`
  * The program and kernel can be automatically updated if autoupdate is set to 1 in the config
  * On .deb installation, the package will attempt to rebuild the notifications program if the architecture is not amd64
+ * Man page available with `man kernel-notify`
 
 ## Help:
  - ### Program Help:
