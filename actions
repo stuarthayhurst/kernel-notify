@@ -195,8 +195,7 @@ listKernels() {
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS//vmlinuz}
-  KERNELS=${KERNELS//.old}
+  KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
   if [ "$1" != "silent" ]; then

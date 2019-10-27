@@ -125,8 +125,7 @@ checkKernelCount() {
   KERNELS=$(ls /boot/ | grep vmlinuz)
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
-  KERNELS=${KERNELS//vmlinuz}
-  KERNELS=${KERNELS//.old}
+  KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
   read -ra ARR <<< $(echo $KERNELS |grep .)
