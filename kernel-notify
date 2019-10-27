@@ -119,6 +119,12 @@ listConfig() {
 }
 
 checkKernelCount() {
+  if [ "$1" != "silent" ] && [ "$1" != "alert" ]; then
+    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+      echo "Raspbian / Raspberry Pis are not supported with this feature"
+      return 1
+    fi
+  fi
   if [ ! -d "/boot" ]; then
     return
   fi
@@ -129,9 +135,11 @@ checkKernelCount() {
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
   read -ra ARR <<< $(echo $KERNELS |grep .)
-  if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
-    sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
-    echo "Remove kernels to avoid this message, or raise the limit in the config"
+  if [ "$1" != "silent" ]; then
+    if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
+      sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
+      echo "Remove kernels to avoid this message, or raise the limit in the config"
+    fi
   fi
 }
 
@@ -271,7 +279,10 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
   fi
 fi
 
-if [ "$latestVersion" -ne "${currVersion//.}" ]; then
+checkKernelCount "silent"
+if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" 2>&1; then
+  echo "Latest version installed, reboot to take effect"
+elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
     sleep 5
@@ -281,4 +292,4 @@ if [ "$latestVersion" -ne "${currVersion//.}" ]; then
   fi
 fi
 
-checkKernelCount
+checkKernelCount "alert"
