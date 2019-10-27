@@ -7,10 +7,9 @@
 
 ## Installation:
  * Run `./install.sh`
- - ### OR:
-   * Run `./install.sh -b`
-   * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
- - ### OR:
+ - ### OR: (Debian - Master)
+   * Run `./install.sh -d`
+ - ### OR: (Debian - Release)
    * Download the latest deb from the Releases page
    * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
