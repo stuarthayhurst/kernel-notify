@@ -198,6 +198,9 @@ listKernels() {
   KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
+  if [ "$KERNELS" = "" ]; then
+    KERNELS="Error while looking for kernels"
+  fi
   if [ "$1" != "silent" ]; then
     echo "Currently installed kernels:"
     printf "$KERNELS\n" |cat -n
