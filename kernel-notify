@@ -174,7 +174,6 @@ zenityNotify() {
     progOutdated="0"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
-    echo "Zenity"
     zenityWindow 'zenity --info --window-icon=/usr/share/kernel-notify/icon.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
     exit
   fi
