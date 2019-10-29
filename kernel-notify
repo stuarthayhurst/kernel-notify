@@ -278,7 +278,7 @@ if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
 fi
 
 checkKernelCount "silent"
-if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" 2>&1; then
+if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
   echo "Latest version installed, reboot to take effect"
 elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
   if [ "$autoupdate" -ne "0" ]; then
