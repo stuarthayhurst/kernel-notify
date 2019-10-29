@@ -196,10 +196,8 @@ sendNotification() {
         critical="true"
       fi
     fi
-    if ! sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" "$critical" > /dev/null 2>&1 &
-    then
-      echo "$1, $2"
-    fi
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" "$critical" > /dev/null 2>&1 &
+    echo "$1, $2"
   fi
 }
 
