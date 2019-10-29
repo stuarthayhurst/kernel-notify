@@ -180,6 +180,7 @@ zenityNotify() {
   if [ "$?" != "0" ]; then
     sendNotification "Zenity issue detected" "An error occured while running zenity"
   fi
+  latestVersion="$latestVersionFull"
 }
 
 zenityWindow() {
