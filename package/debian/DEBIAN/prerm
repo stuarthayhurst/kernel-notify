@@ -8,4 +8,10 @@ if [ $1 = "remove" ]; then
     sudo rm /usr/share/kernel-notify/config.old
     echo "Removed config file"
   fi
+  if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
+    sudo rm /usr/share/man/man1/kernel-notify.1.gz
+  fi
+  if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
+    sudo rm /usr/share/man/man1/kernel-notify.1
+  fi
 fi

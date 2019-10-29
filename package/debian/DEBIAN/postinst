@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Rebuild notifications
 if [ ! "$(arch)" == "x86_64" ]; then
   if which g++ > /dev/null 2>&1 && dpkg -s libnotify-dev | grep Status |grep -q installed; then
     if sudo g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications `pkg-config --cflags --libs libnotify`; then
