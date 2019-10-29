@@ -43,8 +43,6 @@ buildPackage() {
   mv -v kernel-notify.temp kernel-notify
   sed 's|.*Version=.*|Version='$newVersion'|' kernel-notify.desktop > kernel-notify.desktop.temp
   mv -v kernel-notify.desktop.temp kernel-notify.desktop
-  sed 's|.*version=".*|version="'$newVersion'"|' updater > updater.temp
-  mv -v updater.temp updater
   sed 's|Version: .*|Version: '$newVersion'" "kernel-notify man page"|' docs/kernel-notify.1 > docs/kernel-notify.1.temp
   mv -v docs/kernel-notify.1.temp docs/kernel-notify.1
 
