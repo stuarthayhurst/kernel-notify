@@ -167,7 +167,7 @@ zenityWindow() {
     echo "Zenity not installed, it is required for graphical menus"
     return 1
   fi
-  if [ $display == "" ]; then
+  if [ "$display" == "" ]; then
     echo "No display available"
     return 1
   fi
