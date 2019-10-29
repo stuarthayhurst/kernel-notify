@@ -13,11 +13,10 @@ if [ ! "$(arch)" == "x86_64" ]; then
       sudo rm /usr/share/kernel-notify/notifications
     fi
   else
-      echo "    ---------------    "
-    echo "  g++ and libnotify-dev are required to build the notifications for this system"
+    echo "    ---------------    "
     echo "  ATTENTION: g++ and libnotify-bin need to be installed to produce notifications"
     echo "  ATTENTION: Rebuild with 'g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
-      echo "    ---------------    "
+    echo "    ---------------    "
     sudo rm /usr/share/kernel-notify/notifications
   fi
 fi
