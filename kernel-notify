@@ -153,8 +153,30 @@ automaticFeatures() {
 zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-  if [ "${latestProgVer//.}" -eq "${version//.}" ] && [ "${latestVersion//.}" -eq "${currVersion//.}" ]; then
-  zenityWindow 'zenity --info --window-icon=/usr/share/kernel-notify/icon.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
+  latestVersionFull=$latestVersion
+  latestVersion=$(echo "${latestVersion//.}")
+  checkKernelCount "silent"
+  if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
+    echo "Latest kernel version installed, reboot to take effect"
+    kernelOutdated="0"
+  elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
+    echo "Latest kernel not installed"
+    kernelOutdated="1"
+  else
+    echo "Latest kernel version installed"
+    kernelOutdated="0"
+  fi
+  if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
+    echo "Program outdated"
+    progOutdated="1"
+  else
+    echo "Program in date"
+    progOutdated="0"
+  fi
+  if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
+    echo "Zenity"
+    zenityWindow 'zenity --info --window-icon=/usr/share/kernel-notify/icon.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
+    exit
   fi
   if [ "$?" != "0" ]; then
     sendNotification "Zenity issue detected" "An error occured while running zenity"
@@ -244,7 +266,7 @@ else
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;
-    -zw) zenityNotify; exit;;
+    -zw) zenityNotify;;
     *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
   esac; shift; done
 fi
@@ -279,7 +301,7 @@ fi
 
 checkKernelCount "silent"
 if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
-  echo "Latest version installed, reboot to take effect"
+  echo "Latest kernel version installed, reboot to take effect"
 elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
   if [ "$autoupdate" -ne "0" ]; then
     echo "" && echo "Auto-update is enabled, updating kernel"
