@@ -31,8 +31,8 @@ editConfig() {
       echo "Config:" && echo ""
       cat $workDir/config | grep $2
     else
-      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > $workDir/config.temp
-      sudo mv $workDir/config.temp $workDir/config
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > /tmp/kernel-config.temp
+      sudo mv /tmp/kernel-config.temp $workDir/config
       echo "Saved new config"
     fi
   fi
