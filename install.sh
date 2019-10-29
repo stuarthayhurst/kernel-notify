@@ -202,7 +202,16 @@ installPackage() {
 
   echo "Installed program files"
 
-  kernel-notify -o
+  if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old > /dev/null; then
+    echo "Updating config values..."
+    configs=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |sed 's|=.*||')
+    for i in $configs; do
+      configValue=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |grep "$i" |sed 's|.*=||')
+      configValue=${configValue//'"'}
+      sudo kernel-notify -c "$i" "$configValue"
+    done
+    echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
+  fi
   kernel-notify -v
 
   echo "Successfully installed / updated program"

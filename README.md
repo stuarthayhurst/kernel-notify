@@ -21,8 +21,8 @@
 
 ## Updating:
  * Run `kernel-notify -u`
- - WARNING: Config will be reset after an update
- - If the config has changed, the old and new configs will be displayed during the update so you can re-apply configs, or can be displayed any time with `kernel-notify -o`
+ - WARNING: kernel-notify will attempt to update the config after an update
+ - If the config breaks, the old config can be viewed with `kernel-notify -o`
 
 ## Notes:
  * The program sending update notifications can be toggled with `kernel-notify --mute` and `kernel-notify --unmute`
