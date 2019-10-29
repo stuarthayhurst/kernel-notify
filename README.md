@@ -5,6 +5,9 @@
  - GitHub Link: https://github.com/Dragon8oy/kernel-notify
  - The master branch is usually unstable, refer to the releases page for stable releases
 
+## Code of Conduct and Contributing:
+ - Read 'CODE\_OF\_CONDUCT.md' and 'CONTRIBUTING.md' in 'docs/' for information
+
 ## Installation:
  * Run `./install.sh`
  - ### OR: (Debian - Master)
