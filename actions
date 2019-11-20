@@ -162,11 +162,15 @@ removeKernel() {
   fi
   DELVERSION=${DELVERSION//,/ }
   read -ra ARR <<< $DELVERSION
+  if [[ "${ARR[@]}" -eq 0 ]]; then
+      echo "Either no kernel was entered, or an error occured"
+      exit
+  fi
   for i in "${ARR[@]}"; do
     if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
       i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
     fi
-    if [[ $(expr length "$i") -ne 12 ]] || [ "$i" == "" ]; then
+    if [[ ! $(expr length "$i") -eq 12 ]] && [[ ! $(expr length "$i") -eq 13 ]] && [[ ! $(expr length "$i") -eq 14 ]]; then
       echo "'$i' is not in the correct format"
       exit
     fi
