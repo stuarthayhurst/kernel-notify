@@ -68,6 +68,7 @@ buildPackage() {
     cp -v actions $debianPath/
     cp -v config $debianPath/
     cp -v icon.png $debianPath/
+    cp -v app-icon.png $debianPath/
     cp -v notifications $debianPath/
     cp -v notifications.cc $debianPath/
     cp -v docs/kernel-notify.1.gz package/debian/usr/share/man/man1/
@@ -212,6 +213,7 @@ installPackage() {
   fi
 
   sudo cp icon.png /usr/share/kernel-notify/icon.png
+  sudo cp app-icon.png /usr/share/kernel-notify/app-icon.png
   sudo cp config /usr/share/kernel-notify/config
   sudo cp updater /usr/share/kernel-notify/updater
   sudo cp actions /usr/share/kernel-notify/actions
