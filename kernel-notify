@@ -120,7 +120,6 @@ listConfig() {
 checkKernelCount() {
   if [ "$1" != "silent" ] && [ "$1" != "alert" ]; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      echo "Raspbian / Raspberry Pis are not supported with this feature"
       return 1
     fi
   fi
