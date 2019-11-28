@@ -170,7 +170,7 @@ zenityNotify() {
     echo "Program outdated"
     progOutdated="1"
   else
-    echo "Program in date"
+    echo "Program up-to-date"
     progOutdated="0"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
@@ -275,9 +275,6 @@ currVersion=$(uname -r | sed 's/-.*/ /g')
 latestVersionFull=$latestVersion
 currVersionFull=$currVersion
 
-echo 'Latest Kernel: '$latestVersionFull
-echo 'Current Kernel: '$currVersionFull
-
 if [ "$latestVersion" == "x.x.x" ]; then
   exit 1
 fi
@@ -285,7 +282,11 @@ latestVersion=$(echo "${latestVersion//.}")
 
 if [ "$latestVersion" -le "99" ]; then
   latestVersion=$(echo "$latestVersion""0")
+  latestVersionFull=$(echo "$latestVersionFull"".0")
 fi
+
+echo "Latest Kernel: $latestVersionFull"
+echo "Current Kernel: $currVersionFull"
 
 latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
