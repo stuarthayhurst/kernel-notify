@@ -48,6 +48,7 @@
 
 ## Dependencies:
  - ### Required:
+   * coreutils (8.25+)
    * curl
    * gawk & sed
    * psmisc & procps
@@ -60,8 +61,8 @@
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)
    * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
-   * sed (Update versions)
    * optipng (Compress icons)
+   * sed (Update versions)
 
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
