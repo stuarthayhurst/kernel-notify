@@ -10,7 +10,7 @@
 
 ## Installation:
  * Run `./install.sh`
- - ### OR: (Debian - Master)
+ - ### OR: (Debian - Source)
    * Run `./install.sh -d`
  - ### OR: (Debian - Release)
    * Download the latest deb from the Releases page
