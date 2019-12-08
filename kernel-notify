@@ -155,22 +155,27 @@ zenityNotify() {
   latestVersionFull=$latestVersion
   latestVersion=$(echo "${latestVersion//.}")
   checkKernelCount "silent"
-  if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
-    echo "Latest kernel version installed, reboot to take effect"
-    kernelOutdated="0"
-  elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
-    echo "Latest kernel not installed"
-    kernelOutdated="1"
+  if [ "$latestVersion" != "xxx" ] || [ "$latestProgVer" != "" ]; then
+    if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
+      echo "Latest kernel version installed, reboot to take effect"
+      kernelOutdated="0"
+    elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
+      echo "Latest kernel not installed"
+      kernelOutdated="1"
+    else
+      echo "Latest kernel version installed"
+      kernelOutdated="0"
+    fi
+    if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
+      echo "Program outdated"
+      progOutdated="1"
+    else
+      echo "Program up-to-date"
+      progOutdated="0"
+    fi
   else
-    echo "Latest kernel version installed"
-    kernelOutdated="0"
-  fi
-  if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
-    echo "Program outdated"
-    progOutdated="1"
-  else
-    echo "Program up-to-date"
     progOutdated="0"
+    kernelOutdated="0"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
     zenityWindow 'zenity --info --window-icon=/usr/share/kernel-notify/icon.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
