@@ -40,13 +40,16 @@ buildPackage() {
     newVersion=${newVersion//Version=}
     echo "Building package:"
   fi
+  read -r -p "Update manpage date? [y/N] " response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    manDate=$(date "+%B %Y")
+    sed "s|Built: .*|Built: \"$manDate\" \"Version: $newVersion\" \"kernel-notify man page\"|" docs/kernel-notify.1 > docs/kernel-notify.1.temp
+    mv -v docs/kernel-notify.1.temp docs/kernel-notify.1
+  fi
   sed "s|.*version=\".*|version=\"$newVersion\"|" kernel-notify > kernel-notify.temp
   mv -v kernel-notify.temp kernel-notify
   sed "s|.*Version=.*|Version=$newVersion|" kernel-notify.desktop > kernel-notify.desktop.temp
   mv -v kernel-notify.desktop.temp kernel-notify.desktop
-  manDate=$(date "+%B %Y")
-  sed "s|Built: .*|Built: \"$manDate\" \"Version: $newVersion\" \"kernel-notify man page\"|" docs/kernel-notify.1 > docs/kernel-notify.1.temp
-  mv -v docs/kernel-notify.1.temp docs/kernel-notify.1
 
   sed "s|.*Version:.*|Version: $newVersion|" package/debian/DEBIAN/control > package/debian/DEBIAN/control.temp
   mv -v package/debian/DEBIAN/control.temp package/debian/DEBIAN/control
