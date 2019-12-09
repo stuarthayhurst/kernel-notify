@@ -162,7 +162,7 @@ removeKernel() {
   fi
   DELVERSION=${DELVERSION//,/ }
   read -ra ARR <<< $DELVERSION
-  if [[ "${ARR[@]}" -eq 0 ]]; then
+  if [[ "${ARR[@]}" == "0" ]]; then
       echo "Either no kernel was entered, or an error occured"
       exit
   fi
