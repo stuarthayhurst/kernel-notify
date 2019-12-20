@@ -176,6 +176,7 @@ checkBuildDeps() {
 compressIcons() {
   if [ -f "icon.png" ]; then
     optipng icon.png
+    cp icon.png docs/icon.png
   else
     echo "icon.png not found, skipping optimisation"
   fi
