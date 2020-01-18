@@ -13,14 +13,10 @@ testMode() {
   echo "Running kernel-notify in $workDir/"
   test="1"
 }
-case "$1" in
-  "-t") testMode;;
-  "--test") testMode;;
-esac
-case "$2" in
-  "-t") testMode;;
-  "--test") testMode;;
-esac
+
+if [[ "$@" == *"-t"* ]]; then
+  testMode
+fi
 
 editConfig() {
   if [ "$2" == "" ]; then
