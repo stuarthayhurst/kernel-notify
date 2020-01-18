@@ -6,28 +6,52 @@ uninstall() {
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     echo "Uninstalling:"
     if dpkg -s kernel-notify | grep Status |grep -q installed; then
+      echo "Kernel-notify installed via .deb, removing"
       checkDpkg
       sudo dpkg -r kernel-notify
       exit
     else
       if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-        sudo rm /etc/xdg/autostart/kernel-notify.desktop
+        sudo rm -v /etc/xdg/autostart/kernel-notify.desktop
       fi
       if [ -f /usr/share/applications/kernel-notify.desktop ]; then
-        sudo rm /usr/share/applications/kernel-notify.desktop
+        sudo rm -v /usr/share/applications/kernel-notify.desktop
       fi
       if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-        sudo rm /usr/share/man/man1/kernel-notify.1.gz
+        sudo rm -v /usr/share/man/man1/kernel-notify.1.gz
       fi
       if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-        sudo rm /usr/share/man/man1/kernel-notify.1
+        sudo rm -v /usr/share/man/man1/kernel-notify.1
       fi
-      sudo rm /usr/bin/kernel-notify
-      sudo rm -rf /usr/share/kernel-notify
+      if [ -f /usr/bin/kernel-notify ]; then
+        sudo rm -v /usr/bin/kernel-notify
+      fi
+      if [ -f /usr/share/kernel-notify ]; then
+        sudo rm -rfv /usr/share/kernel-notify
+      fi
       echo "Done"
       exit
     fi
   fi
+}
+
+checkDpkg() {
+  i=0
+  tput sc
+  echo "Checking dpkg lock..."
+  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+    case $(($i % 4)) in
+      0 ) j="-" ;;
+      1 ) j="\\" ;;
+      2 ) j="|" ;;
+      3 ) j="/" ;;
+    esac
+    tput rc
+    echo -en "\r[$j] Waiting for other software managers to finish... "
+    sleep 1
+    ((i=i+1))
+  done
+  echo "Done"
 }
 
 buildPackage() {
@@ -245,7 +269,7 @@ installPackage() {
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2019 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress     : Compress icons"; echo "-n | --notifications : Build the notifications"; echo ""; echo "Program written by: Dragon8oy"; exit;;
-  -u|--uninstall) echo "Are you sure you want to uninstall?"; echo "Use 'apt-get remove kernel-notify' for .deb installs"; uninstall; exit;;
+  -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
