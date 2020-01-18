@@ -61,7 +61,6 @@ checkDpkg() {
 buildPackage() {
   echo "Enter the new version number: (Leave blank to only build package)"
   read newVersion
-  checkBuildDeps
   compressIcons
   if [[ "$newVersion" == "" ]]; then
     newVersion=$(cat kernel-notify.desktop | sed -n '5p')
@@ -216,7 +215,6 @@ compressIcons() {
 }
 
 installPackage() {
-  checkBuildDeps
   if [[ "$USER" != "root" ]]; then
     echo "Insufficient permission, please rerun with root"
   else
@@ -281,10 +279,11 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -n|--notifications) buildNotifications; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
-  -d|--debian) buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
-  -b|--build) buildPackage; exit;;
+  -d|--debian) checkBuildDeps; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
+  -b|--build) checkBuildDeps; buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
 checkDeps
+checkBuildDeps
 installPackage
