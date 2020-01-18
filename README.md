@@ -84,3 +84,4 @@
 
 ## License
  * GNU GENERAL PUBLIC LICENSE (v3)
+ * Kernel-notify Copyright (C) 2020 Stuart Hayhurst
