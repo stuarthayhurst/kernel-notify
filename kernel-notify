@@ -281,8 +281,8 @@ fi
 latestVersion=$(echo "${latestVersion//.}")
 
 if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
-  latestVersion=$(echo "$latestVersion""0")
-  latestVersionFull=$(echo "$latestVersionFull"".0")
+  latestVersion=$(echo "${latestVersion}0")
+  latestVersionFull=$(echo "${latestVersionFull}.0")
 fi
 
 echo "Latest Kernel: $latestVersionFull"
