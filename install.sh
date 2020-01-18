@@ -2,35 +2,39 @@
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
 uninstall() {
-  read -r -p "Are you sure you want to uninstall? [y/N] " response
-  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    echo "Uninstalling:"
-    if dpkg -s kernel-notify | grep Status |grep -q installed; then
-      echo "Kernel-notify installed via .deb, removing"
-      checkDpkg
-      sudo dpkg -r kernel-notify
-      exit
-    else
-      if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-        sudo rm -v /etc/xdg/autostart/kernel-notify.desktop
+  if [[ "$USER" != "root" ]]; then
+    echo "Insufficient permission, please rerun with root"
+  else
+    read -r -p "Are you sure you want to uninstall? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      echo "Uninstalling:"
+      if dpkg -s kernel-notify | grep Status |grep -q installed; then
+        echo "Kernel-notify installed via .deb, removing"
+        checkDpkg
+        dpkg -r kernel-notify
+        exit
+      else
+        if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+          rm -v /etc/xdg/autostart/kernel-notify.desktop
+        fi
+        if [ -f /usr/share/applications/kernel-notify.desktop ]; then
+          rm -v /usr/share/applications/kernel-notify.desktop
+        fi
+        if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
+          rm -v /usr/share/man/man1/kernel-notify.1.gz
+        fi
+        if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
+          rm -v /usr/share/man/man1/kernel-notify.1
+        fi
+        if [ -f /usr/bin/kernel-notify ]; then
+          rm -v /usr/bin/kernel-notify
+        fi
+        if [ -f /usr/share/kernel-notify ]; then
+          rm -rfv /usr/share/kernel-notify
+        fi
+        echo "Done"
+        exit
       fi
-      if [ -f /usr/share/applications/kernel-notify.desktop ]; then
-        sudo rm -v /usr/share/applications/kernel-notify.desktop
-      fi
-      if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-        sudo rm -v /usr/share/man/man1/kernel-notify.1.gz
-      fi
-      if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-        sudo rm -v /usr/share/man/man1/kernel-notify.1
-      fi
-      if [ -f /usr/bin/kernel-notify ]; then
-        sudo rm -v /usr/bin/kernel-notify
-      fi
-      if [ -f /usr/share/kernel-notify ]; then
-        sudo rm -rfv /usr/share/kernel-notify
-      fi
-      echo "Done"
-      exit
     fi
   fi
 }
@@ -39,7 +43,7 @@ checkDpkg() {
   i=0
   tput sc
   echo "Checking dpkg lock..."
-  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+  while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
     case $(($i % 4)) in
       0 ) j="-" ;;
       1 ) j="\\" ;;
@@ -213,58 +217,62 @@ compressIcons() {
 
 installPackage() {
   checkBuildDeps
-  sudo cp kernel-notify /usr/bin/kernel-notify
-  if [ -d "/usr/share/kernel-notify" ]; then
-    echo "/usr/share/kernel-notify was found, not creating it"
-    sudo mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
+  if [[ "$USER" != "root" ]]; then
+    echo "Insufficient permission, please rerun with root"
   else
-    echo "/usr/share/kernel-notify not found, creating it"
-    sudo mkdir /usr/share/kernel-notify
-    echo "Created directory"
+    cp kernel-notify /usr/bin/kernel-notify
+    if [ -d "/usr/share/kernel-notify" ]; then
+      echo "/usr/share/kernel-notify was found, not creating it"
+      mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
+    else
+      echo "/usr/share/kernel-notify not found, creating it"
+      mkdir /usr/share/kernel-notify
+      echo "Created directory"
+    fi
+
+    buildNotifications
+
+    if [ -d "/etc/xdg/autostart" ]; then
+      cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+    fi
+
+    chmod +x kernel-notify
+    chmod +x notifications
+    chmod +x actions
+    chmod +x updater
+
+    if [ -d "/usr/share/man/man1/" ]; then
+      gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
+      cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
+      rm -v docs/kernel-notify.1.gz
+    fi
+
+    cp icon.png /usr/share/kernel-notify/icon.png
+    cp app-icon.png /usr/share/kernel-notify/app-icon.png
+    cp config /usr/share/kernel-notify/config
+    cp updater /usr/share/kernel-notify/updater
+    cp actions /usr/share/kernel-notify/actions
+    mv notifications /usr/share/kernel-notify/notifications
+
+    sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' kernel-notify.desktop > kernel-notify.desktop.temp
+    mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
+
+    echo "Installed program files"
+
+    if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old > /dev/null; then
+      echo "Updating config values..."
+      configs=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |sed 's|=.*||')
+      for i in $configs; do
+        configValue=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |grep "$i" |sed 's|.*=||')
+        configValue=${configValue//'"'}
+        kernel-notify -c "$i" "$configValue"
+      done
+      echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
+    fi
+    kernel-notify -v
+
+    echo "Successfully installed / updated program"
   fi
-
-  buildNotifications
-
-  if [ -d "/etc/xdg/autostart" ]; then
-    sudo cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-  fi
-
-  chmod +x kernel-notify
-  chmod +x notifications
-  chmod +x actions
-  chmod +x updater
-
-  if [ -d "/usr/share/man/man1/" ]; then
-    gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
-    sudo cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
-    rm -v docs/kernel-notify.1.gz
-  fi
-
-  sudo cp icon.png /usr/share/kernel-notify/icon.png
-  sudo cp app-icon.png /usr/share/kernel-notify/app-icon.png
-  sudo cp config /usr/share/kernel-notify/config
-  sudo cp updater /usr/share/kernel-notify/updater
-  sudo cp actions /usr/share/kernel-notify/actions
-  sudo mv notifications /usr/share/kernel-notify/notifications
-
-  sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' kernel-notify.desktop > kernel-notify.desktop.temp
-  sudo mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
-
-  echo "Installed program files"
-
-  if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old > /dev/null; then
-    echo "Updating config values..."
-    configs=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |sed 's|=.*||')
-    for i in $configs; do
-      configValue=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |grep "$i" |sed 's|.*=||')
-      configValue=${configValue//'"'}
-      sudo kernel-notify -c "$i" "$configValue"
-    done
-    echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
-  fi
-  kernel-notify -v
-
-  echo "Successfully installed / updated program"
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
@@ -273,7 +281,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -n|--notifications) buildNotifications; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
-  -d|--debian) buildPackage; echo "Installing package:"; sudo dpkg -i kernel-notify-"$newVersion"_all.deb; exit;;
+  -d|--debian) buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
   -b|--build) buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
