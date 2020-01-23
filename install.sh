@@ -270,9 +270,10 @@ installPackage() {
 }
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress     : Compress icons"; echo "-n | --notifications : Build the notifications"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
+  -D|--dependencies) checkDeps; checkBuildDeps; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -d|--debian) checkBuildDeps; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
