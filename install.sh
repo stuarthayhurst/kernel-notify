@@ -93,7 +93,7 @@ buildPackage() {
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
     cp -v updater $debianPath/
-    sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
+    sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
 
@@ -243,7 +243,7 @@ installPackage() {
     cp uninstall-list /usr/share/kernel-notify/uninstall-list
     mv notifications /usr/share/kernel-notify/notifications
 
-    sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' kernel-notify.desktop > kernel-notify.desktop.temp
+    sed "s|.*Exec=.*|Exec=kernel-notify -zw|" kernel-notify.desktop > kernel-notify.desktop.temp
     mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
 
     echo "Installed program files"
