@@ -14,26 +14,13 @@ uninstall() {
         dpkg -r kernel-notify
         exit
       else
-        if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-          rm -v /etc/xdg/autostart/kernel-notify.desktop
+        uninstallList=$(cat ./uninstall-list)
+        for filename in $uninstallList; do
+          if [ -f $filename ]; then
+            rm -rfv "$filename"
         fi
-        if [ -f /usr/share/applications/kernel-notify.desktop ]; then
-          rm -v /usr/share/applications/kernel-notify.desktop
-        fi
-        if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-          rm -v /usr/share/man/man1/kernel-notify.1.gz
-        fi
-        if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-          rm -v /usr/share/man/man1/kernel-notify.1
-        fi
-        if [ -f /usr/bin/kernel-notify ]; then
-          rm -v /usr/bin/kernel-notify
-        fi
-        if [ -f /usr/share/kernel-notify ]; then
-          rm -rfv /usr/share/kernel-notify
-        fi
-        echo "Done"
-        exit
+        done
+        echo "Done"; exit
       fi
     fi
   fi
@@ -253,6 +240,7 @@ installPackage() {
     cp config /usr/share/kernel-notify/config
     cp updater /usr/share/kernel-notify/updater
     cp actions /usr/share/kernel-notify/actions
+    cp uninstall-list /usr/share/kernel-notify/uninstall-list
     mv notifications /usr/share/kernel-notify/notifications
 
     sed 's|.*Exec=.*|Exec='"kernel-notify -zw"'|' kernel-notify.desktop > kernel-notify.desktop.temp

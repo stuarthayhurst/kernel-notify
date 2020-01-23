@@ -61,34 +61,26 @@ checkDpkg() {
 }
 
 uninstall() {
-  if [ "$test" == "1" ]; then
-    echo "Uninstalling not supported in test mode"
-    exit
-  fi
-  read -r -p "Are you sure you want to uninstall kernel-notify? [y/N] " response
-  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    echo "Uninstalling:"
-    if dpkg -s kernel-notify | grep Status |grep -q installed; then
-      checkDpkg
-      cd /; sudo dpkg -r kernel-notify
-      exit
-    else
-      if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-        sudo rm /etc/xdg/autostart/kernel-notify.desktop
+  if [[ "$USER" != "root" ]]; then
+    echo "  ATTENTION: Insufficient permission, please rerun with root"
+  else
+    read -r -p "Are you sure you want to uninstall? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      echo "Uninstalling:"
+      if dpkg -s kernel-notify | grep Status |grep -q installed; then
+        echo "Kernel-notify installed via .deb, removing"
+        checkDpkg
+        dpkg -r kernel-notify
+        exit
+      else
+        uninstallList=$(cat ./uninstall-list)
+        for filename in $uninstallList; do
+          if [ -f $filename ]; then
+            rm -rfv "$filename"
+        fi
+        done
+        echo "Done"; exit
       fi
-      if [ -f /usr/share/applications/kernel-notify.desktop ]; then
-        sudo rm /usr/share/applications/kernel-notify.desktop
-      fi
-      if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-        sudo rm /usr/share/man/man1/kernel-notify.1.gz
-      fi
-      if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-        sudo rm /usr/share/man/man1/kernel-notify.1
-      fi
-      sudo rm /usr/bin/kernel-notify
-      sudo rm -rf /usr/share/kernel-notify
-      echo "Done"
-      exit
     fi
   fi
 }
