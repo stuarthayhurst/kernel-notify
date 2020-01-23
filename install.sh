@@ -3,7 +3,7 @@ cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
 uninstall() {
   if [[ "$USER" != "root" ]]; then
-    echo "Insufficient permission, please rerun with root"
+    echo "  ATTENTION: Insufficient permission, please rerun with root"
   else
     read -r -p "Are you sure you want to uninstall? [y/N] " response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
@@ -130,6 +130,7 @@ buildNotifications() {
 }
 
 checkDeps() {
+  echo "-------------------------------"; echo ""
   if which curl > /dev/null 2>&1; then
     echo "Curl found"
   else
@@ -171,6 +172,7 @@ checkDeps() {
     echo "Procps not installed, exiting"
     exit
   fi
+  echo ""; echo "-------------------------------"; echo ""
 }
 
 checkBuildDeps() {
@@ -198,6 +200,7 @@ checkBuildDeps() {
     echo "Optipng not installed, exiting"
     exit
   fi
+  echo ""; echo "-------------------------------"; echo ""
 }
 
 compressIcons() {
@@ -216,7 +219,7 @@ compressIcons() {
 
 installPackage() {
   if [[ "$USER" != "root" ]]; then
-    echo "Insufficient permission, please rerun with root"
+    echo "  ATTENTION: Insufficient permission, please rerun with root"
   else
     cp kernel-notify /usr/bin/kernel-notify
     if [ -d "/usr/share/kernel-notify" ]; then
@@ -225,7 +228,7 @@ installPackage() {
     else
       echo "/usr/share/kernel-notify not found, creating it"
       mkdir /usr/share/kernel-notify
-      echo "Created directory"
+      echo "Created program directory"
     fi
 
     buildNotifications
@@ -267,9 +270,14 @@ installPackage() {
       done
       echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
     fi
-    kernel-notify -v
 
-    echo "Successfully installed / updated program"
+    echo ""; echo "-------------------------------"; echo ""
+
+    if kernel-notify -v; then
+      echo ""; echo "Successfully installed / updated kernel-notify"
+    else
+      echo ""; echo "  ATTENTION: Installing / updating kernel-notify failed"
+    fi
   fi
 }
 
