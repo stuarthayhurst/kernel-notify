@@ -1,6 +1,121 @@
 #!/bin/bash
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 
+checkDpkg() {
+  i=0
+  tput sc
+  echo "Checking dpkg lock..."
+  while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+    case $(($i % 4)) in
+      0 ) j="-" ;;
+      1 ) j="\\" ;;
+      2 ) j="|" ;;
+      3 ) j="/" ;;
+    esac
+    tput rc
+    echo -en "\r[$j] Waiting for other software managers to finish... "
+    sleep 1
+    ((i=i+1))
+  done
+  echo "Done"
+}
+
+buildNotifications() {
+  if g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
+    echo "g++: built notifications"
+  else
+    echo "g++: failed to build notifications"
+  fi
+}
+
+compressIcons() {
+  if [ -f "icon.png" ]; then
+    optipng icon.png
+    cp icon.png docs/icon.png
+  else
+    echo "icon.png not found, skipping optimisation"
+  fi
+  if [ -f "app-icon.png" ]; then
+    optipng app-icon.png
+  else
+    echo "app-icon.png not found, skipping optimisation"
+  fi
+}
+
+checkBuildDeps() {
+  if which g++ > /dev/null 2>&1; then
+    echo "G++ found"
+  else
+    echo "G++ not installed, exiting"
+    exit
+  fi
+  if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
+    echo "libnotify-dev found"
+  else
+    echo "libnotify-dev not installed, exiting"
+    exit
+  fi
+  if which sed > /dev/null 2>&1; then
+    echo "Sed found"
+  else
+    echo "Sed not installed, exiting"
+    exit
+  fi
+  if which optipng > /dev/null 2>&1; then
+    echo "Optipng found"
+  else
+    echo "Optipng not installed, exiting"
+    exit
+  fi
+  echo ""; echo "-------------------------------"; echo ""
+}
+
+checkDeps() {
+  echo "-------------------------------"; echo ""
+  if which curl > /dev/null 2>&1; then
+    echo "Curl found"
+  else
+    echo "Curl not installed, exiting"
+    exit
+  fi
+  if which pkexec > /dev/null 2>&1; then
+    echo "Policykit-1 found"
+  else
+    echo "Policykit-1 not installed, exiting"
+    exit
+  fi
+  if which sed > /dev/null 2>&1; then
+    echo "Sed found"
+  else
+    echo "Sed not installed, exiting"
+    exit
+  fi
+  if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
+    echo "Awk found"
+  else
+    echo "Awk not installed, exiting"
+    exit
+  fi
+  if which fuser > /dev/null 2>&1; then
+    echo "Psmisc found"
+  else
+    echo "Psmisc not installed, exiting"
+    exit
+  fi
+  if which zenity > /dev/null 2>&1; then
+    echo "Zenity found"
+  else
+    echo "Zenity not installed, it is required for graphical menus"
+  fi
+  if which w > /dev/null 2>&1; then
+    echo "Procps found"
+  else
+    echo "Procps not installed, exiting"
+    exit
+  fi
+  echo ""; echo "-------------------------------"; echo ""
+}
+
 uninstall() {
   if [[ "$USER" != "root" ]]; then
     echo "  ATTENTION: Insufficient permission, please rerun with root"
@@ -24,25 +139,6 @@ uninstall() {
       fi
     fi
   fi
-}
-
-checkDpkg() {
-  i=0
-  tput sc
-  echo "Checking dpkg lock..."
-  while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
-      0 ) j="-" ;;
-      1 ) j="\\" ;;
-      2 ) j="|" ;;
-      3 ) j="/" ;;
-    esac
-    tput rc
-    echo -en "\r[$j] Waiting for other software managers to finish... "
-    sleep 1
-    ((i=i+1))
-  done
-  echo "Done"
 }
 
 buildPackage() {
@@ -105,102 +201,6 @@ buildPackage() {
   else
     echo "Building Debian packages not supported on this system"
     exit
-  fi
-}
-
-buildNotifications() {
-  if g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
-    echo "g++: built notifications"
-  else
-    echo "g++: failed to build notifications"
-  fi
-}
-
-checkDeps() {
-  echo "-------------------------------"; echo ""
-  if which curl > /dev/null 2>&1; then
-    echo "Curl found"
-  else
-    echo "Curl not installed, exiting"
-    exit
-  fi
-  if which pkexec > /dev/null 2>&1; then
-    echo "Policykit-1 found"
-  else
-    echo "Policykit-1 not installed, exiting"
-    exit
-  fi
-  if which sed > /dev/null 2>&1; then
-    echo "Sed found"
-  else
-    echo "Sed not installed, exiting"
-    exit
-  fi
-  if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
-    echo "Awk found"
-  else
-    echo "Awk not installed, exiting"
-    exit
-  fi
-  if which fuser > /dev/null 2>&1; then
-    echo "Psmisc found"
-  else
-    echo "Psmisc not installed, exiting"
-    exit
-  fi
-  if which zenity > /dev/null 2>&1; then
-    echo "Zenity found"
-  else
-    echo "Zenity not installed, it is required for graphical menus"
-  fi
-  if which w > /dev/null 2>&1; then
-    echo "Procps found"
-  else
-    echo "Procps not installed, exiting"
-    exit
-  fi
-  echo ""; echo "-------------------------------"; echo ""
-}
-
-checkBuildDeps() {
-  if which g++ > /dev/null 2>&1; then
-    echo "G++ found"
-  else
-    echo "G++ not installed, exiting"
-    exit
-  fi
-  if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
-    echo "libnotify-dev found"
-  else
-    echo "libnotify-dev not installed, exiting"
-    exit
-  fi
-  if which sed > /dev/null 2>&1; then
-    echo "Sed found"
-  else
-    echo "Sed not installed, exiting"
-    exit
-  fi
-  if which optipng > /dev/null 2>&1; then
-    echo "Optipng found"
-  else
-    echo "Optipng not installed, exiting"
-    exit
-  fi
-  echo ""; echo "-------------------------------"; echo ""
-}
-
-compressIcons() {
-  if [ -f "icon.png" ]; then
-    optipng icon.png
-    cp icon.png docs/icon.png
-  else
-    echo "icon.png not found, skipping optimisation"
-  fi
-  if [ -f "app-icon.png" ]; then
-    optipng app-icon.png
-  else
-    echo "app-icon.png not found, skipping optimisation"
   fi
 }
 
