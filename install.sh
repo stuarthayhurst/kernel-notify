@@ -223,7 +223,7 @@ installPackage() {
   else
     cp kernel-notify /usr/bin/kernel-notify
     if [ -d "/usr/share/kernel-notify" ]; then
-      echo "/usr/share/kernel-notify was found, not creating it"
+      echo "/usr/share/kernel-notify found"
       mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
     else
       echo "/usr/share/kernel-notify not found, creating it"
