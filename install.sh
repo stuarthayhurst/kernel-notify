@@ -42,78 +42,77 @@ compressIcons() {
   fi
 }
 
-checkBuildDeps() {
-  if which g++ > /dev/null 2>&1; then
-    echo "G++ found"
-  else
-    echo "G++ not installed, exiting"
-    exit
-  fi
-  if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
-    echo "libnotify-dev found"
-  else
-    echo "libnotify-dev not installed, exiting"
-    exit
-  fi
-  if which sed > /dev/null 2>&1; then
-    echo "Sed found"
-  else
-    echo "Sed not installed, exiting"
-    exit
-  fi
-  if which optipng > /dev/null 2>&1; then
-    echo "Optipng found"
-  else
-    echo "Optipng not installed, exiting"
-    exit
-  fi
-  echo ""; echo "-------------------------------"; echo ""
-}
-
 checkDeps() {
-  echo "-------------------------------"; echo ""
-  if which curl > /dev/null 2>&1; then
-    echo "Curl found"
-  else
-    echo "Curl not installed, exiting"
-    exit
+  if [[ "$1" == *"p"* ]]; then
+    echo "-------------------------------"; echo ""
+
+    deps=("curl pkexec sed awk")
+    for i in $deps; do
+      if which $i > /dev/null 2>&1; then
+        echo "${i^} found"
+      else
+        echo "${i^} not found"
+        missingProgDeps="$missingProgDeps \n${i^}"
+      fi
+    done
+
+    if which fuser > /dev/null 2>&1; then
+      echo "Psmisc found"
+    else
+      echo "Psmisc not found"
+      missingProgDeps="$missingProgDeps \nPsmisc"
+    fi
+
+    if which w > /dev/null 2>&1; then
+      echo "Procps found"
+    else
+      echo "Procps not found"
+      missingProgDeps="$missingProgDeps \nProcps"
+    fi
+
+    if which zenity > /dev/null 2>&1; then
+      echo "Zenity found"
+    else
+      echo "Zenity not found, required for graphical menus"
+    fi
+    echo ""; echo "-------------------------------"; echo ""
   fi
-  if which pkexec > /dev/null 2>&1; then
-    echo "Policykit-1 found"
-  else
-    echo "Policykit-1 not installed, exiting"
-    exit
+
+  if [[ "$1" == *"b"* ]]; then
+    buildDeps=("g++ sed optipng")
+    for i in $buildDeps; do
+      if which $i > /dev/null 2>&1; then
+        echo "${i^} found"
+      else
+        echo "${i^} not found"
+        missingBuildDeps="$missingBuildDeps \n${i^}"
+      fi
+    done
+
+    if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
+      echo "libnotify-dev found"
+    else
+      echo "libnotify-dev not found"
+      missingBuildDeps="$missingBuildDeps \nlibnotify-dev"
+    fi
+
+    echo ""; echo "-------------------------------"; echo ""
   fi
-  if which sed > /dev/null 2>&1; then
-    echo "Sed found"
-  else
-    echo "Sed not installed, exiting"
-    exit
-  fi
-  if which awk > /dev/null 2>&1 || which gawk > /dev/null 2>&1; then
-    echo "Awk found"
-  else
-    echo "Awk not installed, exiting"
-    exit
-  fi
-  if which fuser > /dev/null 2>&1; then
-    echo "Psmisc found"
-  else
-    echo "Psmisc not installed, exiting"
-    exit
-  fi
-  if which zenity > /dev/null 2>&1; then
-    echo "Zenity found"
-  else
-    echo "Zenity not installed, it is required for graphical menus"
-  fi
-  if which w > /dev/null 2>&1; then
-    echo "Procps found"
-  else
-    echo "Procps not installed, exiting"
-    exit
-  fi
-  echo ""; echo "-------------------------------"; echo ""
+
+    if [[ "$missingProgDeps" != "" ]] || [[ "$missingBuildDeps" != "" ]]; then
+      if [[ "$missingBuildDeps" != "" ]]; then
+        echo -e "Build dependencies:$missingBuildDeps\n"
+        if [[ "$missingProgDeps" == "" ]]; then
+          echo -e "Weren't found, exiting"
+          echo ""; echo "-------------------------------"; echo ""
+        fi
+      fi
+      if [[ "$missingProgDeps" != "" ]]; then
+        echo -e "Program dependencies:$missingProgDeps \n\nWeren't found, exiting"
+        echo ""; echo "-------------------------------"; echo ""
+      fi
+      exit
+    fi
 }
 
 uninstall() {
@@ -273,14 +272,13 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
-  -D|--dependencies) checkDeps; checkBuildDeps; exit;;
+  -D|--dependencies) checkDeps "pb"; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
-  -d|--debian) checkBuildDeps; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
-  -b|--build) checkBuildDeps; buildPackage; exit;;
+  -d|--debian) checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
+  -b|--build) checkDeps "b"; buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-checkDeps
-checkBuildDeps
+checkDeps "pb"
 installPackage
