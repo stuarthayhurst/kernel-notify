@@ -128,7 +128,7 @@ installKernel() {
     dpkgKernelInstall
   else
     dpkgKernelInstall | sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --progress --auto-close \
-    --window-icon="/usr/share/kernel-notify/icon.png" \
+    --window-icon="/usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png" \
     --title="Kernel Updater" \
     --text="Starting update..." \
     --width=400 \
