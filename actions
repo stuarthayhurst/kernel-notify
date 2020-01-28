@@ -250,7 +250,7 @@ checkDpkg() {
 }
 
 
-if [ "$1" != "-l" ] || [ "$1" != "--list" ]; then
+if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
     echo "Kernel installation / removal is not supported on this system"
     exit
