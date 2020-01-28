@@ -241,10 +241,16 @@ installPackage() {
     cp uninstall-list /usr/share/kernel-notify/uninstall-list
     mv notifications /usr/share/kernel-notify/notifications
 
-    cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.png
-    cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.png
-    cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
-    cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
+    if [ -d "/usr/share/icons/hicolor/scalable/apps/" ]; then
+      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.png
+      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.png
+    fi
+    if [ -d "/usr/share/icons/hicolor/512x512/apps/" ]; then
+      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
+    fi
+    if [ -d "/usr/share/icons/hicolor/256x256/apps/" ]; then
+      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
+    fi
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" kernel-notify.desktop > kernel-notify.desktop.temp
     mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
