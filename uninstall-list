@@ -1,4 +1,8 @@
 /etc/xdg/autostart/kernel-notify.desktop
+/usr/share/icons/hicolor/scalable/apps/kernel-notify.png
+/usr/share/icons/hicolor/scalable/apps/kernel-notify-app.png
+/usr/share/icons/hicolor/512x512/apps/kernel-notify.png
+/usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
 /usr/share/applications/kernel-notify.desktop
 /usr/share/man/man1/kernel-notify.1.gz
 /usr/share/man/man1/kernel-notify.1

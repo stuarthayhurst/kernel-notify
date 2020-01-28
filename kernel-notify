@@ -1,6 +1,6 @@
 #!/bin/bash
 workDir="/usr/share/kernel-notify"
-iconPath="$workDir/icon.png"
+icon="kernel-notify"
 version="5.8.2"
 checkver="0"
 test="0"
@@ -209,7 +209,7 @@ sendNotification() {
         critical="true"
       fi
     fi
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$iconPath" "$3" "$4" "$critical" > /dev/null 2>&1 &
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
     echo "$1, $2"
   fi
 }

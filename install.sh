@@ -29,16 +29,11 @@ buildNotifications() {
 }
 
 compressIcons() {
-  if [ -f "icon.png" ]; then
-    optipng icon.png
-    cp icon.png docs/icon.png
-  else
-    echo "icon.png not found, skipping optimisation"
-  fi
-  if [ -f "app-icon.png" ]; then
-    optipng app-icon.png
-  else
-    echo "app-icon.png not found, skipping optimisation"
+  for filename in ./icons/*.png; do
+    optipng -o7 -zm1-9 -strip all "$filename"
+  done
+  if [ -f "icons/kernel-notify.png" ]; then
+    cp icons/kernel-notify.png docs/icon.png
   fi
 }
 
@@ -169,9 +164,11 @@ buildPackage() {
 
   if which dpkg > /dev/null 2>&1; then
     debianPath="package/debian/usr/share/kernel-notify"
+    iconPath="package/debian/usr/share/icons/hicolor"
     mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications && mkdir -v package/debian/usr/share/man && mkdir -v package/debian/usr/share/man/man1
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
+    mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps && mkdir -v package/debian/usr/share/icons/hicolor/512x512 && mkdir -v package/debian/usr/share/icons/hicolor/512x512/apps && mkdir -v package/debian/usr/share/icons/hicolor/256x256 && mkdir -v package/debian/usr/share/icons/hicolor/256x256/apps
 
     buildNotifications
     chmod +x notifications
@@ -179,8 +176,6 @@ buildPackage() {
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
-    cp -v icon.png $debianPath/
-    cp -v app-icon.png $debianPath/
     cp -v notifications $debianPath/
     cp -v notifications.cc $debianPath/
     cp -v docs/kernel-notify.1.gz package/debian/usr/share/man/man1/
@@ -188,6 +183,12 @@ buildPackage() {
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
     cp -v updater $debianPath/
+
+    cp -v icons/kernel-notify.png $iconPath/scalable/apps/
+    cp -v icons/kernel-notify-app.png $iconPath/scalable/apps/
+    cp -v icons/kernel-notify.png $iconPath/512x512/apps/
+    cp -v icons/kernel-notify-app.png $iconPath/256x256/apps/
+
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
     dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
@@ -234,13 +235,16 @@ installPackage() {
       rm -v docs/kernel-notify.1.gz
     fi
 
-    cp icon.png /usr/share/kernel-notify/icon.png
-    cp app-icon.png /usr/share/kernel-notify/app-icon.png
     cp config /usr/share/kernel-notify/config
     cp updater /usr/share/kernel-notify/updater
     cp actions /usr/share/kernel-notify/actions
     cp uninstall-list /usr/share/kernel-notify/uninstall-list
     mv notifications /usr/share/kernel-notify/notifications
+
+    cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.png
+    cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.png
+    cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
+    cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" kernel-notify.desktop > kernel-notify.desktop.temp
     mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
