@@ -168,7 +168,7 @@ buildPackage() {
     mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications && mkdir -v package/debian/usr/share/man && mkdir -v package/debian/usr/share/man/man1
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
-    mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps && mkdir -v package/debian/usr/share/icons/hicolor/512x512 && mkdir -v package/debian/usr/share/icons/hicolor/512x512/apps && mkdir -v package/debian/usr/share/icons/hicolor/256x256 && mkdir -v package/debian/usr/share/icons/hicolor/256x256/apps
+    mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps && mkdir -v package/debian/usr/share/icons/hicolor/256x256 && mkdir -v package/debian/usr/share/icons/hicolor/256x256/apps
 
     buildNotifications
     chmod +x notifications
@@ -184,9 +184,9 @@ buildPackage() {
     cp -v kernel-notify package/debian/usr/bin/
     cp -v updater $debianPath/
 
-    cp -v icons/kernel-notify.png $iconPath/scalable/apps/
-    cp -v icons/kernel-notify-app.png $iconPath/scalable/apps/
-    cp -v icons/kernel-notify.png $iconPath/512x512/apps/
+    cp -v icons/kernel-notify.svg $iconPath/scalable/apps/
+    cp -v icons/kernel-notify-app.svg $iconPath/scalable/apps/
+    cp -v icons/kernel-notify.png $iconPath/256x256/apps/
     cp -v icons/kernel-notify-app.png $iconPath/256x256/apps/
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
@@ -242,13 +242,11 @@ installPackage() {
     mv notifications /usr/share/kernel-notify/notifications
 
     if [ -d "/usr/share/icons/hicolor/scalable/apps/" ]; then
-      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.png
-      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.png
-    fi
-    if [ -d "/usr/share/icons/hicolor/512x512/apps/" ]; then
-      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
+      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
+      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
     fi
     if [ -d "/usr/share/icons/hicolor/256x256/apps/" ]; then
+      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
       cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
     fi
 
