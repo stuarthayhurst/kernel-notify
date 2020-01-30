@@ -1,6 +1,6 @@
 test.*
 debian.deb
-kernel-notify-*
+kernel-notify-*.deb
 notifications
 icon.xcf
 notes.txt
