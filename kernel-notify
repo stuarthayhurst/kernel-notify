@@ -17,6 +17,18 @@ if [[ "$@" == *"-t"* ]]; then
   testMode
 fi
 
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]]; then
+  source $workDir/config
+  cd $workDir
+else
+  echo "Config file / kernel-notify directory missing, exiting"
+  exit 1
+fi
+
+if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
+    echo "Autostart directory not found, program will not automatically start"
+fi
+
 editConfig() {
   if [ "$2" == "" ]; then
     echo "Config:" && echo ""
@@ -32,18 +44,6 @@ editConfig() {
     fi
   fi
 }
-
-if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]]; then
-  source $workDir/config
-  cd $workDir
-else
-  echo "Config file / kernel-notify directory missing, exiting"
-  exit 1
-fi
-
-if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
-    echo "Autostart directory not found, program will not automatically start"
-fi
 
 checkDpkg() {
   i=0
