@@ -3,7 +3,6 @@ workDir="/usr/share/kernel-notify"
 icon="kernel-notify"
 version="5.8.2"
 checkver="0"
-test="0"
 
 display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
 user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
@@ -38,11 +37,11 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]]; then
   source $workDir/config
   cd $workDir
 else
-  echo "Config file / kernel-notidy directory missing, exiting"
+  echo "Config file / kernel-notify directory missing, exiting"
   exit 1
 fi
 
-if [ "$test" == "0" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
+if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
     echo "Autostart directory not found, program will not automatically start"
 fi
 
