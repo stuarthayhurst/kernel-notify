@@ -34,8 +34,13 @@ editConfig() {
   fi
 }
 
-source $workDir/config
-cd $workDir
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]]; then
+  source $workDir/config
+  cd $workDir
+else
+  echo "Config file / kernel-notidy directory missing, exiting"
+  exit 1
+fi
 
 if [ "$test" == "0" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
     echo "Autostart directory not found, program will not automatically start"
@@ -123,7 +128,7 @@ checkKernelCount() {
   read -ra ARR <<< $(echo $KERNELS |grep .)
   if [ "$1" != "silent" ]; then
     if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
-      sendNotification "Configured kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
+      sendNotification "Configured kernel install count reached" "Remove extra kernels with 'kernel-notify -r'" ""
       echo "Remove kernels to avoid this message, or raise the limit in the config"
     fi
   fi
