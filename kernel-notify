@@ -123,7 +123,7 @@ checkKernelCount() {
   read -ra ARR <<< $(echo $KERNELS |grep .)
   if [ "$1" != "silent" ]; then
     if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
-      sendNotification "Kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
+      sendNotification "Configured kernel install limit reached" "Remove extra kernels with 'kernel-notify -r'" ""
       echo "Remove kernels to avoid this message, or raise the limit in the config"
     fi
   fi
