@@ -1,4 +1,4 @@
-test.*
+test*
 debian.deb
 kernel-notify-*.deb
 notifications
