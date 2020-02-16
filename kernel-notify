@@ -1,23 +1,20 @@
 #!/bin/bash
-workDir="/usr/share/kernel-notify"
+export workDir="/usr/share/kernel-notify"
 icon="kernel-notify"
 version="5.8.2"
 
 display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
 user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
 
-testMode() {
+if [[ "$@" == *"-t"* ]]; then
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
   echo "Running kernel-notify in $workDir/"
   test="1"
-}
-
-if [[ "$@" == *"-t"* ]]; then
-  testMode
 fi
 
-if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]]; then
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
   source $workDir/config
+  source $workDir/functions
   cd $workDir
 else
   echo "Config file / kernel-notify directory missing, exiting"
@@ -40,50 +37,6 @@ editConfig() {
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > /tmp/kernel-config.temp
       sudo mv /tmp/kernel-config.temp $workDir/config
       echo "Saved new config"
-    fi
-  fi
-}
-
-checkDpkg() {
-  i=0
-  tput sc
-  echo "Checking dpkg lock..."
-  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
-      0 ) j="-" ;;
-      1 ) j="\\" ;;
-      2 ) j="|" ;;
-      3 ) j="/" ;;
-    esac
-    tput rc
-    echo -en "\r[$j] Waiting for other software managers to finish... "
-    sleep 1
-    ((i=i+1))
-  done
-  echo "Done"
-}
-
-uninstall() {
-  if [[ "$USER" != "root" ]]; then
-    echo "  ATTENTION: Insufficient permission, please rerun with root"
-  else
-    read -r -p "Are you sure you want to uninstall? [y/N] " response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      echo "Uninstalling:"
-      if dpkg -s kernel-notify | grep Status |grep -q installed; then
-        echo "Kernel-notify installed via .deb, removing"
-        checkDpkg
-        dpkg -r kernel-notify
-        exit
-      else
-        uninstallList=$(cat ./uninstall-list)
-        for filename in $uninstallList; do
-          if [ -f $filename ]; then
-            rm -rfv "$filename"
-        fi
-        done
-        echo "Done"; exit
-      fi
     fi
   fi
 }
@@ -169,26 +122,13 @@ zenityNotify() {
     kernelOutdated="0"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
-    zenityWindow 'zenity --info --window-icon=/usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50'
+    zenityWindow 'zenity --info --window-icon=/usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch"
     exit
   fi
   if [ "$?" != "0" ]; then
     sendNotification "Zenity issue detected" "An error occured while running zenity"
   fi
   latestVersion="$latestVersionFull"
-}
-
-zenityWindow() {
-  if ! which zenity > /dev/null 2>&1; then
-    echo "Zenity not installed, it is required for graphical menus"
-    return 1
-  fi
-  if [ "$display" == "" ]; then
-    echo "No display available"
-    return 1
-  fi
-  sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
-  #Set a variable with zenity output if it had an input window
 }
 
 mute() {

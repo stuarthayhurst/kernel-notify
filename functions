@@ -1,0 +1,57 @@
+checkDpkg() {
+  i=0
+  tput sc
+  echo "Checking dpkg lock..."
+  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+    case $(($i % 4)) in
+      0 ) j="-" ;;
+      1 ) j="\\" ;;
+      2 ) j="|" ;;
+      3 ) j="/" ;;
+    esac
+    tput rc
+    echo -en "\r[$j] Waiting for other software managers to finish... "
+    sleep 1
+    ((i=i+1))
+  done
+  echo "Done"
+}
+
+uninstall() {
+  if [[ "$USER" != "root" ]]; then
+    echo "  ATTENTION: Insufficient permission, please rerun with root"
+  else
+    read -r -p "Are you sure you want to uninstall? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      echo "Uninstalling:"
+      if dpkg -s kernel-notify | grep Status |grep -q installed; then
+        echo "Kernel-notify installed via .deb, removing"
+        checkDpkg
+        dpkg -r kernel-notify
+        exit
+      else
+        uninstallList=$(cat ./uninstall-list)
+        for filename in $uninstallList; do
+          if [ -f $filename ]; then
+            rm -rfv "$filename"
+        fi
+        done
+        echo "Done"; exit
+      fi
+    fi
+  fi
+}
+
+zenityWindow() {
+  if ! which zenity > /dev/null 2>&1; then
+    echo "Zenity not installed, it is required for graphical menus"
+    return 1
+  fi
+  if [ "$display" == "" ]; then
+    echo "No display available"
+    return 1
+  fi
+  if [[ "$2" == "launch" ]]; then
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
+  fi
+}

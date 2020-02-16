@@ -6,16 +6,11 @@ currVersion=$(uname -r | sed 's/-.*/ /g')
 display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
 user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
 
-zenityWindow() {
-  if ! which zenity > /dev/null 2>&1; then
-    echo "Zenity not installed, it is required for graphical menus"
-    return 1
-  fi
-  if [ "$display" == "" ]; then
-    echo "No display available"
-    return 1
-  fi
-}
+if [[ -f "$workDir/functions" ]]; then
+  source $workDir/functions
+else
+  echo "Couldn't find common functions, exiting"
+fi
 
 installKernel() {
   if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
@@ -229,26 +224,6 @@ clearFiles() {
   fi
   cd ../
 }
-
-checkDpkg() {
-  i=0
-  tput sc
-  echo "Checking dpkg lock..."
-  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
-      0 ) j="-" ;;
-      1 ) j="\\" ;;
-      2 ) j="|" ;;
-      3 ) j="/" ;;
-    esac
-    tput rc
-    echo -en "\r[$j] Waiting for other software managers to finish... "
-    sleep 1
-    ((i=i+1))
-  done
-  echo "Done"
-}
-
 
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then

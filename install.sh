@@ -1,24 +1,6 @@
 #!/bin/bash
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
-
-checkDpkg() {
-  i=0
-  tput sc
-  echo "Checking dpkg lock..."
-  while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
-      0 ) j="-" ;;
-      1 ) j="\\" ;;
-      2 ) j="|" ;;
-      3 ) j="/" ;;
-    esac
-    tput rc
-    echo -en "\r[$j] Waiting for other software managers to finish... "
-    sleep 1
-    ((i=i+1))
-  done
-  echo "Done"
-}
+source functions
 
 buildNotifications() {
   if ! g++ --version > /dev/null 2>&1; then
@@ -184,12 +166,13 @@ buildPackage() {
 
     cp -v actions $debianPath/
     cp -v config $debianPath/
-    cp -v notifications $debianPath/
-    cp -v notifications.cc $debianPath/
     cp -v docs/kernel-notify.1.gz package/debian/usr/share/man/man1/
+    cp -v functions $debianPath/
     cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
+    cp -v notifications $debianPath/
+    cp -v notifications.cc $debianPath/
     cp -v updater $debianPath/
 
     cp -v icons/kernel-notify.svg $iconPath/scalable/apps/
@@ -243,9 +226,10 @@ installPackage() {
       rm -v docs/kernel-notify.1.gz
     fi
 
-    cp -v config /usr/share/kernel-notify/config
-    cp -v updater /usr/share/kernel-notify/updater
     cp -v actions /usr/share/kernel-notify/actions
+    cp -v config /usr/share/kernel-notify/config
+    cp -v functions /usr/share/kernel-notify/functions
+    cp -v updater /usr/share/kernel-notify/updater
     cp -v uninstall-list /usr/share/kernel-notify/uninstall-list
     mv -v notifications /usr/share/kernel-notify/notifications
 
