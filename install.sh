@@ -21,7 +21,7 @@ checkDpkg() {
 }
 
 buildNotifications() {
-  if ! g++ --version; then
+  if ! g++ --version > /dev/null 2>&1; then
     echo "g++ not found, required to build notifications"
     exit
   fi
