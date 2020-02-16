@@ -53,6 +53,7 @@
    * gawk & sed
    * psmisc & procps
    * policykit-1
+   * sudo
 
  - ### Optional:
    * zenity

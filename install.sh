@@ -31,7 +31,7 @@ checkDeps() {
   if [[ "$1" == *"p"* ]]; then
     echo "-------------------------------"; echo ""
 
-    deps=("curl pkexec sed awk")
+    deps=("curl pkexec sed awk sudo")
     for i in $deps; do
       if which $i > /dev/null 2>&1; then
         echo "${i^} found"
