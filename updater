@@ -54,9 +54,9 @@ fi
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   if [ "$installation" == "dpkg" ]; then
-    curl -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
+    curl --progress-bar -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
   else
-    curl -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
+    curl --progress-bar -O -L https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz
   fi
 
   if [ "$installation" == "dpkg" ]; then

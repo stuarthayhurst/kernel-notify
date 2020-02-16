@@ -87,7 +87,7 @@ installKernel() {
     for filename in "${packages[@]}"; do
       let progress=$progress+20
       echo "# Downloading ${filename##*/}..."
-      curl -O $filename
+      curl --progress-bar -O $filename
       echo "$progress"
       filename="${filename##*/}"
       installList="$installList $filename"
@@ -99,7 +99,7 @@ installKernel() {
     done
 
     echo "# Downloading & verifying checksums..."
-    curl -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
+    curl --progress-bar -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
     echo "90"
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       echo "Downloaded kernel checksum invalid" 1>&2
