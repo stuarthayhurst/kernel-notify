@@ -7,7 +7,7 @@ if [ ! "$(arch)" == "x86_64" ]; then
       echo "g++: built notifications"
     else
       echo "    ---------------    "
-      echo "  g++: failed to build notifications"
+      echo "  ATTENTION: g++: failed to build notifications"
       echo "  ATTENTION: Notifications failed to build, rebuild with:"
       echo "  'g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
       echo "    ---------------    "
