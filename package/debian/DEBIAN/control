@@ -5,7 +5,7 @@ Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
 Version: 5.8.2
 Architecture: all
-Depends: awk | gawk, coreutils (>= 8.25), curl, ncurses-bin, policykit-1, procps, psmisc, sed
+Depends: awk | gawk, coreutils (>= 8.25), curl, grep, ncurses-bin, policykit-1, procps, psmisc, sed, sudo
 Recommends: g++, libnotify4, libnotify-dev, zenity
 Homepage: <https://github.com/Dragon8oy/kernel-notify>
 Description: Kernel updater, checker and remover

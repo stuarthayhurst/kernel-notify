@@ -54,7 +54,7 @@
  - ### Required:
    * coreutils (8.25+)
    * curl
-   * gawk & sed
+   * gawk & grep & sed
    * psmisc & procps
    * policykit-1
    * sudo
