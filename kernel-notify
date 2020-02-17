@@ -89,7 +89,7 @@ checkKernelCount() {
 automaticFeatures() {
   case $1 in
     am) mute; sendNotification "Program muted" "Run 'kernel-notify -um' to unmute";;
-    aa) $workDir/actions -i "$latestVersion" "" -a && checkKernelCount && sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
+    aa) updateKernel "automatic" "";;
     au) update "$version" "automatic";;
   esac
 }
@@ -162,6 +162,38 @@ update() {
   fi
 }
 
+updateKernel() {
+  if [[ "$2" == *"-t"* ]]; then
+    installVersion=""
+  else
+    installVersion="$2"
+  fi
+  if [[ "$1" == "automatic" ]]; then
+    bash -e "$workDir"/actions -i "$latestVersion" "" -a
+    case "$?" in 
+      #Kernel install successful
+      0) sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
+      #Kernel install failed - missing resources
+      1) sendNotification "Kernel failed to update" "Shared functions could not be found";;
+      #Kernel install failed - no kernel to download / network error
+      2) sendNotification "Kernel failed to update" "No kernel to download / network error";;
+      #Kernel install failed - already updated
+      3) sendNotification "Kernel failed to update" "Kernel is already latest version";;
+      #Kernel install failed - broken packages
+      4) sendNotification "Kernel failed to update" "Downloaded kernel faulty";;
+      #Kernel install failed - user cancelled
+      5) sendNotification "Kernel failed to update" "Cancelled by user";;
+      #Kernel install failed - unsupported
+      6) sendNotification "Kernel failed to update" "Updating the kernel is unsupported on this system";;
+      #Kernel install failed - unknown error
+      7) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
+    esac
+  else
+    bash -e "$workDir"/actions -i "$latestVersion" "$installVersion"
+  fi
+  checkKernelCount
+}
+
 sendNotification() {
   if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
@@ -213,7 +245,7 @@ else
     -o|--old-config) listConfig; exit;;
     -r|--remove-kernel) ./actions -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
     -l|--list-kernels) ./actions -l "" $maxkernelcount; checkKernelCount; exit;;
-    -a|--add-kernel) ./actions -i $latestVersion $2; checkKernelCount; exit;;
+    -a|--add-kernel) updateKernel "" "$2"; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
     -t|--test) ;;

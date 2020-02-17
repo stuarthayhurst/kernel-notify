@@ -10,7 +10,7 @@ if [[ -f "$workDir/functions" ]]; then
   source $workDir/functions
 else
   echo "Couldn't find common functions, exiting"
-  exit
+  exit 1
 fi
 
 installKernel() {
@@ -28,10 +28,10 @@ installKernel() {
     if [[ "$latestVersionFull" != "x.x.x" ]]; then
       if [ "$latestVersion" -eq "${currVersion//.}" ]; then
         echo "Kernel is already on the selected version"
-        exit
+        exit 3
       fi
     else
-      exit
+      exit 7
     fi
     installVersion=$latestVersionFull
   else
@@ -68,7 +68,7 @@ installKernel() {
 
   if [ "$kernelDate" == "" ]; then
     echo "Either that kernel doesn't have an entry, or you have no internet connection"
-    exit
+    exit 2
   fi
 
   declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-${installVersionShort}_$installVersion-$installVersionShort.${kernelDate}_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb")
@@ -90,7 +90,7 @@ installKernel() {
       if ! file $filename | grep -q 'Debian binary package'; then
         echo "$filename: Not a Debian package" 1>&2
         clearFiles "$installList"
-        exit
+        exit 4
       fi
     done
 
@@ -140,7 +140,7 @@ installKernel() {
     done
     clearFiles "$installList CHECKSUMS"
     sudo dpkg -r linux-headers-$installVersion-$installVersionShort linux-headers-$installVersion-$installVersionShort-generic linux-modules-$installVersion-$installVersionShort-generic linux-image-unsigned-$installVersion-$installVersionShort-generic
-    exit 1
+    exit 5
   fi
 }
 
@@ -229,7 +229,7 @@ clearFiles() {
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
     echo "Kernel installation / removal is not supported on this system"
-    exit
+    exit 6
   fi
 fi
 
@@ -250,6 +250,6 @@ read -ra args <<< $@
 case $1 in
     -r|--remove) removeKernel "${args[@]:3}"; exit;;
     -l|--list) listKernels; exit;;
-    -i|--install) installKernel;;
-    *) echo "Use -i, -r or -l"; exit 1;;
+    -i|--install) installKernel; exit 0;;
+    *) echo "Use -i, -r or -l"; exit 7;;
 esac;
