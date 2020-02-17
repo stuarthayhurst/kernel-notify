@@ -45,7 +45,7 @@ listConfig() {
   if [ -f /usr/share/kernel-notify/config.old ]; then
     if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
       echo "Config file has changed"
-      echo "Apply any config values you wish to keep with 'kernel-notify -c CFGNAME CFGVALUE'"
+      echo "Apply old values to new config with 'kernel-notify -c CFGNAME CFGVALUE'"
       echo ""
       echo "Old values:"
       cat /usr/share/kernel-notify/config.old
