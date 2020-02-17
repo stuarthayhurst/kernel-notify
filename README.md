@@ -54,6 +54,7 @@
  - ### Required:
    * coreutils (8.25+)
    * curl
+   * diffutils / cmp
    * gawk & grep & sed
    * psmisc & procps
    * policykit-1
