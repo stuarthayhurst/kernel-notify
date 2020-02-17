@@ -21,7 +21,10 @@
  * This will prepare the code for release and build a .deb with the version specified, if left blank then the version won't be updated and kernel-notify will be built with the current version
 
 ## Updating:
- * Run `kernel-notify -u`
+ - ### Automatic:
+   * Run `kernel-notify -u`
+ - ### Manual:
+   * Follow the instructions in the `Installation` section, configs will be saved through updates
  - WARNING: kernel-notify will attempt to update the config after an update
  - If the config breaks, the old config can be viewed with `kernel-notify -o`
 
