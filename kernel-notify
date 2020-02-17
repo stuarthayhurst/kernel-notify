@@ -43,16 +43,16 @@ editConfig() {
 }
 
 listConfig() {
-  if [ -f /usr/share/kernel-notify/config.old ]; then
-    if ! cmp --silent /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; then
+  if [ -f $workDir/config.old ]; then
+    if ! cmp --silent $workDir/config $workDir/config.old; then
       echo "Config file has changed"
       echo "Apply old values to new config with 'kernel-notify -c CFGNAME CFGVALUE'"
       echo ""
       echo "Old values:"
-      cat /usr/share/kernel-notify/config.old
+      cat $workDir/config.old
       echo "" && echo ""
       echo "New values:"
-      cat /usr/share/kernel-notify/config
+      cat $workDir/config
       echo "" && echo ""
     else
       echo "No change in config found"
