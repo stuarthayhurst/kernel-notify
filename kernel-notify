@@ -18,6 +18,7 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   cd $workDir
 else
   echo "Config file / kernel-notify directory missing, exiting"
+  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
   exit 1
 fi
 
