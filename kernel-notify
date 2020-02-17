@@ -13,9 +13,9 @@ if [[ "$@" == *"-t"* ]]; then
 fi
 
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
-  source $workDir/config
-  source $workDir/functions
-  cd $workDir
+  source "$workDir/config"
+  source "$workDir/functions"
+  cd "$workDir"
 else
   echo "Config file / kernel-notify directory missing, exiting"
   echo "If you are running kernel-notify without installing, use '--test' or '-t'"
@@ -29,30 +29,30 @@ fi
 editConfig() {
   if [ "$2" == "" ]; then
     echo "Config:" && echo ""
-    cat $workDir/config
+    cat "$workDir/config"
   else
     if [ "$3" == "" ]; then
       echo "Config:" && echo ""
-      cat $workDir/config | grep $2
+      cat "$workDir/config" | grep $2
     else
-      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' $workDir/config > /tmp/kernel-config.temp
-      sudo mv /tmp/kernel-config.temp $workDir/config
+      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' "$workDir/config" > /tmp/kernel-config.temp
+      sudo mv /tmp/kernel-config.temp "$workDir/config"
       echo "Saved new config"
     fi
   fi
 }
 
 listConfig() {
-  if [ -f $workDir/config.old ]; then
-    if ! cmp --silent $workDir/config $workDir/config.old; then
+  if [ -f "$workDir/config.old" ]; then
+    if ! cmp --silent "$workDir/config" "$workDir/config.old"; then
       echo "Config file has changed"
       echo "Apply old values to new config with 'kernel-notify -c CFGNAME CFGVALUE'"
       echo ""
       echo "Old values:"
-      cat $workDir/config.old
+      cat "$workDir/config.old"
       echo "" && echo ""
       echo "New values:"
-      cat $workDir/config
+      cat "$workDir/config"
       echo "" && echo ""
     else
       echo "No change in config found"
@@ -145,7 +145,7 @@ unmute() {
 }
 
 update() {
-  if bash -e "$workDir"/updater "$version"; then
+  if bash -e "$workDir/updater" "$version"; then
     #Program updated fine
     if [[ "$2" == "automatic" ]]; then
       sendNotification "Program updated" "Run 'kernel-notify -v' to check version"
@@ -169,7 +169,7 @@ updateKernel() {
     installVersion="$2"
   fi
   if [[ "$1" == "automatic" ]]; then
-    bash -e "$workDir"/actions -i "$latestVersion" "" -a
+    bash -e "$workDir/actions" -i "$latestVersion" "" -a
     case "$?" in 
       #Kernel install successful
       0) sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
@@ -189,7 +189,7 @@ updateKernel() {
       7) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
     esac
   else
-    bash -e "$workDir"/actions -i "$latestVersion" "$installVersion"
+    bash -e "$workDir/actions" -i "$latestVersion" "$installVersion"
   fi
   checkKernelCount
 }
@@ -203,7 +203,7 @@ sendNotification() {
         critical="true"
       fi
     fi
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus $workDir/notifications "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
+    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$workDir/notifications" "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
     echo "$1, $2"
   fi
 }
@@ -243,8 +243,8 @@ else
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;
-    -r|--remove-kernel) ./actions -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
-    -l|--list-kernels) ./actions -l "" $maxkernelcount; checkKernelCount; exit;;
+    -r|--remove-kernel) "$workDir/actions" -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
+    -l|--list-kernels) "$workDir/actions" -l "" $maxkernelcount; checkKernelCount; exit;;
     -a|--add-kernel) updateKernel "" "$2"; exit;;
     -um|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
