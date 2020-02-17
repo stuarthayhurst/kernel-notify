@@ -16,7 +16,7 @@ fi
 installKernel() {
   if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
     echo "Raspbian / Raspberry Pis are not supported with this feature"
-    return
+    exit 6
   fi
   if [ "$automatic" -ne "1" ]; then
     echo "Enter a kernel version to install, leave blank to use selected kernel ($latestVersionFull):"
