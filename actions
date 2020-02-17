@@ -10,6 +10,7 @@ if [[ -f "$workDir/functions" ]]; then
   source $workDir/functions
 else
   echo "Couldn't find common functions, exiting"
+  exit
 fi
 
 installKernel() {
