@@ -1,7 +1,7 @@
 #!/bin/bash
 export workDir="/usr/share/kernel-notify"
 icon="kernel-notify"
-version="5.8.2"
+version="5.8.1"
 
 display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
 user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
@@ -90,7 +90,7 @@ automaticFeatures() {
   case $1 in
     am) mute; sendNotification "Program muted" "Run 'kernel-notify -um' to unmute";;
     aa) $workDir/actions -i "$latestVersion" "" -a && checkKernelCount && sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
-    au) $workDir/updater "$version" && sendNotification "Program updated" "Run 'kernel-notify -v' to check version";;
+    au) update "$version" "automatic";;
   esac
 }
 
@@ -144,6 +144,24 @@ unmute() {
   echo "Done";
 }
 
+update() {
+  if bash -e "$workDir"/updater "$version"; then
+    #Program updated fine
+    if [[ "$2" == "automatic" ]]; then
+      sendNotification "Program updated" "Run 'kernel-notify -v' to check version"
+    fi
+  elif [[ "$?" == "1" ]]; then
+    #Program has no updates available
+    return
+  else
+    #Program failed to update
+    echo "  ATTENTION: Updating kernel-notify failed"
+    if [[ "$2" == "automatic" ]]; then
+      sendNotification "Program update failed" "Kernel-notify failed to update - run 'kernel-notify -u'"
+    fi
+  fi
+}
+
 sendNotification() {
   if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
@@ -189,7 +207,7 @@ if [ "$1" == "-c" ] || [ "$1" == "--config" ]; then
 else
   while [[ "$#" -gt 0 ]]; do case $1 in
     -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: kernel-notify [-OPTION] [-t | --test]"; echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo "                     - kernel-notify --config CFGOPTION NEWCFGVALUE"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove a kernels from a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-    -u|--update) $workDir/updater "$version"; exit;;
+    -u|--update) update; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -i|--uninstall) uninstall; exit;;
     -o|--old-config) listConfig; exit;;

@@ -4,8 +4,9 @@ if [[ -f "$workDir/functions" ]]; then
   source $workDir/functions
 else
   echo "Couldn't find common functions, exiting"
-  exit
+  exit 2
 fi
+
 if [ ! -d "/tmp/kernel-notify" ]; then
   mkdir /tmp/kernel-notify
 fi
@@ -51,8 +52,8 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
       if ! file $filename | grep -q 'Debian binary package'; then
         echo "$filename: Not a Debian package"
         checkFiles
-        echo "Downloaded update faulty, update aborted"
-        exit
+        echo "  ATTENTION: Downloaded update faulty"
+        exit 2
       fi
     done
   else
@@ -60,8 +61,8 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
       if ! file $filename | grep -q 'gzip compressed data'; then
         echo "$filename: Not a compressed archive"
         checkFiles
-        echo "Downloaded update faulty, update aborted"
-        exit
+        echo "  ATTENTION: Downloaded update faulty"
+        exit 2
       fi
     done
   fi
@@ -69,10 +70,14 @@ if [ "${latestVer//.}" -ne "${version//.}" ]; then
   if [ "$installation" == "dpkg" ]; then
     checkDpkg
     sudo dpkg -i $package
+    exitCode="0"
   else
     tar -xf $package && cd kernel-notify-$latestVer/ && ./install.sh
+    exitCode="0"
   fi
 else
   echo "Program up-to-date"
+  exitCode="1"
 fi
 checkFiles
+exit $exitCode
