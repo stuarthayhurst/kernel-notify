@@ -100,31 +100,6 @@ checkDeps() {
     fi
 }
 
-uninstall() {
-  if [[ "$USER" != "root" ]]; then
-    echo "  ATTENTION: Insufficient permission, please rerun with root"
-  else
-    read -r -p "Are you sure you want to uninstall? [y/N] " response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      echo "Uninstalling:"
-      if dpkg -s kernel-notify | grep Status |grep -q installed; then
-        echo "Kernel-notify installed via .deb, removing"
-        checkDpkg
-        dpkg -r kernel-notify
-        exit
-      else
-        uninstallList=$(cat ./uninstall-list)
-        for filename in $uninstallList; do
-          if [ -f $filename ]; then
-            rm -rfv "$filename"
-        fi
-        done
-        echo "Done"; exit
-      fi
-    fi
-  fi
-}
-
 buildPackage() {
   echo "Enter the new version number: (Leave blank to only build package)"
   read newVersion
