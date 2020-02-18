@@ -5,13 +5,11 @@ source functions
 buildNotifications() {
   if ! g++ --version > /dev/null 2>&1; then
     echo "g++ not found, required to build notifications"
-    exit
-  fi
-  if ! ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
+    echo "  ATTENTION: g++: failed to build notifications"
+  elif ! ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
     echo "libnotify-dev not found, required to build notifications"
-    exit
-  fi
-  if g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
+    echo "  ATTENTION: g++: failed to build notifications"
+  elif g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
     echo "g++: built notifications"
   else
     echo "  ATTENTION: g++: failed to build notifications"
@@ -191,9 +189,13 @@ installPackage() {
     fi
 
     chmod +x kernel-notify
-    chmod +x notifications
     chmod +x actions
     chmod +x updater
+
+    if [ -f "./notifications" ]; then
+      chmod +x notifications
+      mv -v notifications /usr/share/kernel-notify/notifications
+    fi
 
     if [ -d "/usr/share/man/man1/" ]; then
       gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
@@ -206,7 +208,6 @@ installPackage() {
     cp -v functions /usr/share/kernel-notify/functions
     cp -v updater /usr/share/kernel-notify/updater
     cp -v uninstall-list /usr/share/kernel-notify/uninstall-list
-    mv -v notifications /usr/share/kernel-notify/notifications
 
     if [ -d "/usr/share/icons/hicolor/scalable/apps/" ]; then
       cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
