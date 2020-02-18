@@ -186,7 +186,7 @@ updateKernel() {
       #Kernel install failed - unsupported
       6) sendNotification "Kernel failed to update" "Updating the kernel is unsupported on this system";;
       #Kernel install failed - unknown error
-      7) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
+      7|*) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
     esac
   else
     bash -e "$workDir/actions" -i "$latestVersion" "$installVersion"
