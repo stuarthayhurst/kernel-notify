@@ -178,7 +178,7 @@ updateKernel() {
       #Kernel install failed - no kernel to download / network error
       2) sendNotification "Kernel failed to update" "No kernel to download / network error";;
       #Kernel install failed - already updated
-      3) sendNotification "Kernel failed to update" "Kernel is already latest version";;
+      3) sendNotification "Kernel failed to update" "Installed kernel is already the latest version";;
       #Kernel install failed - broken packages
       4) sendNotification "Kernel failed to update" "Downloaded kernel faulty";;
       #Kernel install failed - user cancelled
