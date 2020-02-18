@@ -33,11 +33,11 @@ uninstall() {
         dpkg -r kernel-notify
         exit
       else
-        uninstallList=$(cat ./uninstall-list)
+        uninstallList=$(cat "$workDir/uninstall-list")
         for filename in $uninstallList; do
-          if [ -f $filename ]; then
+          if [ -f "$filename" ] || [ -d "$filename" ]; then
             rm -rfv "$filename"
-        fi
+          fi
         done
         echo "Done"; exit
       fi
