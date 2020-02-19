@@ -19,6 +19,7 @@
   > Building / Installing: 
   - To build the .deb, run `./install.sh -b` and press enter instead of making a new version.
   - Install the .deb you built with `sudo dpkg -i kernel-notify-x.x_all.deb`.
+  - Alternatively, `./install.sh -d` can be run and will build and install the package.
   - Installing the program on a non-debian system can be done by running `./install.sh`.
   > Testing:
   - Test EVERY part of the program that may be affected by the changes you made, by comparing outputs between your modified version and the master branch.
