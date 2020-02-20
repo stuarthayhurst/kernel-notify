@@ -169,8 +169,9 @@ updateKernel() {
     installVersion="$2"
   fi
   if [[ "$1" == "automatic" ]]; then
-    bash -e "$workDir/actions" -i "$latestVersion" "" -a
-    case "$?" in 
+    "$workDir/actions" -i "$latestVersion" "" -a
+    echo $?
+    case "$?" in
       #Kernel install successful
       0) sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
       #Kernel install failed - missing resources
