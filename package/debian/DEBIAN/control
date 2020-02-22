@@ -3,7 +3,7 @@ Section: utility
 Priority: optional
 Maintainer: Dragon8oy <stuart.a.hayhurst@gmail.com>
 Package: kernel-notify
-Version: 5.8.2
+Version: 5.9.1
 Architecture: all
 Depends: awk | gawk, coreutils (>= 8.25), curl, diffutils, grep, ncurses-bin, policykit-1, procps, psmisc, sed, sudo
 Recommends: g++, libnotify4, libnotify-dev, zenity
