@@ -14,8 +14,12 @@ else
 fi
 
 installKernel() {
-  if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-    echo "Raspbian / Raspberry Pis are not supported with this feature"
+  if ls /etc/*-release > /dev/null 2>&1; then
+    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+      echo "Raspbian / Raspberry Pis are not supported with this feature"
+      exit 6
+    fi
+  else
     exit 6
   fi
   if [ "$automatic" -ne "1" ]; then
@@ -185,8 +189,12 @@ removeKernel() {
 }
 
 listKernels() {
-  if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-    echo "Raspbian / Raspberry Pis are not supported with this feature"
+  if ls /etc/*-release > /dev/null 2>&1; then
+    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+      echo "Raspbian / Raspberry Pis are not supported with this feature"
+      return 1
+    fi
+  else
     return 1
   fi
   if [ ! -d "/boot" ]; then
