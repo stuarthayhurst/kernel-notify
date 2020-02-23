@@ -160,7 +160,7 @@ buildPackage() {
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
-    dpkg --build package/debian/ && mv package/debian.deb ./kernel-notify-"$newVersion"_all.deb
+    dpkg --build package/debian/ ./kernel-notify-"$newVersion"_all.deb
 
     rm -v notifications
     rm -v docs/kernel-notify.1.gz
