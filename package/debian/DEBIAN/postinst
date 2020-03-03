@@ -3,20 +3,20 @@
 #Rebuild notifications
 if [ ! "$(arch)" == "x86_64" ]; then
   if which g++ > /dev/null 2>&1 && dpkg -s libnotify-dev | grep Status |grep -q installed; then
-    if sudo g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications `pkg-config --cflags --libs libnotify`; then
+    if sudo g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications `pkg-config --cflags --libs libnotify`; then
       echo "g++: built notifications"
     else
       echo "    ---------------    "
       echo "  ATTENTION: g++: failed to build notifications"
       echo "  ATTENTION: Notifications failed to build, rebuild with:"
-      echo "  'g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
+      echo "  'g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
       echo "    ---------------    "
       sudo rm /usr/share/kernel-notify/notifications
     fi
   else
     echo "    ---------------    "
     echo "  ATTENTION: g++ and libnotify-bin need to be installed to produce notifications"
-    echo "  ATTENTION: Rebuild with 'g++ /usr/share/kernel-notify/notifications.cc -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
+    echo "  ATTENTION: Rebuild with 'g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications \`pkg-config --cflags --libs libnotify\`'"
     echo "    ---------------    "
     sudo rm /usr/share/kernel-notify/notifications
   fi

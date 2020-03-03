@@ -9,7 +9,7 @@ buildNotifications() {
   elif ! ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
     echo "libnotify-dev not found, required to build notifications"
     echo "  ATTENTION: g++: failed to build notifications"
-  elif g++ notifications.cc -o notifications `pkg-config --cflags --libs libnotify`; then
+  elif g++ notifications.cpp -o notifications `pkg-config --cflags --libs libnotify`; then
     echo "g++: built notifications"
   else
     echo "  ATTENTION: g++: failed to build notifications"
@@ -150,7 +150,7 @@ buildPackage() {
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
     cp -v notifications $debianPath/
-    cp -v notifications.cc $debianPath/
+    cp -v notifications.cpp $debianPath/
     cp -v updater $debianPath/
 
     cp -v icons/kernel-notify.svg $iconPath/scalable/apps/
