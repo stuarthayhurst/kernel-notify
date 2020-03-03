@@ -17,10 +17,10 @@ buildNotifications() {
 }
 
 compressIcons() {
-  if [[ "$fast" == "true" ]]; then
-    optipngArgs=""
-  else
+  if [[ "$slow" == "true" ]]; then
     optipngArgs="-o7 -zm1-9"
+  else
+    optipngArgs=""
   fi
   for filename in ./icons/*.png; do
     optipng $optipngArgs -strip all "$filename"
@@ -249,12 +249,12 @@ installPackage() {
   fi
 }
 
-if [[ "$@" == *"-f"* ]]; then
-  fast="true"
+if [[ "$@" == *"-s"* ]]; then
+  slow="true"
 fi
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-f | --fast          : Use lower compression to save time on icons"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-s | --slow          : Use higher compression on icons, but takes longer"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
   -D|--dependencies) checkDeps "pb"; exit;;
