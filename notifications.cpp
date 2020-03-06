@@ -23,7 +23,7 @@ int main(int argc, char * argv[] ) {
     GMainLoop *loop;
     GError *error = NULL;
     loop = g_main_loop_new(nullptr, FALSE);
-    notify_init("kernel-notify");
+    notify_init("Kernel Updater");
     NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
     if (argv[4] == std::string("program")) {
