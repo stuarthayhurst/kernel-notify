@@ -82,7 +82,7 @@ installKernel() {
     if [ ! -d "/tmp/kernel-notify" ]; then
       mkdir /tmp/kernel-notify
     elif [ ! -w /tmp/kernel-notify ]; then
-      echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
+      echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root" 1>&2
       exit 7
     fi
     cd /tmp/kernel-notify
