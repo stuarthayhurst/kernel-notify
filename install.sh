@@ -260,6 +260,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -D|--dependencies) checkDeps "pb"; exit;;
   -c|--compress) compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
+  -bs|-sb) slow="true"; checkDeps "b"; buildPackage; exit;;
+  -ds|-is|-sd|-si) slow="true"; checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
   -d|-i|--debian|--install) checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
   -b|--build) checkDeps "b"; buildPackage; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
