@@ -46,14 +46,11 @@ listConfig() {
   if [ -f "$workDir/config.old" ]; then
     if ! cmp --silent "$workDir/config" "$workDir/config.old"; then
       echo "Config file has changed"
-      echo "Apply old values to new config with 'kernel-notify -c CFGNAME CFGVALUE'"
-      echo ""
+      echo "Apply old values to new config with 'kernel-notify -c CFGNAME CFGVALUE'"; echo ""
       echo "Old values:"
-      cat "$workDir/config.old"
-      echo "" && echo ""
+      cat "$workDir/config.old"; echo ""; echo ""
       echo "New values:"
-      cat "$workDir/config"
-      echo "" && echo ""
+      cat "$workDir/config"; echo ""; echo ""
     else
       echo "No change in config found"
     fi
