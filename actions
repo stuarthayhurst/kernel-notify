@@ -81,6 +81,9 @@ installKernel() {
     echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
     if [ ! -d "/tmp/kernel-notify" ]; then
       mkdir /tmp/kernel-notify
+    elif [ ! -w /tmp/kernel-notify ]; then
+      echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
+      exit 7
     fi
     cd /tmp/kernel-notify
 
@@ -227,6 +230,9 @@ clearFiles() {
     fi
   done
   if ! ls /tmp/kernel-notify |grep -q ".*"; then
+    if [ ! -w /tmp/kernel-notify ]; then
+      echo "Insufficient permission to remove /tmp/kernel-notify"
+    fi
     rm -rf /tmp/kernel-notify
   else
     echo "/tmp/kernel-notify not removed as it is in use"
