@@ -17,16 +17,31 @@ buildNotifications() {
 }
 
 compressIcons() {
+  echo "Generating and compressing icons:"
   if [[ "$slow" == "true" ]]; then
     optipngArgs="-o7 -zm1-9"
   else
     optipngArgs=""
   fi
-  for filename in ./icons/*.png; do
-    optipng $optipngArgs -strip all "$filename"
+
+  for resolution in ${outputResolutions[@]}; do
+    for filename in ./icons/*.svg; do
+      convert -resize "${resolution}x${resolution}" -background none "$filename" "${filename//.svg}.png"
+      if [ ! -d "./icons/${resolution}x${resolution}" ]; then
+        mkdir "./icons/${resolution}x${resolution}"
+        mkdir "./icons/${resolution}x${resolution}/apps"
+      fi
+      mv "${filename//.svg}.png" "./icons/${resolution}x${resolution}/apps/"
+    done
   done
-  if [ -f "icons/kernel-notify.png" ]; then
-    cp icons/kernel-notify.png docs/icon.png
+
+  for resolution in ${outputResolutions[@]}; do
+    for filename in ./icons/${resolution}x${resolution}/apps/*.png; do
+      optipng $optipngArgs -strip all "$filename"
+    done
+  done
+  if [ -f "./icons/256x256/apps/kernel-notify.png" ]; then
+    cp ./icons/256x256/apps/kernel-notify.png ./docs/icon.png
   fi
 }
 
@@ -76,6 +91,13 @@ checkDeps() {
         missingBuildDeps="$missingBuildDeps \n${i^}"
       fi
     done
+
+    if which convert > /dev/null 2>&1; then
+      echo "imagemagick found"
+    else
+      echo "imagemagick not found"
+      missingBuildDeps="$missingBuildDeps \nimagemagick"
+    fi
 
     if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
       echo "libnotify-dev found"
@@ -136,7 +158,12 @@ buildPackage() {
     mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications && mkdir -v package/debian/usr/share/man && mkdir -v package/debian/usr/share/man/man1
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
-    mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps && mkdir -v package/debian/usr/share/icons/hicolor/256x256 && mkdir -v package/debian/usr/share/icons/hicolor/256x256/apps
+
+    mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps
+    for resolution in ${outputResolutions[@]}; do
+      mkdir -v "package/debian/usr/share/icons/hicolor/${resolution}x${resolution}"
+      mkdir -v "package/debian/usr/share/icons/hicolor/${resolution}x${resolution}/apps"
+    done
 
     buildNotifications
     chmod +x notifications
@@ -153,10 +180,13 @@ buildPackage() {
     cp -v notifications.cpp $debianPath/
     cp -v updater $debianPath/
 
-    cp -v icons/kernel-notify.svg $iconPath/scalable/apps/
-    cp -v icons/kernel-notify-app.svg $iconPath/scalable/apps/
-    cp -v icons/kernel-notify.png $iconPath/256x256/apps/
-    cp -v icons/kernel-notify-app.png $iconPath/256x256/apps/
+    for resolution in ${outputResolutions[@]}; do
+      for filename in ./icons/${resolution}x${resolution}/apps/*.png; do
+        cp -v "$filename" "$iconPath/${resolution}x${resolution}/apps/"
+      done
+    done
+    cp -v ./icons/kernel-notify.svg $iconPath/scalable/apps/kernel-notify.svg
+    cp -v ./icons/kernel-notify-app.svg $iconPath/scalable/apps/kernel-notify-app.svg
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
@@ -214,13 +244,14 @@ installPackage() {
     cp -v updater /usr/share/kernel-notify/updater
     cp -v uninstall-list /usr/share/kernel-notify/uninstall-list
 
+    for resolution in ${outputResolutions[@]}; do
+      for filename in ./icons/${resolution}x${resolution}/apps/*.png; do
+        cp -v "$filename" "/usr/share/icons/hicolor/${resolution}x${resolution}/apps/"
+      done
+    done
     if [ -d "/usr/share/icons/hicolor/scalable/apps/" ]; then
-      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
-      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
-    fi
-    if [ -d "/usr/share/icons/hicolor/256x256/apps/" ]; then
-      cp -v icons/kernel-notify.png /usr/share/icons/hicolor/512x512/apps/kernel-notify.png
-      cp -v icons/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
+      cp -v ./icons/kernel-notify.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
+      cp -v ./icons/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
     fi
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" kernel-notify.desktop > kernel-notify.desktop.temp
@@ -253,6 +284,7 @@ if [[ "$@" == *"-s"* ]]; then
   slow="true"
 fi
 
+outputResolutions=(48 64 128 256)
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-s | --slow          : Use higher compression on icons, but takes longer"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;

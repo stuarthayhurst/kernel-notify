@@ -66,6 +66,7 @@
 
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)
+   * imagemagick (Used to generate .pngs from .svgs)
    * libnotify-dev & g++ (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
    * optipng (Compress icons)
    * sed (Update versions)
