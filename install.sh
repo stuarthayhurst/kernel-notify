@@ -259,6 +259,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -n|--notifications) buildNotifications; exit;;
   -D|--dependencies) checkDeps "pb"; exit;;
   -c|--compress) compressIcons; exit;;
+  -cs|-sc) slow="true"; compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -bs|-sb) slow="true"; checkDeps "b"; buildPackage; exit;;
   -ds|-is|-sd|-si) slow="true"; checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
