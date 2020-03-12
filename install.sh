@@ -45,6 +45,20 @@ compressIcons() {
   fi
 }
 
+cleanFiles() {
+  if [ -f "./notifications" ]; then
+    rm -v notifications 
+  fi
+  if [ -f "kernel-notify-"*"_all.deb" ]; then
+    rm -v kernel-notify-*_all.deb
+  fi
+  for resolution in ${outputResolutions[@]}; do
+    if [ -d "./icons/${resolution}x${resolution}" ]; then
+      rm -rfv "./icons/${resolution}x${resolution}"
+    fi
+  done
+}
+
 checkDeps() {
   if [[ "$1" == *"p"* ]]; then
     echo "-------------------------------"; echo ""
@@ -286,11 +300,12 @@ fi
 
 outputResolutions=(48 64 128 256)
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-s | --slow          : Use higher compression on icons, but takes longer"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-s | --slow          : Use higher compression on icons, but takes longer"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "--clean              : Clean up files generated during build"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
   -D|--dependencies) checkDeps "pb"; exit;;
   -c|--compress) compressIcons; exit;;
+  --clean) cleanFiles; exit;;
   -cs|-sc) slow="true"; compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
   -bs|-sb) slow="true"; checkDeps "b"; buildPackage; exit;;

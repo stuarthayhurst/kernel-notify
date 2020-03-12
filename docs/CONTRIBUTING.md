@@ -24,6 +24,8 @@
   > Testing:
   - Test EVERY part of the program that may be affected by the changes you made, by comparing outputs between your modified version and the master branch.
   - The notifications can be built separately with `./install.sh -n` and tested with `./notifications "[Title Text]" "[Body Text]" "[Icon Path]" "[kernel/program/""]" #Button "[mute/""]" #Button "[true/""]" #Critical priority or not`.
+  - Icons can be build with `./install.sh -c`
+  - Icons, built notifications and the built package can be cleaned up with `./install.sh --clean`
 
 ## Submitting a pull request:
   - When you believe your contribution to be complete, submit a pull request and use the template provided.
