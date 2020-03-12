@@ -154,7 +154,6 @@ installKernel() {
 removeKernel() {
   args="$@"
   args=$(echo "$args" | sed 's/\(-t\s*\|--test\s*\|-r\s*\|--remove\)//g')
-  echo $args
   if [[ "$(echo "$args")" != "" ]] && [[ "$args" != *"-t"* ]] && [[ "$args" != *"-r"* ]]; then
     DELVERSION="$args"
     listKernels "silent"
