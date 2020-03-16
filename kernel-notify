@@ -226,7 +226,7 @@ if [ "$checkver" == "1" ] || [[ "$@" == "" ]]; then
       exit
     fi
   else
-    echo ""
+  echo -ne " Done\n"
   fi
 fi
 
