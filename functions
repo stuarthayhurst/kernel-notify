@@ -1,7 +1,5 @@
 checkDpkg() {
   i=0
-  tput sc
-  echo "Checking dpkg lock..."
   while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
     case $(($i % 4)) in
       0 ) j="-" ;;
@@ -9,12 +7,11 @@ checkDpkg() {
       2 ) j="|" ;;
       3 ) j="/" ;;
     esac
-    tput rc
     echo -en "\r[$j] Waiting for other software managers to finish... "
     sleep 1
     ((i=i+1))
   done
-  echo "Done"
+  echo -en "Done\n"
 }
 
 uninstall() {
