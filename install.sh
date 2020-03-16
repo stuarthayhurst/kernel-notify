@@ -80,13 +80,6 @@ checkDeps() {
       missingProgDeps="$missingProgDeps \nPsmisc"
     fi
 
-    if which w > /dev/null 2>&1; then
-      echo "Procps found"
-    else
-      echo "Procps not found"
-      missingProgDeps="$missingProgDeps \nProcps"
-    fi
-
     if which zenity > /dev/null 2>&1; then
       echo "Zenity found"
     else

@@ -56,7 +56,7 @@
    * curl
    * diffutils / cmp
    * gawk & grep & sed
-   * psmisc & procps
+   * psmisc
    * policykit-1
    * sudo
 
