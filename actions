@@ -190,6 +190,8 @@ removeKernel() {
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
     sudo dpkg -P $REMOVESTR
+    cd /usr/src/ && du -hks * |sort -n |awk '$1 <6000 {print $2}' |grep 'linux' |xargs -I F sudo rm -rvf F
+    cd /lib/modules && du -hks * |sort -n |awk '$1 <6000 {print $2}' |grep 'linux' |xargs -I F sudo rm -rvf F
   fi
 }
 
