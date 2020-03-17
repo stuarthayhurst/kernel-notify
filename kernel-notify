@@ -211,7 +211,7 @@ main() {
   latestVersionFull=$latestVersion
   currVersionFull=$currVersion
 
-  if [ "$latestVersion" == "x.x.x" ]; then
+  if [[ "$latestVersion" == "x.x.x" ]] || [[ "$latestVersion" == "" ]]; then
     exit 1
   fi
   latestVersion=$(echo "${latestVersion//.}")
