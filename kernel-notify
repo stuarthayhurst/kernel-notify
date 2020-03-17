@@ -219,7 +219,7 @@ checkProgVer() {
 checkKernelVer() {
   latestVersionFull=$(getLatestKernelVersion)
   latestVersion=${latestVersionFull//.}
-  currVersion="$2"
+  currVersion="$1"
   checkKernelCount "silent"
   if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
@@ -256,7 +256,7 @@ main() {
 
   #Check if versions are outdated and notify
   checkProgVer
-  checkKernelVer "$latestVersionFull" "$currVersion"
+  checkKernelVer "$currVersion"
 
   #Check installed kernel count is below configured warning threshold
   checkKernelCount "alert"
