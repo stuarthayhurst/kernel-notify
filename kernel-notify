@@ -206,24 +206,7 @@ sendNotification() {
   fi
 }
 
-main() {
-  currVersion=$(uname -r | sed 's/-.*/ /g')
-  latestVersionFull=$latestVersion
-  currVersionFull=$currVersion
-
-  if [[ "$latestVersion" == "x.x.x" ]] || [[ "$latestVersion" == "" ]]; then
-    exit 1
-  fi
-  latestVersion=$(echo "${latestVersion//.}")
-
-  if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
-    latestVersion=$(echo "${latestVersion}0")
-    latestVersionFull=$(echo "${latestVersionFull}.0")
-  fi
-
-  echo "Latest Kernel: $latestVersionFull"
-  echo "Current Kernel: $currVersionFull"
-
+checkProgVer() {
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |   grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     echo "" && echo "Program outdated, v$latestProgVer is available" 
@@ -235,7 +218,11 @@ main() {
       sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
     fi
   fi
+}
 
+checkKernelVer() {
+  latestVersionFull="$1"
+  currVersion="$2"
   checkKernelCount "silent"
   if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
@@ -248,7 +235,31 @@ main() {
       sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
     fi
   fi
+}
 
+main() {
+  currVersion=$(uname -r | sed 's/-.*/ /g')
+  latestVersionFull=$latestVersion
+  currVersionFull=$currVersion
+
+  if [[ "$latestVersion" == "x.x.x" ]] || [[ "$latestVersion" == "" ]]; then
+    exit 1
+  fi
+  latestVersion="${latestVersion//.}"
+
+  if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
+    latestVersion="${latestVersion}0"
+    latestVersionFull="${latestVersionFull}.0"
+  fi
+
+  echo "Latest Kernel: $latestVersionFull"
+  echo "Current Kernel: $currVersionFull"
+
+  #Check if versions are outdated and notify
+  checkProgVer
+  checkKernelVer "$latestVersionFull" "$currVersion"
+
+  #Check installed kernel count is below configured warning threshold
   checkKernelCount "alert"
 }
 
