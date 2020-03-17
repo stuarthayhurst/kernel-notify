@@ -86,6 +86,7 @@ automaticFeatures() {
 }
 
 zenityNotify() {
+  latestVersion=$(getLatestKernelVersion)
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   latestVersionFull=$latestVersion
@@ -154,6 +155,7 @@ update() {
 }
 
 updateKernel() {
+  latestVersionFull=$(getLatestKernelVersion)
   if [[ "$2" == *"-t"* ]]; then
     installVersion=""
   else
@@ -215,7 +217,8 @@ checkProgVer() {
 }
 
 checkKernelVer() {
-  latestVersionFull="$1"
+  latestVersionFull=$(getLatestKernelVersion)
+  latestVersion=${latestVersionFull//.}
   currVersion="$2"
   checkKernelCount "silent"
   if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
@@ -233,13 +236,15 @@ checkKernelVer() {
 
 main() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
-  latestVersionFull=$latestVersion
+  echo -n "Checking latest version..."
+  latestVersionFull=$(getLatestKernelVersion)
+  echo -ne " Done\n"
   currVersionFull=$currVersion
 
-  if [[ "$latestVersion" == "x.x.x" ]] || [[ "$latestVersion" == "" ]]; then
+  if [[ "$latestVersionFull" == "x.x.x" ]] || [[ "$latestVersionFull" == "" ]]; then
     exit 1
   fi
-  latestVersion="${latestVersion//.}"
+  latestVersion="${latestVersionFull//.}"
 
   if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
     latestVersion="${latestVersion}0"
@@ -257,35 +262,31 @@ main() {
   checkKernelCount "alert"
 }
 
+latestVersionCache=""
+getLatestKernelVersion() {
+  if [[ "$latestVersionCache" == "" ]]; then
+
+    latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+    if [ "$latestVersion" == "" ]; then
+      sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
+      latestVersion="x.x.x"
+      sendNotification "Network error" "An error occured while checking latest version"
+      if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
+        echo "Likely a network issue, action cancelled"
+        exit
+      fi
+    fi
+    echo "$latestVersion"
+    latestVersionCache="$latestVersion"
+  else
+    echo "$latestVersionCache"
+  fi
+}
+
 if [[ "$@" == *"-t"* ]]; then
   workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
   echo "Running kernel-notify in $workDir/"
   test="1"
-fi
-
-for i in $@; do
-  for argument in $(echo "-r --remove-kernel -a --add-kernel -t --test -aa -zw"); do
-    if [ "$i" == "$argument" ]; then
-      checkver="1"
-    fi
-  done
-done
-
-if [ "$checkver" == "1" ] || [[ "$@" == "" ]]; then
-  echo -n "Checking latest version..."
-  latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
-  latestVersionFull="$latestVersion"
-  if [ "$latestVersion" == "" ]; then
-    sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
-    latestVersion="x.x.x"
-    sendNotification "Network error" "An error occured while checking latest version"
-    if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
-      echo "Likely a network issue, action cancelled"
-      exit
-    fi
-  else
-  echo -ne " Done\n"
-  fi
 fi
 
 read -ra args <<< $@
@@ -296,7 +297,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -i|--uninstall) uninstall; exit;;
   -o|--old-config) listConfig; exit;;
   -c|--config) editConfig "$1" "$2" "$3"; exit;;
-  -r|--remove-kernel) "$workDir/actions" -r $latestVersion $maxkernelcount "${args[@]:1}"; exit;;
+  -r|--remove-kernel) "$workDir/actions" -r "" $maxkernelcount "${args[@]:1}"; exit;;
   -l|--list-kernels) "$workDir/actions" -l "" $maxkernelcount; checkKernelCount; exit;;
   -a|--add-kernel) updateKernel "" "$2"; exit;;
   -um|--unmute) unmute; exit;;
