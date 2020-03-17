@@ -6,12 +6,6 @@ version="5.9.1"
 display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
 user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
 
-if [[ "$@" == *"-t"* ]]; then
-  workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-  echo "Running kernel-notify in $workDir/"
-  test="1"
-fi
-
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
   source "$workDir/config"
   source "$workDir/functions"
@@ -262,6 +256,12 @@ main() {
   #Check installed kernel count is below configured warning threshold
   checkKernelCount "alert"
 }
+
+if [[ "$@" == *"-t"* ]]; then
+  workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+  echo "Running kernel-notify in $workDir/"
+  test="1"
+fi
 
 for i in $@; do
   for argument in $(echo "-r --remove-kernel -a --add-kernel -t --test -aa -zw"); do
