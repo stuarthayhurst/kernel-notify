@@ -163,7 +163,6 @@ updateKernel() {
   fi
   if [[ "$1" == "automatic" ]]; then
     "$workDir/actions" -i "$latestVersionFull" "" -a
-    echo $?
     case "$?" in
       #Kernel install successful
       0) sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
