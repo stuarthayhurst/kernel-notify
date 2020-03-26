@@ -227,7 +227,8 @@ installPackage() {
     buildNotifications
 
     if [ -d "/etc/xdg/autostart" ]; then
-      cp kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+      echo "Installing autostart file..."
+      cp -v kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
     fi
 
     chmod +x kernel-notify
@@ -235,22 +236,26 @@ installPackage() {
     chmod +x updater
 
     if [ -f "./notifications" ]; then
+      echo "Installing notifications..."
       chmod +x notifications
       mv -v notifications /usr/share/kernel-notify/notifications
     fi
 
     if [ -d "/usr/share/man/man1/" ]; then
+      echo "Installing manpages..."
       gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
       cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
       rm -v docs/kernel-notify.1.gz
     fi
 
+    echo "Installing other program files..."
     cp -v actions /usr/share/kernel-notify/actions
     cp -v config /usr/share/kernel-notify/config
     cp -v functions /usr/share/kernel-notify/functions
     cp -v updater /usr/share/kernel-notify/updater
     cp -v uninstall-list /usr/share/kernel-notify/uninstall-list
 
+    echo "Installing icons..."
     for resolution in ${outputResolutions[@]}; do
       for filename in ./icons/${resolution}x${resolution}/apps/*.png; do
         cp -v "$filename" "/usr/share/icons/hicolor/${resolution}x${resolution}/apps/"
@@ -261,6 +266,7 @@ installPackage() {
       cp -v ./icons/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
     fi
 
+    echo "Installing desktop entry..."
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" kernel-notify.desktop > kernel-notify.desktop.temp
     mv -v kernel-notify.desktop.temp /usr/share/applications/kernel-notify.desktop
 
