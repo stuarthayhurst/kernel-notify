@@ -194,16 +194,22 @@ updateKernel() {
 }
 
 sendNotification() {
+  #Silence notification if program is muted
   if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
   else
+    #Decide whether or not to set critical priority
     if [ "$3" == "kernel" ] || [ "$3" == "program" ] || [ "$4" == "critical" ]; then
       if [ "$priority" == "critical" ]; then
         critical="true"
       fi
     fi
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$workDir/notifications" "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
-    echo "$1, $2"
+    #Check notifications code exists before running
+    if [[ -f "$workDir/notifications" ]]; then
+      sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$workDir/notifications" "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
+    else
+      echo "  Notification: $1, $2"
+    fi
   fi
 }
 
