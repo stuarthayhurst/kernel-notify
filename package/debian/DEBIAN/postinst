@@ -34,5 +34,8 @@ if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify
   echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
 fi
 
-kernel-notify -v
-echo "Successfully installed"
+if kernel-notify -v; then
+  echo ""; echo "Successfully installed kernel-notify"
+else
+  echo ""; echo "  ATTENTION: Installing kernel-notify failed"
+fi
