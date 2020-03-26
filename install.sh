@@ -80,6 +80,13 @@ checkDeps() {
       missingProgDeps="$missingProgDeps \nPsmisc"
     fi
 
+    if ldconfig -p |grep libnotify > /dev/null 2>&1; then
+      echo "libnotify found"
+    else
+      echo "libnotify not found"
+      missingProgDeps="$missingProgDeps \nlibnotify"
+    fi
+
     if which zenity > /dev/null 2>&1; then
       echo "Zenity found"
     else
