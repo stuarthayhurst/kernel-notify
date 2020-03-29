@@ -84,6 +84,10 @@
    * Follow the install instructions in the `Installation` section
    * Submit a bug report if installing failed, following the template and giving all available information
 
+ - ### Permission error:
+   * The issue is likely caused by the current user not having access to a file in /tmp/ if kernel-notify was previously run as root
+   * To solve the issue, reboot the machine and try again. If the issue persists, file a bug report
+
 ## Config:
  * Read a value:   `kernel-notify -c CFGOPTION`
  * Change a value: `kernel-notify -c CFGOPTION NEWCFGVALUE`
