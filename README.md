@@ -54,6 +54,7 @@
    * coreutils (8.25+)
    * curl
    * diffutils / cmp
+   * file
    * gawk & grep & sed
    * psmisc
    * policykit-1

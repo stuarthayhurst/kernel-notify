@@ -63,7 +63,7 @@ checkDeps() {
   if [[ "$1" == *"p"* ]]; then
     echo "-------------------------------"; echo ""
 
-    deps=("awk curl cmp grep pkexec sed sudo")
+    deps=("awk curl cmp file grep pkexec sed sudo")
     for i in $deps; do
       if which $i > /dev/null 2>&1; then
         echo "${i^} found"
