@@ -23,7 +23,7 @@
   - Installing the program on a non-debian system can be done by running `./install.sh`.
   > Testing:
   - Test EVERY part of the program that may be affected by the changes you made, by comparing outputs between your modified version and the master branch.
-  - The notifications can be built separately with `./install.sh -n` and tested with `./notifications "[Title Text]" "[Body Text]" "[Icon Path]" "[kernel/program/""]" #Button "[mute/""]" #Button "[true/""]" #Critical priority or not`.
+  - The notifications can be built separately with `./install.sh -n` and tested with `./notifications "[Title Text]" "[Body Text]" "[Icon Path]" "[kernel/program/""]" #Button "[mute/""]" #Button "[critical/normal/low/""]" #Critical priority or not`.
   - Icons can be build with `./install.sh -c`
   - Icons, built notifications and the built package can be cleaned up with `./install.sh --clean`
 

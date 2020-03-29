@@ -100,7 +100,7 @@
   * autoupdate="0/1" - Set to 0 to ask before updates, set to 1 to automatically update when the program is run
   * warnautostart="1/0" - Warn users if the program cannot start on login
   * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
-  * priority="critical/normal" - Keep notifications with buttons on the screen until dismissed or not (critical / normal)
+  * priority="critical/normal/low" - Keep notifications with buttons on-screen until dismissed or not
 
 ## License
  * GNU GENERAL PUBLIC LICENSE (v3)

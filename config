@@ -6,5 +6,5 @@ autoupdate="0"
 warnautostart="1"
 #How many kernels should be installed before notifying users how to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
 maxkernelcount="5"
-#Should notifications with buttons stay on the screen until dismissed or not (critical / normal)
+#Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)
 priority="critical"

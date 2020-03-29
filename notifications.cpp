@@ -58,8 +58,10 @@ int main(int argc, char * argv[] ) {
   }
 
   if (argc > 6) {
-    if (argv[6] == std::string("true")) {
+    if (argv[6] == std::string("critical")) {
       notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
+    } else if (argv[6] == std::string("low")) {
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_LOW);
     } else {
       notify_notification_set_urgency(n, NOTIFY_URGENCY_NORMAL);
     }
