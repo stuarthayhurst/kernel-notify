@@ -84,7 +84,7 @@ automaticFeatures() {
   case $1 in
     am) mute; sendNotification "Program muted" "Run 'kernel-notify -um' to unmute";;
     aa) updateKernel "automatic" "";;
-    au) update "$version" "automatic";;
+    au) updateProgram "$version" "automatic";;
   esac
 
   if [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
@@ -143,7 +143,7 @@ unmute() {
   echo "Done";
 }
 
-update() {
+updateProgram() {
   if bash -e "$workDir/updater" "$version"; then
     #Program updated fine
     if [[ "$2" == "automatic" ]]; then
@@ -298,7 +298,7 @@ getLatestKernelVersion() {
 read -ra args <<< $@
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: kernel-notify [-OPTION] [-t | --test]"; echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo "                     - kernel-notify --config CFGOPTION NEWCFGVALUE"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove kernels with a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-  -u|--update) update; exit;;
+  -u|--update) updateProgram; exit;;
   -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
   -i|--uninstall) uninstall; exit;;
   -o|--old-config) listConfig; exit;;
