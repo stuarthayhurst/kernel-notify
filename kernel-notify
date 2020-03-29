@@ -123,10 +123,10 @@ zenityNotify() {
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
     displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"
+    if [ "$?" != "0" ]; then
+      sendNotification "Zenity issue detected" "An error occured while running zenity"
+    fi
     exit
-  fi
-  if [ "$?" != "0" ]; then
-    sendNotification "Zenity issue detected" "An error occured while running zenity"
   fi
   latestVersion="$latestVersionFull"
 }
@@ -314,7 +314,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -am) automaticFeatures "am"; exit;;
   -aa) automaticFeatures "aa"; exit;;
   -au) automaticFeatures "au"; exit;;
-  -zw) zenityNotify; main;;
+  -zw) zenityNotify; main; exit;;
   "") main;;
   *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
 esac; shift; done

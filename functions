@@ -58,16 +58,17 @@ displayGraphics() {
     return 1
   fi
 
-  #Check if zenity is installed
-  if [[ "$@" == *"zenity"* ]]; then
-    if ! which zenity > /dev/null 2>&1; then
-      echo "Zenity not installed, it is required for graphical menus"
-      return 1
+  for i in "$@"; do
+    #Check if zenity is installed
+    if [[ "$i" == "zenity" ]]; then
+      if ! which zenity > /dev/null 2>&1; then
+        echo "Zenity not installed, it is required for graphical menus"
+        return 1
+      fi
     fi
-  fi
-
-  #Run command on correct display with correct user
-  if [[ "$@" == *"launch"* ]]; then
-    sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
-  fi
+    #Run command on correct display with correct user
+    if [[ "$i" == "launch" ]]; then
+      sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
+    fi
+  done
 }
