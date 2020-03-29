@@ -28,35 +28,41 @@ int main(int argc, char * argv[] ) {
   notify_init("Kernel Updater");
   NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
-  if (argv[4] == std::string("program")) {
-    notify_notification_add_action (n,
-      "action_update",
-      "Update Program",
-       NOTIFY_ACTION_CALLBACK(callback_update_program),
-       NULL,
-       NULL);
-  } else if (argv[4] == std::string("kernel")) {
-    notify_notification_add_action (n,
-      "action_update",
-      "Update Kernel",
-       NOTIFY_ACTION_CALLBACK(callback_update_kernel),
-       NULL,
-       NULL);
+  if (argc > 4) {
+    if (argv[4] == std::string("program")) {
+      notify_notification_add_action (n,
+        "action_update",
+        "Update Program",
+         NOTIFY_ACTION_CALLBACK(callback_update_program),
+         NULL,
+         NULL);
+    } else if (argv[4] == std::string("kernel")) {
+      notify_notification_add_action (n,
+        "action_update",
+        "Update Kernel",
+         NOTIFY_ACTION_CALLBACK(callback_update_kernel),
+         NULL,
+         NULL);
+    }
   }
 
-  if (argv[5] == std::string("mute")) {
-    notify_notification_add_action (n,
-      "action_mute",
-      "Mute",
-       NOTIFY_ACTION_CALLBACK(callback_mute),
-       NULL,
-       NULL);
+  if (argc > 5) {
+    if (argv[5] == std::string("mute")) {
+      notify_notification_add_action (n,
+        "action_mute",
+        "Mute",
+         NOTIFY_ACTION_CALLBACK(callback_mute),
+         NULL,
+         NULL);
+    }
   }
 
-  if (argv[6] == std::string("true")) {
-    notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
-  } else {
-    notify_notification_set_urgency(n, NOTIFY_URGENCY_NORMAL);
+  if (argc > 6) {
+    if (argv[6] == std::string("true")) {
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
+    } else {
+      notify_notification_set_urgency(n, NOTIFY_URGENCY_NORMAL);
+    }
   }
 
   notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
