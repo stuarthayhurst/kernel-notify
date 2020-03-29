@@ -96,7 +96,7 @@ checkDeps() {
   fi
 
   if [[ "$1" == *"b"* ]]; then
-    buildDeps=("g++ sed optipng")
+    buildDeps=("g++ optipng pkg-config sed")
     for i in $buildDeps; do
       if which $i > /dev/null 2>&1; then
         echo "${i^} found"
