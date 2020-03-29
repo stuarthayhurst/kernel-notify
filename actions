@@ -127,7 +127,7 @@ installKernel() {
     clearFiles "$installList CHECKSUMS"
   }
 
-  if ! zenityWindow; then
+  if ! displayGraphics "zenity"; then
     dpkgKernelInstall
   else
     dpkgKernelInstall | sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --progress --auto-close \
@@ -263,11 +263,17 @@ elif [ "$automatic" == "" ]; then
   automatic="0"
 fi
 
+mkDisplayInfo() {
+  echo "display=$DISPLAY" > /tmp/kernel-notify.displayinfo
+  echo "user=$USER" >> /tmp/kernel-notify.displayinfo
+}
+
 maxkernelcount=$3
 read -ra args <<< $@
 case $1 in
     -r|--remove) removeKernel "${args[@]:3}"; exit;;
-    -l|--list) listKernels; exit;;
+    -l|--list) listKernels; exit 0;;
     -i|--install) installKernel; exit 0;;
+    -d|--display) mkDisplayInfo; exit 0;;
     *) echo "Use -i, -r or -l"; exit 7;;
 esac;

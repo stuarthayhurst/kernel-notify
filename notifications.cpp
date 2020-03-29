@@ -6,11 +6,13 @@ int action_triggered = 0;
 void callback_update_program(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Program" << std::endl;
   action_triggered = 1;
+  system("workDir=$(pwd) $(pwd)/actions --display");
   system("pkexec kernel-notify -au");
 }
 void callback_update_kernel(NotifyNotification* n, char* action, gpointer user_data) {
   std::cout << "Updating Kernel" << std::endl;
   action_triggered = 1;
+  system("workDir=$(pwd) $(pwd)/actions --display");
   system("pkexec kernel-notify -aa");
 }
 void callback_mute(NotifyNotification* n, char* action, gpointer user_data) {

@@ -45,16 +45,29 @@ uninstall() {
   fi
 }
 
-zenityWindow() {
-  if ! which zenity > /dev/null 2>&1; then
-    echo "Zenity not installed, it is required for graphical menus"
-    return 1
-  fi
-  if [ "$display" == "" ]; then
+displayGraphics() {
+  #Get display and user information
+  if [[ "$DISPLAY" != "" ]]; then
+    display="$DISPLAY"
+    user="$USER"
+  elif [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
+    declare $(cat /tmp/kernel-notify.displayinfo |grep "display.*") #Declare display
+    declare $(cat /tmp/kernel-notify.displayinfo |grep -v "display.*") #Declare user
+  else
     echo "No display available"
     return 1
   fi
-  if [[ "$2" == "launch" ]]; then
+
+  #Check if zenity is installed
+  if [[ "$@" == *"zenity"* ]]; then
+    if ! which zenity > /dev/null 2>&1; then
+      echo "Zenity not installed, it is required for graphical menus"
+      return 1
+    fi
+  fi
+
+  #Run command on correct display with correct user
+  if [[ "$@" == *"launch"* ]]; then
     sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
   fi
 }

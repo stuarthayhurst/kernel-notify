@@ -89,6 +89,10 @@ automaticFeatures() {
     aa) updateKernel "automatic" "";;
     au) update "$version" "automatic";;
   esac
+
+  if [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
+    rm /tmp/kernel-notify.displayinfo
+  fi
 }
 
 zenityNotify() {
@@ -121,7 +125,7 @@ zenityNotify() {
     kernelOutdated="0"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
-    zenityWindow 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch"
+    displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"
     exit
   fi
   if [ "$?" != "0" ]; then
@@ -206,7 +210,7 @@ sendNotification() {
     fi
     #Check notifications code exists before running
     if [[ -f "$workDir/notifications" ]]; then
-      sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus "$workDir/notifications" "$1" "$2" "$icon" "$3" "$4" "$critical" > /dev/null 2>&1 &
+      displayGraphics "$workDir/notifications \"$1\" \"$2\" \"$icon\" \"$3\" \"$4\" \"$critical\" > /dev/null 2>&1 &" "launch"
     else
       echo "  Notification: $1, $2"
     fi
@@ -220,6 +224,7 @@ checkProgVer() {
     if [ "$autoupdate" -ne "0" ]; then
       echo "Auto-update is enabled, updating kernel-notify" && echo ""
       sleep 5
+      "$workDir/actions" "--display"
       pkexec kernel-notify -au
     else
       sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
@@ -238,6 +243,7 @@ checkKernelVer() {
     if [ "$autoupdate" -ne "0" ]; then
       echo "" && echo "Auto-update is enabled, updating kernel"
       sleep 5
+      "$workDir/actions" "--display"
       pkexec kernel-notify -aa
     else
       sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
