@@ -3,9 +3,6 @@ latestVersionFull=$2
 latestVersion=${latestVersionFull//.}
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
-display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
-user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
-
 if [[ -f "$workDir/functions" ]]; then
   source $workDir/functions
 else
@@ -130,13 +127,7 @@ installKernel() {
   if ! displayGraphics "zenity"; then
     dpkgKernelInstall
   else
-    dpkgKernelInstall | sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus zenity --progress --auto-close \
-    --window-icon="/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png" \
-    --title="Kernel Updater" \
-    --text="Starting update..." \
-    --width=400 \
-    --height=100 \
-    --percentage=0
+    dpkgKernelInstall | displayGraphics 'zenity --progress --auto-close --window-icon="/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png" --title="Kernel Updater" --text="Starting update..." --width=400 --height=100 --percentage=0' "launch" "zenity"
   fi
 
   if [ "$?" == "1" ]; then

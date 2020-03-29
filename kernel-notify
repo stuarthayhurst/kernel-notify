@@ -3,9 +3,6 @@ export workDir="/usr/share/kernel-notify"
 icon="kernel-notify"
 version="5.9.1"
 
-display=$(who -s | grep -Eo ' :[0-9]+' | uniq | cut -d \  -f 2)
-user=$(who -s | grep "$display" | awk '{print $1}' | head -n 1)
-
 if [[ "$@" == *"-t"* ]]; then
   export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
   echo "Running kernel-notify in $workDir/"
