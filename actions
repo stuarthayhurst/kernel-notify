@@ -10,30 +10,30 @@ installKernel() {
     exit 6
   fi
   if [ "$automatic" -ne "1" ]; then
-    echo "Enter a kernel version to install, leave blank to use selected kernel ($latestVersionFull):"
-    read installVersion
+    echo "Enter a kernel version to install, leave blank to use selected kernel ($installVersion):"
+    read chosenVersion
   fi
 
-  if [[ "$installVersion" == "" ]]; then
+  if [[ "$chosenVersion" == "" ]]; then
     echo "Using selected version..."
-    if [[ "$latestVersionFull" != "x.x.x" ]]; then
-      if [ "$latestVersion" -eq "${currVersion//.}" ]; then
+    chosenVersion=$installVersion
+    if [[ "$installVersion" != "x.x.x" ]]; then
+      if [ "${installVersion//.}" -eq "${currVersion//.}" ]; then
         echo "Kernel is already on the selected version"
         exit 3
       fi
     else
       exit 7
     fi
-    installVersion=$latestVersionFull
   else
     echo "Finding kernel version $installVersion..."
-    latestVersionFull=$installVersion
-    latestVersion=${latestVersionFull//.}
   fi
 
+  installVersion="$chosenVersion"
   archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
   installVersionLink=$installVersion
-  if [ "$latestVersion" -le "99" ]; then
+  echo $installVersion
+  if [ "${installVersion//.}" -le "99" ]; then
     installVersion=$(echo "${installVersion}.0")
   fi
 
@@ -231,16 +231,16 @@ mkDisplayInfo() {
   echo "user=$USER" >> /tmp/kernel-notify.displayinfo
 }
 
-latestVersionFull=$2
-latestVersion=${latestVersionFull//.}
-currVersion=$(uname -r | sed 's/-.*/ /g')
-
 if [[ -f "$workDir/functions" ]]; then
   source $workDir/functions
 else
   echo "Couldn't find common functions, exiting"
   exit 1
 fi
+
+installVersion=$(getLatestKernelVersion)
+#latestVersion=${latestVersionFull//.}
+currVersion=$(uname -r | sed 's/-.*/ /g')
 
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
@@ -250,7 +250,7 @@ if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
 fi
 
 if [ "$1" == "-i" ] && [ "$3" != "" ]; then
-  latestVersionFull=$3
+  installVersion=$3
   latestVersion=${latestVersionFull//.}
   automatic="1"
 fi

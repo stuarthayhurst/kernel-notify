@@ -274,27 +274,6 @@ main() {
   checkKernelCount "alert"
 }
 
-latestVersionCache=""
-getLatestKernelVersion() {
-  if [[ "$latestVersionCache" == "" ]]; then
-
-    latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
-    if [ "$latestVersion" == "" ]; then
-      sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
-      latestVersion="x.x.x"
-      sendNotification "Network error" "An error occured while checking latest version"
-      if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
-        echo "Likely a network issue, action cancelled"
-        exit
-      fi
-    fi
-    echo "$latestVersion"
-    latestVersionCache="$latestVersion"
-  else
-    echo "$latestVersionCache"
-  fi
-}
-
 read -ra args <<< $@
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: kernel-notify [-OPTION] [-t | --test]"; echo "Program Help:"; echo "-h  | --help       : Display this page and exit"; echo "-u  | --update     : Update the program and exit"; echo "-v  | --version    : Display program version and exit"; echo "-i  | --uninstall  : Uninstall the program"; echo "-o  | --old-config : List old and new config values"; echo "-c  | --config     : Change / read a config value and exit"; echo "                     - kernel-notify --config CFGOPTION NEWCFGVALUE"; echo ""; echo "Feature Help:"; echo "-r  | --remove-kernel : Remove kernels with a menu and exit"; echo "-l  | --list-kernels  : List installed kernels and exit"; echo "-a  | --add-kernel    : Install a new kernel and exit"; echo "-um | --unmute        : Unmute the program on login"; echo "-m  | --mute          : Mute the program on login"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
