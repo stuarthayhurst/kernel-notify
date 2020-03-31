@@ -2,7 +2,7 @@
 Type=Application
 Name=Kernel Updater
 Exec=kernel-notify
-Version=5.9.1
+Version=6.0
 Icon=kernel-notify-app
 Comment=Notifies the user of kernel updates
 Keywords=kernel-notify; notify; kernel; system; update; updater
