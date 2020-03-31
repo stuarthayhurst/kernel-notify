@@ -205,7 +205,9 @@ sendNotification() {
     fi
     #Check notifications code exists before running
     if [[ -f "$workDir/notifications" ]]; then
-      displayGraphics "$workDir/notifications \"$1\" \"$2\" \"$icon\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch"
+       if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"$icon\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch"; then
+         echo "  Notification: $1, $2"
+       fi
     else
       echo "  Notification: $1, $2"
     fi

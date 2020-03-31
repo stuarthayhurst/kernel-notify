@@ -54,7 +54,7 @@ displayGraphics() {
     declare $(cat /tmp/kernel-notify.displayinfo |grep "display.*") #Declare display
     declare $(cat /tmp/kernel-notify.displayinfo |grep -v "display.*") #Declare user
   else
-    echo "No display available"
+    #No display available
     return 1
   fi
 
