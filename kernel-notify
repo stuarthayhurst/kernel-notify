@@ -169,7 +169,7 @@ updateKernel() {
     installVersion="$2"
   fi
   if [[ "$1" == "automatic" ]]; then
-    "$workDir/actions" -i "$latestVersionFull" "" -a
+    "$workDir/actions" -i "" -a
     case "$?" in
       #Kernel install successful
       0) sendNotification "Kernel updated" "Run 'kernel-notify -r' to remove old kernels";;
@@ -189,7 +189,7 @@ updateKernel() {
       7|*) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
     esac
   else
-    bash -e "$workDir/actions" -i "$latestVersionFull" "$installVersion"
+    bash -e "$workDir/actions" -i "$installVersion"
   fi
   checkKernelCount
 }
@@ -282,7 +282,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -i|--uninstall) uninstall; exit;;
   -o|--old-config) listConfig; exit;;
   -c|--config) editConfig "$1" "$2" "$3"; exit;;
-  -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "" $maxkernelcount "${args[@]:1}"; exit;;
+  -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r $maxkernelcount "${args[@]:1}"; exit;;
   -l|--list|--list-kernels) "$workDir/actions" -l "" $maxkernelcount; checkKernelCount; exit;;
   -a|--add-kernel) updateKernel "" "$2"; exit;;
   -um|--unmute) unmute; exit;;

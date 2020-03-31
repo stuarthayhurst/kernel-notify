@@ -32,7 +32,7 @@ installKernel() {
   installVersion="$chosenVersion"
   archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
   installVersionLink=$installVersion
-  echo $installVersion
+  echo $installVersion #REMOVE <------------------------------------------------
   if [ "${installVersion//.}" -le "99" ]; then
     installVersion=$(echo "${installVersion}.0")
   fi
@@ -249,8 +249,8 @@ if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   fi
 fi
 
-if [ "$1" == "-i" ] && [ "$3" != "" ]; then
-  installVersion=$3
+if [ "$1" == "-i" ] && [ "$2" != "" ]; then
+  installVersion=$2
   latestVersion=${latestVersionFull//.}
   automatic="1"
 fi
@@ -261,10 +261,10 @@ elif [ "$automatic" == "" ]; then
   automatic="0"
 fi
 
-maxkernelcount=$3
+maxkernelcount=$2
 read -ra args <<< $@
 case $1 in
-    -r|--remove) removeKernel "${args[@]:3}"; exit;;
+    -r|--remove) removeKernel "${args[@]:2}"; exit;;
     -l|--list) listKernels; exit 0;;
     -i|--install) installKernel; exit 0;;
     -d|--display) mkDisplayInfo; exit 0;;
