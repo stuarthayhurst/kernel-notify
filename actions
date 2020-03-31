@@ -1,14 +1,4 @@
 #!/bin/bash
-latestVersionFull=$2
-latestVersion=${latestVersionFull//.}
-currVersion=$(uname -r | sed 's/-.*/ /g')
-
-if [[ -f "$workDir/functions" ]]; then
-  source $workDir/functions
-else
-  echo "Couldn't find common functions, exiting"
-  exit 1
-fi
 
 installKernel() {
   if ls /etc/*-release > /dev/null 2>&1; then
@@ -236,6 +226,22 @@ clearFiles() {
   cd ../
 }
 
+mkDisplayInfo() {
+  echo "display=$DISPLAY" > /tmp/kernel-notify.displayinfo
+  echo "user=$USER" >> /tmp/kernel-notify.displayinfo
+}
+
+latestVersionFull=$2
+latestVersion=${latestVersionFull//.}
+currVersion=$(uname -r | sed 's/-.*/ /g')
+
+if [[ -f "$workDir/functions" ]]; then
+  source $workDir/functions
+else
+  echo "Couldn't find common functions, exiting"
+  exit 1
+fi
+
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
     echo "Kernel installation / removal is not supported on this system"
@@ -254,11 +260,6 @@ if [ "$4" == "-a" ]; then
 elif [ "$automatic" == "" ]; then
   automatic="0"
 fi
-
-mkDisplayInfo() {
-  echo "display=$DISPLAY" > /tmp/kernel-notify.displayinfo
-  echo "user=$USER" >> /tmp/kernel-notify.displayinfo
-}
 
 maxkernelcount=$3
 read -ra args <<< $@
