@@ -32,7 +32,6 @@ installKernel() {
   installVersion="$chosenVersion"
   archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
   installVersionLink=$installVersion
-  echo $installVersion #REMOVE <------------------------------------------------
   if [ "${installVersion//.}" -le "99" ]; then
     installVersion=$(echo "${installVersion}.0")
   fi
@@ -55,7 +54,6 @@ installKernel() {
     installVersionShort="$installVersionShort${installVersion##*.}"
   fi
 
-  #archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
   kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-${installVersionShort}_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
 
   if [ "$kernelDate" == "" ]; then
@@ -238,8 +236,7 @@ else
   exit 1
 fi
 
-installVersion=$(getLatestKernelVersion)
-#latestVersion=${latestVersionFull//.}
+installVersion=$(getLatestKernelVersion "silent")
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
