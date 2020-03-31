@@ -93,7 +93,7 @@ automaticFeatures() {
 }
 
 zenityNotify() {
-  latestVersion=$(getLatestKernelVersion)
+  latestVersion=$(getLatestKernelVersion "silent")
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   latestVersionFull=$latestVersion
@@ -162,7 +162,7 @@ updateProgram() {
 }
 
 updateKernel() {
-  latestVersionFull=$(getLatestKernelVersion)
+  latestVersionFull=$(getLatestKernelVersion "silent")
   if [[ "$2" == *"-t"* ]]; then
     installVersion=""
   else
@@ -228,7 +228,7 @@ checkProgVer() {
 }
 
 checkKernelVer() {
-  latestVersionFull=$(getLatestKernelVersion)
+  latestVersionFull=$(getLatestKernelVersion "silent")
   latestVersion=${latestVersionFull//.}
   currVersion="$1"
   checkKernelCount "silent"
