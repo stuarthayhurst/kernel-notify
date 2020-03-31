@@ -41,6 +41,7 @@ installKernel() {
     latestVersion=${latestVersionFull//.}
   fi
 
+  archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
   installVersionLink=$installVersion
   if [ "$latestVersion" -le "99" ]; then
     installVersion=$(echo "${installVersion}.0")
@@ -64,7 +65,7 @@ installKernel() {
     installVersionShort="$installVersionShort${installVersion##*.}"
   fi
 
-  archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
+  #archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/)
   kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-${installVersionShort}_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
 
   if [ "$kernelDate" == "" ]; then
