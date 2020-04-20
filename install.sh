@@ -26,7 +26,7 @@ compressIcons() {
 
   for resolution in ${outputResolutions[@]}; do
     for filename in ./icons/*.svg; do
-      convert -resize "${resolution}x${resolution}" -background none "$filename" "${filename//.svg}.png"
+      inkscape --export-filename="${filename//.svg}.png" -w "$resolution" -h "$resolution" "$filename"
       if [ ! -d "./icons/${resolution}x${resolution}" ]; then
         mkdir "./icons/${resolution}x${resolution}"
         mkdir "./icons/${resolution}x${resolution}/apps"
@@ -96,7 +96,7 @@ checkDeps() {
   fi
 
   if [[ "$1" == *"b"* ]]; then
-    buildDeps=("g++ optipng pkg-config sed")
+    buildDeps=("g++ inkscape optipng pkg-config sed")
     for i in $buildDeps; do
       if which $i > /dev/null 2>&1; then
         echo "${i^} found"
@@ -105,13 +105,6 @@ checkDeps() {
         missingBuildDeps="$missingBuildDeps \n${i^}"
       fi
     done
-
-    if which convert > /dev/null 2>&1; then
-      echo "imagemagick found"
-    else
-      echo "imagemagick not found"
-      missingBuildDeps="$missingBuildDeps \nimagemagick"
-    fi
 
     if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
       echo "libnotify-dev found"
