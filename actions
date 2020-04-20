@@ -229,10 +229,13 @@ mkDisplayInfo() {
   echo "user=$USER" >> /tmp/kernel-notify.displayinfo
 }
 
-if [[ -f "$workDir/functions" ]]; then
-  source $workDir/functions
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
+  source "$workDir/config"
+  source "$workDir/functions"
+  cd "$workDir"
 else
-  echo "Couldn't find common functions, exiting"
+  echo "Config file / kernel-notify directory missing, exiting"
+  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
   exit 1
 fi
 
@@ -258,10 +261,9 @@ elif [ "$automatic" == "" ]; then
   automatic="0"
 fi
 
-maxkernelcount=$2
 read -ra args <<< $@
 case $1 in
-    -r|--remove) removeKernel "${args[@]:2}"; exit;;
+    -r|--remove) removeKernel "${args[@]:1}"; exit;;
     -l|--list) listKernels; exit 0;;
     -i|--install) installKernel; exit 0;;
     -d|--display) mkDisplayInfo; exit 0;;

@@ -284,8 +284,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -i|--uninstall) uninstall; exit;;
   -o|--old-config) listConfig; exit;;
   -c|--config) editConfig "$1" "$2" "$3"; exit;;
-  -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r $maxkernelcount "${args[@]:1}"; exit;;
-  -l|--list|--list-kernels) "$workDir/actions" -l "" $maxkernelcount; checkKernelCount; exit;;
+  -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${args[@]:1}"; exit;;
+  -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
   -a|--add-kernel) updateKernel "" "$2"; exit;;
   -um|--unmute) unmute; exit;;
   -m|--mute) mute; exit;;
