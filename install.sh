@@ -2,6 +2,31 @@
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 source functions
 
+uninstall() {
+  if [[ "$USER" != "root" ]]; then
+    echo "  ATTENTION: Insufficient permission, please rerun with root"
+  else
+    read -r -p "Are you sure you want to uninstall? [y/N] " response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+      echo "Uninstalling:"
+      if dpkg -s kernel-notify | grep Status |grep -q installed; then
+        echo "Kernel-notify installed via .deb, removing"
+        checkDpkg
+        dpkg -r kernel-notify
+        exit
+      else
+        uninstallList=$(cat "./uninstall-list")
+        for filename in $uninstallList; do
+          if [ -f "$filename" ] || [ -d "$filename" ]; then
+            rm -rfv "$filename"
+          fi
+        done
+        echo "Done"; exit
+      fi
+    fi
+  fi
+}
+
 buildNotifications() {
   if ! g++ --version > /dev/null 2>&1; then
     echo "g++ not found, required to build notifications"
@@ -253,7 +278,6 @@ installPackage() {
     cp -v config /usr/share/kernel-notify/config
     cp -v functions /usr/share/kernel-notify/functions
     cp -v updater /usr/share/kernel-notify/updater
-    cp -v uninstall-list /usr/share/kernel-notify/uninstall-list
 
     echo "Installing icons..."
     for resolution in ${outputResolutions[@]}; do
