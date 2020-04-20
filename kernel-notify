@@ -299,7 +299,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -a|--add-kernel) updateKernel "" "$2"; exit;;
   -um|--unmute) unmute; exit;;
   -m|--mute) mute; exit;;
-  -t|--test) main; exit;;
+  -t|--test) ;; #Check for argument to prevent program interpreting it as unrecognised
   -am) automaticFeatures "am"; exit;;
   -aa) automaticFeatures "aa"; exit;;
   -au) automaticFeatures "au"; exit;;
