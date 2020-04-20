@@ -42,16 +42,10 @@ displayGraphics() {
   done
 }
 
-latestVersionCache=""
 getLatestKernelVersion() {
-  if [[ "$latestVersionCache" == "" ]]; then
     latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
     if [ "$latestVersion" == "" ]; then
       latestVersion="x.x.x"
     fi
     echo "$latestVersion"
-    latestVersionCache="$latestVersion"
-  else
-    echo "$latestVersionCache"
-  fi
 }

@@ -236,9 +236,9 @@ checkProgVer() {
 }
 
 checkKernelVer() {
-  latestVersionFull=$(getLatestKernelVersion)
-  latestVersion=${latestVersionFull//.}
   currVersion="$1"
+  latestVersionFull="$2"
+  latestVersion=${latestVersionFull//.}
   checkKernelCount "silent"
   if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
@@ -258,6 +258,7 @@ main() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   echo -n "Checking latest version..."
   latestVersionFull=$(getLatestKernelVersion)
+  latestVersionOrig="$latestVersionFull"
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sleep 0.5; echo -ne " Error\n"; sleep 0.5
     sendNotification "Network error" "An error occured while checking latest version"
@@ -281,7 +282,7 @@ main() {
 
   #Check if versions are outdated and notify
   checkProgVer
-  checkKernelVer "$currVersion"
+  checkKernelVer "$currVersion" "$latestVersionOrig"
 
   #Check installed kernel count is below configured warning threshold
   checkKernelCount "alert"
