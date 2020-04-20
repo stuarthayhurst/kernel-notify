@@ -79,14 +79,6 @@ getLatestKernelVersion() {
     latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
     if [ "$latestVersion" == "" ]; then
       latestVersion="x.x.x"
-      if [[ "$1" == "silent" ]]; then
-        sleep 0.5; echo -ne "\rChecking latest version... Error\n"; sleep 0.5
-        sendNotification "Network error" "An error occured while checking latest version"
-        if [ "$1" == "-a" ] || [ "$1" == "--add-kernel" ] || [ "$1" == "-aa" ]; then
-          echo "Likely a network issue, action cancelled"
-          exit
-        fi
-      fi
     fi
     echo "$latestVersion"
     latestVersionCache="$latestVersion"

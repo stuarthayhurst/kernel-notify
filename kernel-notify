@@ -93,7 +93,7 @@ automaticFeatures() {
 }
 
 zenityNotify() {
-  latestVersion=$(getLatestKernelVersion "silent")
+  latestVersion=$(getLatestKernelVersion)
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   latestVersionFull=$latestVersion
@@ -120,6 +120,7 @@ zenityNotify() {
   else
     progOutdated="0"
     kernelOutdated="0"
+    sendNotification "Network error" "An error occured while checking latest version"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
     displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"
@@ -162,7 +163,12 @@ updateProgram() {
 }
 
 updateKernel() {
-  latestVersionFull=$(getLatestKernelVersion "silent")
+  latestVersionFull=$(getLatestKernelVersion)
+  if [[ "$latestVersionFull" == "x.x.x" ]]; then
+    sendNotification "Network error" "An error occured while checking latest version"
+    echo "Likely a network issue, installation cancelled"
+    exit
+  fi
   if [[ "$2" == *"-t"* ]]; then
     installVersion=""
   else
@@ -230,7 +236,7 @@ checkProgVer() {
 }
 
 checkKernelVer() {
-  latestVersionFull=$(getLatestKernelVersion "silent")
+  latestVersionFull=$(getLatestKernelVersion)
   latestVersion=${latestVersionFull//.}
   currVersion="$1"
   checkKernelCount "silent"
@@ -252,7 +258,12 @@ main() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   echo -n "Checking latest version..."
   latestVersionFull=$(getLatestKernelVersion)
-  echo -ne " Done\n"
+  if [[ "$latestVersionFull" == "x.x.x" ]]; then
+    sleep 0.5; echo -ne " Error\n"; sleep 0.5
+    sendNotification "Network error" "An error occured while checking latest version"
+  else
+    echo -ne " Done\n"
+  fi
   currVersionFull=$currVersion
 
   if [[ "$latestVersionFull" == "x.x.x" ]] || [[ "$latestVersionFull" == "" ]]; then

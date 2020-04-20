@@ -239,7 +239,7 @@ else
   exit 1
 fi
 
-installVersion=$(getLatestKernelVersion "silent")
+installVersion=$(getLatestKernelVersion)
 currVersion=$(uname -r | sed 's/-.*/ /g')
 
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
