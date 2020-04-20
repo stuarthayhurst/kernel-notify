@@ -307,8 +307,15 @@ installPackage() {
       echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
     fi
 
-    echo ""; echo "-------------------------------"; echo ""
+    echo "Updating system databases:"
+    echo "Updating desktop-file-utils"; update-desktop-database > /dev/null
+    echo "Updating mime-support"; update-mime > /dev/null
+    echo "Updating hicolor-icon-theme"; touch /usr/share/icons/hicolor > /dev/null
+    gtk-update-icon-cache -f /usr/share/icons/hicolor/ > /dev/null
+    echo "Updating man-db"; mandb > /dev/null
+    echo "Done"
 
+    echo ""; echo "-------------------------------"; echo ""
     if kernel-notify -v; then
       echo ""; echo "Successfully installed / updated kernel-notify"
     else
