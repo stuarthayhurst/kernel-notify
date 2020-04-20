@@ -15,6 +15,9 @@
    * Download the latest deb from the Releases page
    * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
+## Uninstallation:
+ * Run `./install.sh --uninstall`
+
 ## Packaging:
  * Run `./install.sh -b`
  * This will prepare the code for release and build a .deb with the version specified, if left blank then the version won't be updated and kernel-notify will be built with the current version
@@ -38,7 +41,6 @@
    * -h  | --help       : Display the help page and exit
    * -u  | --update     : Update the program and exit
    * -v  | --version    : Display program version and exit
-   * -i  | --uninstall  : Uninstall the program
    * -o  | --old-config : List old and new config values and exit
    * -c  | --config     : Change / read a config value and exit
 
