@@ -38,13 +38,13 @@ displayGraphics() {
     fi
     #Run command on correct display with correct user
     if [[ "$i" == "launch" ]]; then
-      sudo -u $user DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $user)/bus bash -c "$1"
+      sudo -u "$user" DISPLAY="$display" DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$(id -u "$user")"/bus bash -c "$1"
     fi
   done
 }
 
 getLatestKernelVersion() {
-    latestVersion=$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')
+    latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
     if [ "$latestVersion" == "" ]; then
       latestVersion="x.x.x"
     fi
