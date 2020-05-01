@@ -2,7 +2,7 @@
 checkDpkg() {
   i=0
   while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
-    case $(($i % 4)) in
+    case $((i % 4)) in
       0 ) j="-" ;;
       1 ) j="\\" ;;
       2 ) j="|" ;;
