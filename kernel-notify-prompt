@@ -5,10 +5,10 @@ while read -r line; do
 done <<< "$(kernel-notify --help 2>/dev/null)"
 
 for line in "${helplist[@]}"; do
-  if [[ "$(echo "$line" |grep ^- 2>&1)" > /dev/null ]] && [[ ! "$(echo "$line" |grep "kernel-notify" 2>&1)" > /dev/null ]]; then
-    line="${line%%:*}"
+  line="${line%%:*}"
+  if ! echo "$line" |grep -i "kernel-notify" > /dev/null; then
     for i in $line; do
-      if [[ "${#i}" -gt "3" ]]; then
+      if [[ "${#i}" -gt "3" ]] && echo "$i" |grep "^-" > /dev/null; then
         promptlist+="$i "
       fi
     done
