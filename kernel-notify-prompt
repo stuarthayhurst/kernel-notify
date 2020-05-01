@@ -2,10 +2,10 @@
 helplist=()
 while read -r line; do
    helplist+=("$line")
-done <<< "$(kernel-notify --help)"
+done <<< "$(kernel-notify --help 2>/dev/null)"
 
 for line in "${helplist[@]}"; do
-  if echo "$line" |grep ^- > /dev/null && ! echo "$line" |grep "kernel-notify" > /dev/null; then
+  if [[ "$(echo "$line" |grep ^- 2>&1)" > /dev/null ]] && [[ ! "$(echo "$line" |grep "kernel-notify" 2>&1)" > /dev/null ]]; then
     line="${line%%:*}"
     for i in $line; do
       if [[ "${#i}" -gt "3" ]]; then
