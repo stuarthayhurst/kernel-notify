@@ -190,6 +190,7 @@ buildPackage() {
     mkdir -v package/debian/usr && mkdir -v package/debian/usr/share && mkdir -v package/debian/usr/share/kernel-notify && mkdir -v package/debian/usr/share/applications && mkdir -v package/debian/usr/share/man && mkdir -v package/debian/usr/share/man/man1
     mkdir -v package/debian/usr/bin
     mkdir -v package/debian/etc && mkdir -v package/debian/etc/xdg && mkdir -v package/debian/etc/xdg/autostart
+    mkdir -v package/debian/etc/bash_completion.d/
 
     mkdir -v package/debian/usr/share/icons && mkdir -v package/debian/usr/share/icons/hicolor && mkdir -v package/debian/usr/share/icons/hicolor/scalable && mkdir -v package/debian/usr/share/icons/hicolor/scalable/apps
     for resolution in ${outputResolutions[@]}; do
@@ -208,6 +209,7 @@ buildPackage() {
     cp -v kernel-notify.desktop package/debian/etc/xdg/autostart/
     cp -v kernel-notify.desktop package/debian/usr/share/applications/
     cp -v kernel-notify package/debian/usr/bin/
+    cp -v kernel-notify-prompt package/debian/etc/bash_completion.d/
     cp -v notifications $debianPath/
     cp -v notifications.cpp $debianPath/
     cp -v updater $debianPath/
@@ -271,6 +273,11 @@ installPackage() {
       gzip -kqv9 docs/kernel-notify.1 docs/kernel-notify.1.gz
       cp -v docs/kernel-notify.1.gz /usr/share/man/man1/
       rm -v docs/kernel-notify.1.gz
+    fi
+
+    if [[ -d "/etc/bash_completion.d" ]]; then
+      echo "Installing bash autocompletion..."
+      cp -v kernel-notify-prompt package/debian/etc/bash_completion.d/
     fi
 
     echo "Installing other program files..."
