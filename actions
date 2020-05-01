@@ -97,7 +97,7 @@ installKernel() {
     echo "99"
 
     echo "" 1>&2; echo "All packages verified, installing kernel version $installVersion..." 1>&2
-    checkDpkg
+    checkDpkg 1>&2
 
     progress=0
     echo "$progress"
