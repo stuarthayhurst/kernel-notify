@@ -239,8 +239,6 @@ else
   exit 1
 fi
 
-installVersion=$(getLatestKernelVersion)
-currVersion=$(uname -r | sed 's/-.*/ /g')
 
 if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
   if [ ! -f "/usr/bin/dpkg" ]; then
@@ -253,6 +251,9 @@ if [ "$1" == "-i" ] && [ "$2" != "" ]; then
   installVersion=$2
   latestVersion=${latestVersionFull//.}
   automatic="1"
+elif [[ "$1" == "-i" ]]; then
+  installVersion=$(getLatestKernelVersion)
+  currVersion=$(uname -r | sed 's/-.*/ /g')
 fi
 
 if [ "$4" == "-a" ]; then
