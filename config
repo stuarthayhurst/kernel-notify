@@ -1,3 +1,4 @@
+#!/bin/bash
 #Use -m to mute and -um to unmute
 muted="0"
 #Automatically update the kernel and program
