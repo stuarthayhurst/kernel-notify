@@ -22,8 +22,6 @@ checkFiles() {
   fi
   if ! ls /tmp/kernel-notify |grep -q ".*"; then
     rm -rf /tmp/kernel-notify
-  else
-    echo "/tmp/kernel-notify not removed as it is in use"
   fi
 }
 

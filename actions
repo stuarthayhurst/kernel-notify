@@ -218,8 +218,6 @@ clearFiles() {
       echo "Insufficient permission to remove /tmp/kernel-notify"
     fi
     rm -rf /tmp/kernel-notify
-  else
-    echo "/tmp/kernel-notify not removed as it is in use"
   fi
   cd ../
 }
