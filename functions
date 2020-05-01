@@ -21,8 +21,8 @@ displayGraphics() {
     display="$DISPLAY"
     user="$USER"
   elif [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
-    declare $(cat /tmp/kernel-notify.displayinfo |grep "display.*") #Declare display
-    declare $(cat /tmp/kernel-notify.displayinfo |grep -v "display.*") #Declare user
+    declare "$(grep "display.*" /tmp/kernel-notify.displayinfo)" #Declare display
+    declare "$(grep -v "display.*" /tmp/kernel-notify.displayinfo)" #Declare user
   else
     #No display available
     return 1
