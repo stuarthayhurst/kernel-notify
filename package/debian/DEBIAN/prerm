@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $1 = "remove" ]; then
+if [ "$1" = "remove" ]; then
   if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
     sudo rm /etc/xdg/autostart/kernel-notify.desktop
     echo "Removed autostart"

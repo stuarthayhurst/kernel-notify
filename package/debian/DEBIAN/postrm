@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $1 = "remove" ]; then
+if [ "$1" = "remove" ]; then
   if [ -d /usr/share/kernel-notify/ ]; then
     sudo rm -rf /usr/share/kernel-notify/
     echo "Removed program folder"
