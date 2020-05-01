@@ -78,7 +78,7 @@
    * If no notifications are sent when they should be, the notifications binary is likely missing or broken
    * If `ATTENTION: g++: failed to build notifications` was seen during install, the binary will be missing
    * Notifications can be rebuilt with `./install.sh -n` and then `sudo mv notifications /usr/share/kernel-notify/`
-   * If you no longer have access to kernel-notify's source code or need build the notifications specifically for the installed version, use `g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications` \``pkg-config --cflags --libs libnotify`\`
+   * If you no longer have access to kernel-notify's source code or need build the notifications specifically for the installed version, use `g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications $(pkg-config --cflags --libs libnotify)`
    * In the event both options failed, submit a bug report, following the template and giving all available information
 
  - ### Updating failed:
