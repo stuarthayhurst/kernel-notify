@@ -44,9 +44,19 @@ displayGraphics() {
 }
 
 getLatestKernelVersion() {
-    latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
+    if [[ "$checkingprecision" == "minor" ]]; then
+      latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
+      kernelRepoUrl="$minorversionrepo"
+    else
+      latestVersion=""
+      kernelRepoUrl="$majorversionrepo"
+    fi
     if [ "$latestVersion" == "" ]; then
-      latestVersion="x.x.x"
+      latestVersion="$(git ls-remote --refs --tags --sort="v:refname" $kernelRepoUrl |grep -v "[0-9]-rc" |tail -n1)"
+      latestVersion="${latestVersion##*v}"
+      if [ "$latestVersion" == "" ]; then
+        latestVersion="x.x.x"
+      fi
     fi
     echo "$latestVersion"
 }

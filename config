@@ -9,3 +9,9 @@ warnautostart="1"
 maxkernelcount="5"
 #Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)
 priority="critical"
+#Whether to check for major and minor updates or only major version updates (minor / major)
+checkingprecision="minor"
+#Git repository for Linux kernel to use when checking major and minor versions (default)
+minorversionrepo="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
+#Git repository for Linux kernel to use when only checking major versions
+majorversionrepo="git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"

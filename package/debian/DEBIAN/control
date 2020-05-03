@@ -8,7 +8,7 @@ Vcs-browser: https://github.com/Dragon8oy/kernel-notify.git
 Homepage: <https://github.com/Dragon8oy/kernel-notify>
 Package: kernel-notify
 Architecture: all
-Depends: awk | gawk, coreutils (>= 8.25), curl, diffutils, file, grep, policykit-1, psmisc, sed, sudo
+Depends: awk | gawk, coreutils (>= 8.25), curl, diffutils, file, git, grep, policykit-1, psmisc, sed, sudo
 Recommends: g++, libnotify4, libnotify-dev, pkg-config, zenity
 Description: Kernel updater, checker and remover
  A small package to check the latest kernel version and notify users of an update, supports installing and removing kernels
