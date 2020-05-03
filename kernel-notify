@@ -29,10 +29,12 @@ editConfig() {
     cat "$workDir/config"
   else
     if [ "$3" == "" ]; then
-      echo "Config:" && echo ""
+      if [[ "$4" != "silent" ]]; then
+        echo "Config:" && echo ""
+      fi
       cat "$workDir/config" | grep $2
     else
-      currentConfigString=$(cat /usr/share/kernel-notify/config |grep "$2=" |grep -v "#")
+      currentConfigString="$(cat "$workDir/config" |grep "$2=" |grep -v "#")"
       if [[ "$currentConfigString" != "" ]]; then
         sudo sed "s|.*$currentConfigString.*|$2=\"$3\"|" "$workDir/config" > /tmp/kernel-config.temp
         if [[ "$(cat /tmp/kernel-config.temp)" != "" ]]; then
@@ -145,14 +147,22 @@ zenityNotify() {
 
 mute() {
   echo "Muting kernel-notify:"
-  editConfig "-c" "muted" "1"
-  echo "Done";
+  editConfig "-c" "muted" "1" "silent"
+  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="1"' ]]; then
+    echo "Done"
+  else
+    echo "Config not updated, program not muted"
+  fi
 }
 
 unmute() {
   echo "Unmuting kernel-notify:"
-  editConfig "-c" "muted" "0"
-  echo "Done";
+  editConfig "-c" "muted" "0" "silent"
+  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="0"' ]]; then
+    echo "Done"
+  else
+    echo "Config not updated, program not unmuted"
+  fi
 }
 
 updateProgram() {
