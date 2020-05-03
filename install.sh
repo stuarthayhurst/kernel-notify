@@ -158,8 +158,13 @@ checkDeps() {
 }
 
 buildPackage() {
-  echo "Enter the new version number: (Leave blank to only build package)"
-  read newVersion
+  if [[ "$1" != "" ]]; then
+    newVersion="$1"
+    echo "Building package v$buildVersion:"
+  else
+    echo "Enter the new version number: (Leave blank to only build package)"
+    read newVersion
+  fi
   compressIcons
   if [[ "$newVersion" == "" ]]; then
     newVersion=$(cat kernel-notify.desktop | sed -n '5p')
@@ -335,9 +340,15 @@ if [[ "$@" == *"-s"* ]]; then
   slow="true"
 fi
 
+for i in $@; do
+  if [[ "$i" != *"d"* ]] && [[ "$i" != *"s"* ]] && [[ "$i" != *"-"* ]]; then
+    buildVersion="$i"
+  fi
+done
+
 outputResolutions=(48 64 128 256)
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help          : Display this page"; echo "-s | --slow          : Use higher compression on icons, but takes longer"; echo "-b | --build         : Build and prepare the program for release"; echo "-d | --debian        : Build the .deb and install"; echo "-v | --version       : Display program version"; echo "-u | --uninstall     : Uninstall the program"; echo "-c | --compress      : Generate and compress icons"; echo "-n | --notifications : Build the notifications"; echo "-D | --dependencies  : Check if dependencies are installed"; echo ""; echo "--clean              : Clean up files generated during build"; echo ""; echo "Program written by: Dragon8oy"; exit;;
+  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; echo "This program comes with ABSOLUTELY NO WARRANTY."; echo "This is free software; see the source for copying conditions."; echo ""; echo "Usage: ./install.sh [-OPTION]"; echo "Help:"; echo "-h | --help             : Display this page"; echo "-s | --slow             : Use higher compression on icons, but takes longer"; echo "-b | --build [VERSION]  : Build and prepare the program for release"; echo "-d | --debian [VERSION] : Build the .deb and install"; echo "-v | --version          : Display program version"; echo "-u | --uninstall        : Uninstall the program"; echo "-c | --compress         : Generate and compress icons"; echo "-n | --notifications    : Build the notifications"; echo "-D | --dependencies     : Check if dependencies are installed"; echo ""; echo "--clean                 : Clean up files generated during build"; echo ""; echo "Program written by: Dragon8oy"; exit;;
   -u|--uninstall) uninstall; exit;;
   -n|--notifications) buildNotifications; exit;;
   -D|--dependencies) checkDeps "pb"; exit;;
@@ -345,10 +356,10 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   --clean) cleanFiles; exit;;
   -cs|-sc) slow="true"; compressIcons; exit;;
   -v|--version) ./kernel-notify -v; exit;;
-  -bs|-sb) slow="true"; checkDeps "b"; buildPackage; exit;;
-  -ds|-is|-sd|-si) slow="true"; checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
-  -d|-i|--debian|--install) checkDeps "b"; buildPackage; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
-  -b|--build) checkDeps "b"; buildPackage; exit;;
+  -bs|-sb) slow="true"; checkDeps "b"; buildPackage "$buildVersion"; exit;;
+  -ds|-is|-sd|-si) slow="true"; checkDeps "b"; buildPackage "$buildVersion"; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
+  -d|-i|--debian|--install) checkDeps "b"; buildPackage "$buildVersion"; echo "Installing package:"; sudo dpkg -i "kernel-notify-${newVersion}_all.deb"; exit;;
+  -b|--build) checkDeps "b"; buildPackage "$buildVersion"; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
