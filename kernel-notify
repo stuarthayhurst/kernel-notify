@@ -32,10 +32,19 @@ editConfig() {
       echo "Config:" && echo ""
       cat "$workDir/config" | grep $2
     else
-      sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' "$workDir/config" > /tmp/kernel-config.temp
-      sudo mv /tmp/kernel-config.temp "$workDir/config"
-      if [[ "$4" != "silent" ]]; then
-        echo "Saved new config"
+      currentConfigString=$(cat /usr/share/kernel-notify/config |grep "$2=" |grep -v "#")
+      if [[ "$currentConfigString" != "" ]]; then
+        sudo sed "s|.*$currentConfigString.*|$2=\"$3\"|" "$workDir/config" > /tmp/kernel-config.temp
+        if [[ "$(cat /tmp/kernel-config.temp)" != "" ]]; then
+          sudo mv /tmp/kernel-config.temp "$workDir/config"
+          if [[ "$4" != "silent" ]]; then
+            echo "Saved new config"
+          fi
+        else
+          sudo rm /tmp/kernel-config.temp
+        fi
+      else
+        echo "Invalid config name"
       fi
     fi
   fi
