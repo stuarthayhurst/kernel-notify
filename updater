@@ -13,7 +13,7 @@ elif [ ! -w /tmp/kernel-notify ]; then
   echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
   exit 2
 fi
-cd /tmp/kernel-notify
+cd /tmp/kernel-notify || exit 2
 echo "Checking for updates:";
 
 checkFiles() {
