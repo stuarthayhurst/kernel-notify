@@ -25,14 +25,13 @@ fi
 
 editConfig() {
   if [ "$2" == "" ]; then
-    echo "Config:" && echo ""
-    cat "$workDir/config"
+    echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
   else
     if [ "$3" == "" ]; then
       if [[ "$4" != "silent" ]]; then
-        echo "Config:" && echo ""
+        echo "Config: $workDir/config"; echo ""
       fi
-      cat "$workDir/config" | grep $2
+      grep "$2" "$workDir/config"
     else
       currentConfigString="$(cat "$workDir/config" |grep "$2=" |grep -v "#")"
       if [[ "$currentConfigString" != "" ]]; then
