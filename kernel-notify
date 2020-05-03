@@ -34,7 +34,9 @@ editConfig() {
     else
       sudo sed 's|.*'$2'.*|'$2'='\"$3\"'|' "$workDir/config" > /tmp/kernel-config.temp
       sudo mv /tmp/kernel-config.temp "$workDir/config"
-      echo "Saved new config"
+      if [[ "$4" != "silent" ]]; then
+        echo "Saved new config"
+      fi
     fi
   fi
 }
@@ -294,7 +296,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -u|--update) updateProgram; exit;;
   -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
   -o|--old-config) listConfig; exit;;
-  -c|--config) editConfig "$1" "$2" "$3"; exit;;
+  -c|--config) editConfig "$1" "$2" "$3" "$4"; exit;;
   -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${args[@]:1}"; exit;;
   -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
   -a|--add-kernel) updateKernel "" "$2"; exit;;

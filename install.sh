@@ -314,7 +314,7 @@ installPackage() {
       for i in $configs; do
         configValue=$(cat /usr/share/kernel-notify/config.old |grep -v "#" |grep "$i" |sed 's|.*=||')
         configValue=${configValue//'"'}
-        kernel-notify -c "$i" "$configValue"
+        kernel-notify -c "$i" "$configValue" "silent"
       done
       echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
     fi

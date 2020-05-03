@@ -29,7 +29,7 @@ if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify
   for i in $configs; do
     configValue=$(grep -v "#" /usr/share/kernel-notify/config.old |grep "$i" |sed 's|.*=||')
     configValue=${configValue//'"'}
-    sudo kernel-notify -c "$i" "$configValue"
+    sudo kernel-notify -c "$i" "$configValue" "silent"
   done
   echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
 fi
