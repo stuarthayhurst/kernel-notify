@@ -1,5 +1,5 @@
 #!/bin/bash
-#Use -m to mute and -um to unmute
+#Whether or not to send notifications for kernel and program updates
 muted="0"
 #Automatically update the kernel and program
 autoupdate="0"

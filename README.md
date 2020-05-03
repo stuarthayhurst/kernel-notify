@@ -103,7 +103,7 @@
  - Configs:
    * '/' shows multiple options
    * '-' shows a range of values
-  * muted="0/1" - This value shouldn't be editied, use -m to mute and -um to unmute
+  * muted="0/1" - Whether or not to send notifications for kernel and program updates
   * autoupdate="0/1" - Set to 0 to ask before updates, set to 1 to automatically update when the program is run
   * warnautostart="1/0" - Warn users if the program cannot start on login
   * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
