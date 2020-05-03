@@ -58,6 +58,7 @@
    * diffutils / cmp
    * file
    * gawk & grep & sed
+   * git
    * psmisc
    * policykit-1
    * sudo
