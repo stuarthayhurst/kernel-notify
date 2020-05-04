@@ -60,6 +60,7 @@
    * file
    * gawk & grep & sed
    * git
+   * less
    * psmisc
    * policykit-1
    * sudo
