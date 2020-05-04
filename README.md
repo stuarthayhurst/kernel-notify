@@ -94,13 +94,14 @@
    * To solve the issue, reboot the machine and try again. If the issue persists, file a bug report
 
 ## Config:
- * Read a value:   `kernel-notify -c CFGOPTION`
- * Change a value: `kernel-notify -c CFGOPTION NEWCFGVALUE`
+ * Read a value:   `kernel-notify -c configName`
+ * Change a value: `kernel-notify -c configName configValue` OR `kernel-notify -c configName="configValue"`
  * The config can also be changed by editing `/usr/share/kernel-notify/config`
 
  - Example:
   * Show all configs and their values: `kernel-notify -c`
-  * Change the value of 'example' to 'example-complete': `kernel-notify -c example example-complete`
+  * Change the value of 'maxkernelcount' to '3': `kernel-notify -c maxkernelcount 3`
+  * Or you can use: `kernel-notify -c maxkernelcount="3"`
  
  - Configs:
    * '/' shows multiple options

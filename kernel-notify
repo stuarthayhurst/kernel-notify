@@ -339,7 +339,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   echo "-v  | --version    : Display program version and exit"; \
   echo "-o  | --old-config : List old and new config values"; \
   echo "-c  | --config     : Change / read a config value and exit"; \
-  echo "                     - kernel-notify --config CFGOPTION NEWCFGVALUE"; \
+  echo "                     - kernel-notify --config configName configValue"; \
   echo ""; \
   echo "Feature Help:"; \
   echo "-L  | --list-available : List all kernels available to install"; \
