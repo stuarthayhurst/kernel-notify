@@ -45,11 +45,12 @@
    * -c  | --config     : Change / read a config value and exit
 
  - ### Feature Help:
-   * -r  | --remove-kernel : Remove a kernels from a menu and exit
-   * -l  | --list-kernels  : List installed kernels and exit
-   * -a  | --add-kernel    : Install a new kernel and exit
-   * -u  | --unmute        : Unmute the program on login and exit
-   * -m  | --mute          : Mute the program on login and exit
+   * -L  | --list-available : List all kernels available to install
+   * -r  | --remove-kernel  : Remove a kernels from a menu and exit
+   * -l  | --list-kernels   : List installed kernels and exit
+   * -a  | --add-kernel     : Install a new kernel and exit
+   * -u  | --unmute         : Unmute the program on login and exit
+   * -m  | --mute           : Mute the program on login and exit
 
 ## Dependencies:
  - ### Required:
