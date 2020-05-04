@@ -45,7 +45,7 @@ editConfig() {
     fi
     if [[ "$(editConfig "-c" "$2" "" "silent")" == "$2=\"$3\"" ]] && [[ "$4" != "silent" ]]; then
       echo "Saved new config"
-    else
+    elif [[ "$4" != "silent" ]]; then
       echo "Failed to save new config"
     fi
   fi
@@ -65,6 +65,26 @@ listConfig() {
     fi
   else
     echo "No old config file found"
+  fi
+}
+
+mute() {
+  echo "Muting kernel-notify:"
+  editConfig "-c" "muted" "1" "silent"
+  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="1"' ]]; then
+    echo "Done"
+  else
+    echo "Config not updated, program not muted"
+  fi
+}
+
+unmute() {
+  echo "Unmuting kernel-notify:"
+  editConfig "-c" "muted" "0" "silent"
+  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="0"' ]]; then
+    echo "Done"
+  else
+    echo "Config not updated, program not unmuted"
   fi
 }
 
@@ -152,26 +172,6 @@ zenityNotify() {
     exit
   fi
   latestVersion="$latestVersionFull"
-}
-
-mute() {
-  echo "Muting kernel-notify:"
-  editConfig "-c" "muted" "1" "silent"
-  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="1"' ]]; then
-    echo "Done"
-  else
-    echo "Config not updated, program not muted"
-  fi
-}
-
-unmute() {
-  echo "Unmuting kernel-notify:"
-  editConfig "-c" "muted" "0" "silent"
-  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="0"' ]]; then
-    echo "Done"
-  else
-    echo "Config not updated, program not unmuted"
-  fi
 }
 
 updateProgram() {
