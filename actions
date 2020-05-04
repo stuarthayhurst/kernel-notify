@@ -193,6 +193,7 @@ listKernels() {
   KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
+  KERNELS=$(echo "$KERNELS" |sort -V)
   if [ "$KERNELS" = "" ]; then
     KERNELS="Error while looking for kernels"
   fi
