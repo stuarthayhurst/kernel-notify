@@ -24,17 +24,25 @@ if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1
 fi
 
 editConfig() {
-  if [ "$2" == "" ]; then
+  if [[ "$2" == *"="* ]]; then
+    configName="${2%=*}"
+    configValue="${2#*=}"
+  else
+    configName="$2"
+    configValue="$3"
+  fi
+
+  if [ "$configName" == "" ]; then
     echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
-  elif [ "$3" == "" ]; then
+  elif [ "$configValue" == "" ]; then
     if [[ "$4" != "silent" ]]; then
       echo "Config: $workDir/config"; echo ""
     fi
-    grep "$2" "$workDir/config"
+    grep "$configName" "$workDir/config"
   else
-    currentConfigString="$(cat "$workDir/config" |grep "$2=" |grep -v "#")"
+    currentConfigString="$(cat "$workDir/config" |grep "$configName=" |grep -v "#")"
     if [[ "$currentConfigString" != "" ]]; then
-      sudo sed "s|.*$currentConfigString.*|$2=\"$3\"|" "$workDir/config" > /tmp/kernel-config.temp
+      sudo sed "s|.*$currentConfigString.*|$configName=\"$configValue\"|" "$workDir/config" > /tmp/kernel-config.temp
       if [[ "$(cat /tmp/kernel-config.temp)" != "" ]]; then
         sudo mv /tmp/kernel-config.temp "$workDir/config"
       else
@@ -43,7 +51,7 @@ editConfig() {
     else
       echo "Invalid config name"
     fi
-    if [[ "$(editConfig "-c" "$2" "" "silent")" == "$2=\"$3\"" ]] && [[ "$4" != "silent" ]]; then
+    if [[ "$(editConfig "-c" "$configName" "" "silent")" == "$configName=\"$configValue\"" ]] && [[ "$4" != "silent" ]]; then
       echo "Saved new config"
     elif [[ "$4" != "silent" ]]; then
       echo "Failed to save new config"
