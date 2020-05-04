@@ -48,7 +48,7 @@
    * -r  | --remove-kernel : Remove a kernels from a menu and exit
    * -l  | --list-kernels  : List installed kernels and exit
    * -a  | --add-kernel    : Install a new kernel and exit
-   * -um | --unmute        : Unmute the program on login and exit
+   * -u  | --unmute        : Unmute the program on login and exit
    * -m  | --mute          : Mute the program on login and exit
 
 ## Dependencies:
