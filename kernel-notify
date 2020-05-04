@@ -276,18 +276,30 @@ checkProgVer() {
 checkKernelVer() {
   currVersion="$1"
   latestVersionFull="$2"
-  latestVersion=${latestVersionFull//.}
   checkKernelCount "silent"
-  if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
+
+  prepareVersion() {
+    version=""
+    for i in ${1//./ }; do
+      if [[ "$i" -lt "10" ]]; then
+        version+="0$i"
+      else
+        version+="$i"
+      fi
+    done
+    echo "$version"
+  }
+
+  if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
-  elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
+  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]]; then
     if [ "$autoupdate" -ne "0" ]; then
       echo "" && echo "Auto-update is enabled, updating kernel"
       sleep 5
       "$workDir/actions" "--display"
       pkexec kernel-notify -aa
     else
-      sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersionFull" "kernel" "mute"
+      sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute"
     fi
   fi
 }
@@ -296,31 +308,28 @@ main() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   echo -n "Checking latest version..."
   latestVersionFull=$(getLatestKernelVersion)
-  latestVersionOrig="$latestVersionFull"
+
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sleep 0.5; echo -ne " Error\n"; sleep 0.5
     sendNotification "Network error" "An error occured while checking latest version"
   else
     echo -ne " Done\n"
   fi
-  currVersionFull=$currVersion
 
   if [[ "$latestVersionFull" == "x.x.x" ]] || [[ "$latestVersionFull" == "" ]]; then
     exit 1
   fi
-  latestVersion="${latestVersionFull//.}"
 
   if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
-    latestVersion="${latestVersion}0"
     latestVersionFull="${latestVersionFull}.0"
   fi
 
   echo "Latest Kernel: $latestVersionFull"
-  echo "Current Kernel: $currVersionFull"
+  echo "Current Kernel: $currVersion"
 
   #Check if versions are outdated and notify
   checkProgVer
-  checkKernelVer "$currVersion" "$latestVersionOrig"
+  checkKernelVer "$currVersion" "$latestVersionFull"
 
   #Check installed kernel count is below configured warning threshold
   checkKernelCount "alert"
