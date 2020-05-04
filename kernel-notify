@@ -26,27 +26,27 @@ fi
 editConfig() {
   if [ "$2" == "" ]; then
     echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
+  elif [ "$3" == "" ]; then
+    if [[ "$4" != "silent" ]]; then
+      echo "Config: $workDir/config"; echo ""
+    fi
+    grep "$2" "$workDir/config"
   else
-    if [ "$3" == "" ]; then
-      if [[ "$4" != "silent" ]]; then
-        echo "Config: $workDir/config"; echo ""
-      fi
-      grep "$2" "$workDir/config"
-    else
-      currentConfigString="$(cat "$workDir/config" |grep "$2=" |grep -v "#")"
-      if [[ "$currentConfigString" != "" ]]; then
-        sudo sed "s|.*$currentConfigString.*|$2=\"$3\"|" "$workDir/config" > /tmp/kernel-config.temp
-        if [[ "$(cat /tmp/kernel-config.temp)" != "" ]]; then
-          sudo mv /tmp/kernel-config.temp "$workDir/config"
-          if [[ "$4" != "silent" ]]; then
-            echo "Saved new config"
-          fi
-        else
-          sudo rm /tmp/kernel-config.temp
-        fi
+    currentConfigString="$(cat "$workDir/config" |grep "$2=" |grep -v "#")"
+    if [[ "$currentConfigString" != "" ]]; then
+      sudo sed "s|.*$currentConfigString.*|$2=\"$3\"|" "$workDir/config" > /tmp/kernel-config.temp
+      if [[ "$(cat /tmp/kernel-config.temp)" != "" ]]; then
+        sudo mv /tmp/kernel-config.temp "$workDir/config"
       else
-        echo "Invalid config name"
+        sudo rm /tmp/kernel-config.temp
       fi
+    else
+      echo "Invalid config name"
+    fi
+    if [[ "$(editConfig "-c" "$2" "" "silent")" == "$2=\"$3\"" ]] && [[ "$4" != "silent" ]]; then
+      echo "Saved new config"
+    else
+      echo "Failed to save new config"
     fi
   fi
 }
