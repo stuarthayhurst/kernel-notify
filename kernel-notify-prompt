@@ -1,25 +1,36 @@
 #!/bin/bash
-_kernel_notify_args() {
-  local line i
-  local helplist=()
+_kernel_notify() {
+  #Generate argument list
+  local promptlist line i
   while read -r line; do
-    helplist+=("$line")
-  done <<< "$(kernel-notify --help 2>/dev/null)"
-
-  for line in "${helplist[@]}"; do
     line="${line%%:*}"
     if ! echo "$line" |grep -i "kernel-notify" > /dev/null; then
       for i in $line; do
         if [[ "${#i}" -gt "3" ]] && echo "$i" |grep "^-" > /dev/null; then
-          local promptlist+="$i "
+          promptlist+="$i "
         fi
       done
     fi
-  done
+  done <<< "$(kernel-notify --help 2>/dev/null)"
+
+  #Generate configs
+  local configlist
+  while read -r line; do
+    if echo "$line" |grep -v "Config:"> /dev/null; then
+      if echo "$line" |grep -v "#"> /dev/null; then
+        configlist+="${line%%=*} "
+      fi
+    fi
+  done <<< "$(kernel-notify --config 2>/dev/null)"
 
   local cur="${COMP_WORDS[COMP_CWORD]}"
-  COMPREPLY=( $(compgen -W "${promptlist}" -- "${cur}") )
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+  if [[ "$prev" == "-c" ]] || [[ "$prev" == "--config" ]]; then
+    COMPREPLY=( $(compgen -W "$configlist" -- "$cur") )
+  else
+    COMPREPLY=( $(compgen -W "$promptlist" -- "$cur") )
+  fi
   return 0
 }
 
-complete -F _kernel_notify_args kernel-notify
+complete -F _kernel_notify kernel-notify
