@@ -30,38 +30,29 @@ installKernel() {
   fi
 
   installVersion="$chosenVersion"
-  archiveContent=$(curl -k -s https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion/)
-  installVersionLink=$installVersion
-  if [ "${installVersion//.}" -le "99" ]; then
-    installVersion=$(echo "${installVersion}.0")
+  mainlineRepoDir="https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion"
+
+  if [ "$(awk -F"." '{print NF-1}' <<< "${installVersion}")" -ne "2" ]; then
+    installVersion="${installVersion}.0"
   fi
 
-  if [ "${installVersion%%.*}" -lt "10" ]; then
-    installVersionShort="0${installVersion%%.*}"
-  else
-    installVersionShort="${installVersion%%.*}"
-  fi
-  installVersionTemp="${installVersion%.*}"
-  installVersionTemp="${installVersionTemp##*.}"
-  if [ "$installVersionTemp" -lt "10" ]; then
-    installVersionShort="${installVersionShort}0$installVersionTemp"
-  else
-    installVersionShort="$installVersionShort$installVersionTemp"
-  fi
-  if [ "${installVersion##*.}" -lt "10" ]; then
-    installVersionShort="${installVersionShort}0${installVersion##*.}"
-  else
-    installVersionShort="$installVersionShort${installVersion##*.}"
-  fi
-
-  kernelDate=$(echo $archiveContent |awk -F"linux-headers-$installVersion-${installVersionShort}_$installVersion-$installVersionShort." '{print $2}' |cut -c -12)
+  archiveContent="$(curl -k -s $mainlineRepoDir/)"
+  kernelDate=$(echo "$archiveContent" |grep "linux-headers-$installVersion-$(prepareVersion "$installVersion")_$installVersion-$(prepareVersion "$installVersion").")
+  kernelDate="${kernelDate%%_all*}"
+  kernelDate="${kernelDate##*.}"
 
   if [ "$kernelDate" == "" ]; then
     echo "Either that kernel doesn't have an entry, or you have no internet connection"
     exit 2
   fi
 
-  declare -a packages=("https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-${installVersionShort}_$installVersion-$installVersionShort.${kernelDate}_all.deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-headers-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-modules-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb" "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/linux-image-unsigned-$installVersion-$installVersionShort-generic_$installVersion-$installVersionShort.${kernelDate}_$(dpkg --print-architecture).deb")
+  arch="$(dpkg --print-architecture)"
+  kernelType="-generic"
+  fullVersionString="$installVersion-$(prepareVersion "$installVersion")${kernelType}_$installVersion-$(prepareVersion "$installVersion").$kernelDate"
+  packages=("$mainlineRepoDir/linux-headers-${fullVersionString}_all.deb")
+  packages+=("$mainlineRepoDir/linux-headers-${fullVersionString}_$arch.deb")
+  packages+=("$mainlineRepoDir/linux-modules-${fullVersionString}_$arch.deb")
+  packages+=("$mainlineRepoDir/linux-image-unsigned-${fullVersionString}_$arch.deb")
 
   dpkgKernelInstall() {
     echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2

@@ -60,3 +60,15 @@ getLatestKernelVersion() {
     fi
     echo "$latestVersion"
 }
+
+prepareVersion() {
+  version=""
+  for i in ${1//./ }; do
+    if [[ "$i" -lt "10" ]]; then
+      version+="0$i"
+    else
+      version+="$i"
+    fi
+  done
+  echo "$version"
+}

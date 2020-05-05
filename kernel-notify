@@ -278,18 +278,6 @@ checkKernelVer() {
   latestVersionFull="$2"
   checkKernelCount "silent"
 
-  prepareVersion() {
-    version=""
-    for i in ${1//./ }; do
-      if [[ "$i" -lt "10" ]]; then
-        version+="0$i"
-      else
-        version+="$i"
-      fi
-    done
-    echo "$version"
-  }
-
   if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
   elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]]; then
