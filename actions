@@ -47,9 +47,9 @@ installKernel() {
   fi
 
   arch="$(dpkg --print-architecture)"
-  kernelType="-generic"
-  fullVersionString="$installVersion-$(prepareVersion "$installVersion")${kernelType}_$installVersion-$(prepareVersion "$installVersion").$kernelDate"
-  packages=("$mainlineRepoDir/linux-headers-${fullVersionString}_all.deb")
+  kernelType="generic"
+  fullVersionString="$installVersion-$(prepareVersion "$installVersion")-${kernelType}_$installVersion-$(prepareVersion "$installVersion").$kernelDate"
+  packages=("$mainlineRepoDir/linux-headers-${fullVersionString//-$kernelType}_all.deb")
   packages+=("$mainlineRepoDir/linux-headers-${fullVersionString}_$arch.deb")
   packages+=("$mainlineRepoDir/linux-modules-${fullVersionString}_$arch.deb")
   packages+=("$mainlineRepoDir/linux-image-unsigned-${fullVersionString}_$arch.deb")
@@ -79,7 +79,7 @@ installKernel() {
     done
 
     echo "# Downloading & verifying checksums..."
-    curl --progress-bar -O "https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersionLink/CHECKSUMS"
+    curl --progress-bar -O "$mainlineRepoDir/CHECKSUMS"
     echo "90"
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       echo "Downloaded kernel checksum invalid" 1>&2
