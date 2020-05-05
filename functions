@@ -44,21 +44,23 @@ displayGraphics() {
 }
 
 getLatestKernelVersion() {
-    if [[ "$checkingprecision" == "minor" ]]; then
-      latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
-      kernelRepoUrl="$minorversionrepo"
-    else
-      latestVersion=""
-      kernelRepoUrl="$majorversionrepo"
+  latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
+  if [[ "$checkingprecision" == "minor" ]]; then
+    kernelRepoUrl="$minorversionrepo"
+  elif [[ "$checkingprecision" == "major" ]]; then
+    if [ "$(awk -F"." '{print NF-1}' <<< "${latestVersion}")" == "2" ]; then
+      latestVersion="${latestVersion%.*}"
     fi
+    kernelRepoUrl="$majorversionrepo"
+  fi
+  if [ "$latestVersion" == "" ]; then
+    latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelRepoUrl" |grep -v "[0-9]-rc" |tail -n1)"
+    latestVersion="${latestVersion##*v}"
     if [ "$latestVersion" == "" ]; then
-      latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelRepoUrl" |grep -v "[0-9]-rc" |tail -n1)"
-      latestVersion="${latestVersion##*v}"
-      if [ "$latestVersion" == "" ]; then
-        latestVersion="x.x.x"
-      fi
+      latestVersion="x.x.x"
     fi
-    echo "$latestVersion"
+  fi
+  echo "$latestVersion"
 }
 
 prepareVersion() {
