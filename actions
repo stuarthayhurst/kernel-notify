@@ -26,7 +26,7 @@ installKernel() {
       exit 7
     fi
   else
-    echo "Finding kernel version $installVersion..."
+    echo "Finding kernel version $chosenVersion..."
   fi
 
   installVersion="$chosenVersion"
