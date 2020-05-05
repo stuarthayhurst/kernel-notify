@@ -54,7 +54,7 @@ getLatestKernelVersion() {
     kernelRepoUrl="$majorversionrepo"
   fi
   if [ "$latestVersion" == "" ]; then
-    latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelRepoUrl" |grep -v "[0-9]-rc" |tail -n1)"
+    latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelRepoUrl" 2>/dev/null |grep -v "[0-9]-rc" |tail -n1)"
     latestVersion="${latestVersion##*v}"
     if [ "$latestVersion" == "" ]; then
       latestVersion="x.x.x"
