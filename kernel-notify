@@ -132,7 +132,7 @@ listAvailableKernels() {
 
 automaticFeatures() {
   case $1 in
-    am) mute; sendNotification "Program muted" "Run 'kernel-notify -u' to unmute";;
+    am) mute; sendNotification "Program muted" "Run 'kernel-notify -U' to unmute";;
     aa) updateKernel "automatic" "";;
     au) updateProgram "$version" "automatic";;
   esac
@@ -323,49 +323,96 @@ main() {
   checkKernelCount "alert"
 }
 
-read -ra args <<< $@
-while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; \
-  echo "This program comes with ABSOLUTELY NO WARRANTY."; \
-  echo "This is free software; see the source for copying conditions."; \
-  echo ""; \
-  echo "Usage: kernel-notify [-OPTION] [-t | --test]"; \
-  echo "Program Help:"; \
-  echo "-h  | --help       : Display this page and exit"; \
-  echo "-u  | --update     : Update the program and exit"; \
-  echo "-v  | --version    : Display program version and exit"; \
-  echo "-o  | --old-config : List old and new config values"; \
-  echo "-c  | --config     : Change / read a config value and exit"; \
-  echo "                     - kernel-notify --config configName configValue"; \
-  echo ""; \
-  echo "Feature Help:"; \
-  echo "-L  | --list-available : List all kernels available to install"; \
-  echo "-r  | --remove-kernel  : Remove kernels with a menu and exit"; \
-  echo "-l  | --list-kernels   : List installed kernels and exit"; \
-  echo "-a  | --add-kernel     : Install a new kernel and exit"; \
-  echo "-u  | --unmute         : Unmute the program on login"; \
-  echo "-m  | --mute           : Mute the program on login"; \
-  echo ""; \
-  echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
-  echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \
-  echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-  -u|--update) updateProgram; exit;;
-  -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-  -o|--old-config) listConfig; exit;;
-  -c|--config) editConfig "$1" "$2" "$3" "$4"; exit;;
-  -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
-  -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${args[@]:1}"; exit;;
-  -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
-  -a|--add-kernel) updateKernel "" "$2"; exit;;
-  -u|--unmute) unmute; exit;;
-  -m|--mute) mute; exit;;
-  -t|--test) ;; #Check for argument to prevent program interpreting it as unrecognised
-  -am) automaticFeatures "am"; exit;;
-  -aa) automaticFeatures "aa"; exit;;
-  -au) automaticFeatures "au"; exit;;
-  -zw) zenityNotify; main; exit;;
-  "") main;;
-  *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
-esac; shift; done
+read -ra args <<< "$@"; argNum="0"
+
+while [[ "$#" > "$argNum" ]]; do
+  arg="${args[argNum]}"
+  if [[ "$arg" = --* ]]; then
+    expandedArgs+=("$arg")
+  elif [[ "$arg" = -* ]]; then
+    for i in -aa -au -am -zw; do
+      if [[ "$arg" == "$i" ]]; then
+        skipArg="true"
+      fi
+    done
+    if [[ "$skipArg" != "true" ]]; then
+      for splitArg in $(echo "${arg//-}" |grep -o .); do
+        expandedArgs+=("-$splitArg")
+      done
+    else
+      skipArg="false"
+    fi
+  else
+    expandedArgs+=("$arg")
+  fi
+  argNum=$((argNum + 1))
+done
+
+argNum="0"
+while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
+  arg="${expandedArgs[argNum]}"
+  case $arg in
+    -t|--test) test="1"; expandedArgs[argNum]="";;
+  esac
+  argNum=$((argNum + 1))
+done
+
+for i in "${expandedArgs[@]}"; do
+  if [[ "$i" != "" ]]; then
+    new_array+=( "$i" )
+  fi
+done
+expandedArgs=("${new_array[@]}")
+unset new_array
+
+argNum="0"
+while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
+  arg="${expandedArgs[argNum]}"
+  case $arg in
+    -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; \
+    echo "This program comes with ABSOLUTELY NO WARRANTY."; \
+    echo "This is free software; see the source for copying conditions."; \
+    echo ""; \
+    echo "Usage: kernel-notify [-OPTIONS]"; \
+    echo "Program Help:"; \
+    echo "-h  | --help       : Display this page and exit"; \
+    echo "-t  | --test       : Run program in current directory with other options"; \
+    echo "-u  | --update     : Update the program and exit"; \
+    echo "-v  | --version    : Display program version and exit"; \
+    echo "-o  | --old-config : List old and new config values"; \
+    echo "-c  | --config     : Change / read a config value and exit"; \
+    echo "                     - kernel-notify --config configName configValue"; \
+    echo ""; \
+    echo "Feature Help:"; \
+    echo "-L  | --list-available : List all kernels available to install"; \
+    echo "-r  | --remove-kernel  : Remove kernels with a menu and exit"; \
+    echo "-l  | --list-kernels   : List installed kernels and exit"; \
+    echo "-a  | --add-kernel     : Install a new kernel and exit"; \
+    echo "-U  | --unmute         : Unmute the program on login"; \
+    echo "-m  | --mute           : Mute the program on login"; \
+    echo ""; \
+    echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
+    echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \
+    echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
+    -u|--update) updateProgram; exit;;
+    -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
+    -o|--old-config) listConfig; exit;;
+  
+    -c|--config) editConfig "" "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]//"--test"//"-t"}" "${expandedArgs[((argNum + 3))]}"; exit;;
+    -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
+    -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
+    -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
+    -a|--add-kernel) updateKernel "" "${expandedArgs[((argNum + 1))]}"; exit;;
+    -U|--unmute) unmute; exit;;
+    -m|--mute) mute; exit;;
+    -t|--test) ;; #Check for argument to prevent program interpreting it as unrecognised
+    -am) automaticFeatures "am"; exit;;
+    -aa) automaticFeatures "aa"; exit;;
+    -au) automaticFeatures "au"; exit;;
+    -zw) zenityNotify; main; exit;;
+    *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
+  esac
+  argNum=$((argNum + 1))
+done
 
 main

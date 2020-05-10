@@ -39,6 +39,7 @@
 ## Help:
  - ### Program Help:
    * -h  | --help       : Display the help page and exit
+   * -t  | --test       : Run program in current directory with other options
    * -u  | --update     : Update the program and exit
    * -v  | --version    : Display program version and exit
    * -o  | --old-config : List old and new config values and exit
@@ -49,7 +50,7 @@
    * -r  | --remove-kernel  : Remove a kernels from a menu and exit
    * -l  | --list-kernels   : List installed kernels and exit
    * -a  | --add-kernel     : Install a new kernel and exit
-   * -u  | --unmute         : Unmute the program on login and exit
+   * -U  | --unmute         : Unmute the program on login and exit
    * -m  | --mute           : Mute the program on login and exit
 
 ## Dependencies:
