@@ -1,5 +1,6 @@
 #!/bin/bash
 version="$1"
+githubAPIString='-H "Accept: application/vnd.github.full+json"'
 if [[ -f "$workDir/functions" ]]; then
   source "$workDir/functions"
 else
@@ -25,7 +26,7 @@ checkFiles() {
   fi
 }
 
-latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 
 if which dpkg > /dev/null 2>&1; then
   if dpkg -s kernel-notify | grep Status |grep -q installed; then
@@ -43,7 +44,7 @@ fi
 if [ "${latestVer//.}" -ne "${version//.}" ]; then
   echo "Updates are available, updating"
   if [ "$installation" == "dpkg" ]; then
-    curl --progress-bar -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
+    curl --progress-bar -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
   else
     curl --progress-bar -O -L "https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz"
   fi
