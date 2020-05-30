@@ -303,8 +303,8 @@ main() {
   checkKernelCount "alert"
 }
 
+#Expand combined arguments
 read -ra args <<< "$@"; argNum="0"
-
 while [[ "$#" > "$argNum" ]]; do
   arg="${args[argNum]}"
   if [[ "$arg" = --* ]]; then
@@ -328,6 +328,7 @@ while [[ "$#" > "$argNum" ]]; do
   argNum=$((argNum + 1))
 done
 
+#Set variables needed for given argumens
 argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
@@ -337,6 +338,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   argNum=$((argNum + 1))
 done
 
+#Remove processed arguments from the array
 for i in "${expandedArgs[@]}"; do
   if [[ "$i" != "" ]]; then
     new_array+=( "$i" )
@@ -345,6 +347,7 @@ done
 expandedArgs=("${new_array[@]}")
 unset new_array
 
+#Source / check existing program files
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
   source "$workDir/config"
   source "$workDir/functions"
@@ -359,6 +362,7 @@ if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1
     echo "Autostart directory not found, program will not automatically start"
 fi
 
+#Run given arguments
 argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
