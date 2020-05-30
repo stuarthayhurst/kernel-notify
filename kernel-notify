@@ -3,26 +3,6 @@ export workDir="/usr/share/kernel-notify"
 icon="kernel-notify"
 version="6.0.3"
 
-if [[ "$@" == *"-t"* ]]; then
-  export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-  echo "Running kernel-notify in $workDir/"
-  test="1"
-fi
-
-if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
-  source "$workDir/config"
-  source "$workDir/functions"
-  cd "$workDir"
-else
-  echo "Config file / kernel-notify directory missing, exiting"
-  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
-  exit 1
-fi
-
-if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
-    echo "Autostart directory not found, program will not automatically start"
-fi
-
 editConfig() {
   if [[ "$2" == *"="* ]]; then
     configName="${2%=*}"
@@ -352,7 +332,7 @@ argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
   case $arg in
-    -t|--test) test="1"; expandedArgs[argNum]="";;
+    -t|--test) test="1"; export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"; expandedArgs[argNum]="";;
   esac
   argNum=$((argNum + 1))
 done
@@ -364,6 +344,20 @@ for i in "${expandedArgs[@]}"; do
 done
 expandedArgs=("${new_array[@]}")
 unset new_array
+
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
+  source "$workDir/config"
+  source "$workDir/functions"
+  cd "$workDir"
+else
+  echo "Config file / kernel-notify directory missing, exiting"
+  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
+  exit 1
+fi
+
+if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
+    echo "Autostart directory not found, program will not automatically start"
+fi
 
 argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
