@@ -67,6 +67,7 @@ int main(int argc, char * argv[] ) {
     }
   }
 
+  notify_notification_set_hint (n, "desktop-entry", g_variant_new_string ("kernel-notify"));
   notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
   if (!notify_notification_show(n, 0)) {
     std::cerr << "Notification failed" << std::endl;
