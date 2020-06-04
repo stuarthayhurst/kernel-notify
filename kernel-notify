@@ -4,18 +4,18 @@ icon="kernel-notify"
 version="6.0.3"
 
 editConfig() {
-  if [[ "$2" == *"="* ]]; then
-    configName="${2%=*}"
-    configValue="${2#*=}"
+  if [[ "$1" == *"="* ]]; then
+    configName="${1%=*}"
+    configValue="${1#*=}"
   else
-    configName="$2"
-    configValue="$3"
+    configName="$1"
+    configValue="$2"
   fi
 
   if [ "$configName" == "" ]; then
     echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
   elif [ "$configValue" == "" ]; then
-    if [[ "$4" != "silent" ]]; then
+    if [[ "$3" != "silent" ]]; then
       echo "Config: $workDir/config"; echo ""
     fi
     grep "$configName" "$workDir/config"
@@ -31,9 +31,9 @@ editConfig() {
     else
       echo "Invalid config name"
     fi
-    if [[ "$(editConfig "-c" "$configName" "" "silent")" == "$configName=\"$configValue\"" ]] && [[ "$4" != "silent" ]]; then
+    if [[ "$(editConfig "$configName" "" "silent")" == "$configName=\"$configValue\"" ]] && [[ "$3" != "silent" ]]; then
       echo "Saved new config"
-    elif [[ "$4" != "silent" ]]; then
+    elif [[ "$3" != "silent" ]]; then
       echo "Failed to save new config"
     fi
   fi
@@ -58,8 +58,8 @@ listConfig() {
 
 mute() {
   echo "Muting kernel-notify:"
-  editConfig "-c" "muted" "1" "silent"
-  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="1"' ]]; then
+  editConfig "muted" "1" "silent"
+  if [[ "$(editConfig "muted" "" "silent")" == 'muted="1"' ]]; then
     echo "Done"
   else
     echo "Config not updated, program not muted"
@@ -68,8 +68,8 @@ mute() {
 
 unmute() {
   echo "Unmuting kernel-notify:"
-  editConfig "-c" "muted" "0" "silent"
-  if [[ "$(editConfig "-c" "muted" "" "silent")" == 'muted="0"' ]]; then
+  editConfig "muted" "0" "silent"
+  if [[ "$(editConfig "muted" "" "silent")" == 'muted="0"' ]]; then
     echo "Done"
   else
     echo "Config not updated, program not unmuted"
@@ -396,7 +396,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -o|--old-config) listConfig; exit;;
   
-    -c|--config) editConfig "" "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]//"--test"//"-t"}" "${expandedArgs[((argNum + 3))]}"; exit;;
+    -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]//"--test"//"-t"}" "${expandedArgs[((argNum + 3))]}"; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
     -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
