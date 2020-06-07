@@ -367,7 +367,6 @@ fi
 argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
-  echo $arg
   case $arg in
     -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; \
     echo "This program comes with ABSOLUTELY NO WARRANTY."; \
