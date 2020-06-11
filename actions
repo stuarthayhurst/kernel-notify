@@ -84,6 +84,7 @@ installKernel() {
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       echo "Downloaded kernel checksum invalid" 1>&2
       clearFiles "$installList CHECKSUMS"
+      exit 4
     fi
     echo "99"
 
