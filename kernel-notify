@@ -334,7 +334,7 @@ argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
   case $arg in
-    -t|--test) test="1"; export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"; expandedArgs[argNum]="";;
+    -t|--test) test="1"; export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"; echo "Running kernel-notify in $workDir/"; expandedArgs[argNum]="";;
   esac
   argNum=$((argNum + 1))
 done
