@@ -213,7 +213,7 @@ updateKernel() {
       7|*) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
     esac
   else
-    bash -e "$workDir/actions" -i "$installVersion"
+    "$workDir/actions" -i "$installVersion"
   fi
   checkKernelCount
 }

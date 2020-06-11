@@ -15,8 +15,8 @@ installKernel() {
   fi
 
   if [[ "$chosenVersion" == "" ]]; then
-    echo "Using selected version..."
-    chosenVersion=$installVersion
+    echo "Using selected version $installVersion"
+    chosenVersion="$installVersion"
     if [[ "$installVersion" != "x.x.x" ]]; then
       if [ "${installVersion//.}" -eq "${currVersion//.}" ]; then
         echo "Kernel is already on the selected version"
@@ -37,7 +37,7 @@ installKernel() {
   fi
 
   archiveContent="$(curl -k -s $mainlineRepoDir/)"
-  kernelDate=$(echo "$archiveContent" |grep "linux-headers-$installVersion-$(prepareVersion "$installVersion")_$installVersion-$(prepareVersion "$installVersion").")
+  kernelDate="$(echo "$archiveContent" |grep "linux-headers-$installVersion-$(prepareVersion "$installVersion")_$installVersion-$(prepareVersion "$installVersion").")"
   kernelDate="${kernelDate%%_all*}"
   kernelDate="${kernelDate##*.}"
 
