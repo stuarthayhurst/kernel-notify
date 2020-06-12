@@ -313,16 +313,17 @@ while [[ "$#" > "$argNum" ]]; do
     for i in -aa -au -am -zw; do
       if [[ "$arg" == "$i" ]]; then
         skipArg="true"
+        break
       fi
     done
-    if [[ "$skipArg" != "true" ]]; then
+    if [[ "$skipArg" == "true" ]]; then
+      expandedArgs+=("$arg")
+    else
       for splitArg in $(echo "${arg//-}" |grep -o .); do
         expandedArgs+=("-$splitArg")
       done
-    else
-      expandedArgs="$arg"
-      skipArg="false"
     fi
+    skipArg="false"
   else
     expandedArgs+=("$arg")
   fi
