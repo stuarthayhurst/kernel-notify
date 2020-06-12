@@ -4,6 +4,7 @@ icon="kernel-notify"
 version="6.0.3"
 
 editConfig() {
+  #Read arguments and input variables
   if [[ "$1" == *"="* ]]; then
     configName="${1%=*}"
     configValue="${1#*=}"
@@ -13,13 +14,16 @@ editConfig() {
   fi
 
   if [ "$configName" == "" ]; then
+    #Display config without #!/bin/bash
     echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
   elif [ "$configValue" == "" ]; then
+    #Search config for a specific config and output result
     if [[ "$3" != "silent" ]]; then
       echo "Config: $workDir/config"; echo ""
     fi
     grep "$configName" "$workDir/config"
   else
+    #Search config for specific config, get the value and replace with new value
     currentConfigString="$(cat "$workDir/config" |grep "$configName=" |grep -v "#")"
     if [[ "$currentConfigString" != "" ]]; then
       sudo sed "s|.*$currentConfigString.*|$configName=\"$configValue\"|" "$workDir/config" > /tmp/kernel-config.temp
@@ -31,6 +35,7 @@ editConfig() {
     else
       echo "Invalid config name"
     fi
+    #Check new config value was saved correctly
     if [[ "$(editConfig "$configName" "" "silent")" == "$configName=\"$configValue\"" ]] && [[ "$3" != "silent" ]]; then
       echo "Saved new config"
     elif [[ "$3" != "silent" ]]; then
