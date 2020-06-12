@@ -42,7 +42,7 @@ installKernel() {
   kernelDate="${kernelDate##*.}"
 
   if [ "$kernelDate" == "" ]; then
-    echo "Either that kernel doesn't have an entry, or you have no internet connection"
+    echo "Either kernel $installVersion doesn't have an entry, or you have no internet connection"
     exit 2
   fi
 
