@@ -308,8 +308,10 @@ read -ra args <<< "$@"; argNum="0"
 while [[ "$#" > "$argNum" ]]; do
   arg="${args[argNum]}"
   if [[ "$arg" = --* ]]; then
+    #If the argument has 2 dashes, don't modify it
     expandedArgs+=("$arg")
   elif [[ "$arg" = -* ]]; then
+    #If the argument is internal, set it to be skipped
     for i in -aa -au -am -zw; do
       if [[ "$arg" == "$i" ]]; then
         skipArg="true"
@@ -317,14 +319,17 @@ while [[ "$#" > "$argNum" ]]; do
       fi
     done
     if [[ "$skipArg" == "true" ]]; then
+      #Skip argument if set
       expandedArgs+=("$arg")
     else
+      #Split the argument into individual letters and add to arguments array
       for splitArg in $(echo "${arg//-}" |grep -o .); do
         expandedArgs+=("-$splitArg")
       done
     fi
     skipArg="false"
   else
+    #If the argument has no dashes, don't modify it
     expandedArgs+=("$arg")
   fi
   argNum=$((argNum + 1))
@@ -347,7 +352,7 @@ for i in "${expandedArgs[@]}"; do
   fi
 done
 expandedArgs=("${new_array[@]}")
-unset new_array
+unset args skipArg new_array
 
 #Source / check existing program files
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
