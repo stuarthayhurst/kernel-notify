@@ -36,8 +36,14 @@ installKernel() {
     installVersion="${installVersion}.0"
   fi
 
+  arch="$(dpkg --print-architecture)"
   archiveContent="$(curl -k -s $mainlineRepoDir/)"
   kernelDate="$(echo "$archiveContent" |grep "linux-headers-$installVersion-$(prepareVersion "$installVersion")_$installVersion-$(prepareVersion "$installVersion").")"
+
+  if [[ "$kernelDate" == *"$arch"* ]]; then
+    mainlineRepoDir="$mainlineRepoDir/$arch"
+  fi
+
   kernelDate="${kernelDate%%_all*}"
   kernelDate="${kernelDate##*.}"
 
@@ -46,7 +52,6 @@ installKernel() {
     exit 2
   fi
 
-  arch="$(dpkg --print-architecture)"
   kernelType="generic"
   fullVersionString="$installVersion-$(prepareVersion "$installVersion")-${kernelType}_$installVersion-$(prepareVersion "$installVersion").$kernelDate"
   packages=("$mainlineRepoDir/linux-headers-${fullVersionString//-$kernelType}_all.deb")
