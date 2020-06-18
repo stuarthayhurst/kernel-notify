@@ -65,6 +65,7 @@ installKernel() {
       mkdir /tmp/kernel-notify
     elif [ ! -w /tmp/kernel-notify ]; then
       echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root" 1>&2
+      sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason"
       exit 7
     fi
     cd /tmp/kernel-notify
@@ -79,6 +80,7 @@ installKernel() {
       if ! file $filename | grep -q 'Debian binary package'; then
         echo "$filename: Not a Debian package" 1>&2
         clearFiles "$installList"
+        sendNotification "Kernel failed to update" "Downloaded kernel faulty"
         exit 4
       fi
     done
@@ -89,6 +91,7 @@ installKernel() {
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       echo "Downloaded kernel checksum invalid" 1>&2
       clearFiles "$installList CHECKSUMS"
+      sendNotification "Kernel failed to update" "Downloaded kernel faulty"
       exit 4
     fi
     echo "99"
