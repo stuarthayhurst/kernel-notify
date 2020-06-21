@@ -38,4 +38,5 @@ if kernel-notify -v; then
   echo ""; echo "Successfully installed kernel-notify"
 else
   echo ""; echo "  ATTENTION: Installing kernel-notify failed"
+  exit 1
 fi
