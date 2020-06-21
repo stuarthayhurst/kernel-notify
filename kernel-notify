@@ -61,22 +61,36 @@ listConfig() {
 }
 
 mute() {
-  echo "Muting kernel-notify:"
-  editConfig "muted" "1" "silent"
-  if [[ "$(editConfig "muted" "" "silent")" == 'muted="1"' ]]; then
-    echo "Done"
-  else
-    echo "Config not updated, program not muted"
+  echo "Disabling kernel-notify autostart:"
+  #editConfig "muted" "1" "silent"
+  #if [[ ! "$(editConfig "muted" "" "silent")" == 'muted="1"' ]]; then
+  #  echo "Config not updated, program not muted"
+  #  exit 1
+  #fi
+
+  #Disable autostart
+  if [[ -d "/etc/xdg/autostart/" ]]; then
+    autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+    sed "s|X-GNOME-Autostart-enabled=true|X-GNOME-Autostart-enabled=false|" "$autostartFile" > "/tmp/kernel-notify-autostart.temp"
+    sudo mv "/tmp/kernel-notify-autostart.temp" "$autostartFile"
   fi
+
+  #Check it succeeded, copy to unmute()
 }
 
 unmute() {
-  echo "Unmuting kernel-notify:"
-  editConfig "muted" "0" "silent"
-  if [[ "$(editConfig "muted" "" "silent")" == 'muted="0"' ]]; then
-    echo "Done"
-  else
-    echo "Config not updated, program not unmuted"
+  echo "Enabling kernel-notify autostart:"
+  #editConfig "muted" "0" "silent"
+  #if [[ ! "$(editConfig "muted" "" "silent")" == 'muted="0"' ]]; then
+  #  echo "Config not updated, program not unmuted"
+  #  exit 1
+  #fi
+
+  #Enable autostart
+  if [[ -d "/etc/xdg/autostart/" ]]; then
+    autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+    sed "s|X-GNOME-Autostart-enabled=false|X-GNOME-Autostart-enabled=true|" "$autostartFile" > "/tmp/kernel-notify-autostart.temp"
+    sudo mv "/tmp/kernel-notify-autostart.temp" "$autostartFile"
   fi
 }
 
@@ -349,7 +363,7 @@ else
   exit 1
 fi
 
-if [ "$test" == "" ] && [ ! -d /etc/xdg/autostart/ ] && [ "$warnautostart" == "1" ]; then
+if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [ "$warnautostart" == "1" ]; then
     echo "Autostart directory not found, program will not automatically start"
 fi
 
@@ -377,8 +391,8 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "-r  | --remove-kernel  : Remove kernels with a menu and exit"; \
     echo "-l  | --list-kernels   : List installed kernels and exit"; \
     echo "-a  | --add-kernel     : Install a new kernel and exit"; \
-    echo "-U  | --unmute         : Unmute the program on login"; \
-    echo "-m  | --mute           : Mute the program on login"; \
+    echo "-U  | --unmute         : Enable kernel-notify autostart"; \
+    echo "-m  | --mute           : Disable kernel-notify autostart"; \
     echo ""; \
     echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
     echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \

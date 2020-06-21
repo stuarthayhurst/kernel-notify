@@ -34,6 +34,15 @@ if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify
   echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
 fi
 
+#Update autostart file
+autostartEnabled="$(cat "/usr/share/kernel-notify/kernel-notify.desktop.old" |grep "X-GNOME-Autostart-enabled=" |grep -v "#")"
+autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
+if [ "$autostartEnabled" == "false" ]; then
+  autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+  sed "s|X-GNOME-Autostart-enabled=true|X-GNOME-Autostart-enabled=false|" "$autostartFile" > "/tmp/kernel-notify-autostart-debian.desktop.temp"
+  mv "/tmp/kernel-notify-autostart-debian.desktop.temp" "$autostartFile"
+fi
+
 if kernel-notify -v; then
   echo ""; echo "Successfully installed kernel-notify"
 else

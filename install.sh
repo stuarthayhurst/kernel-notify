@@ -257,10 +257,21 @@ installPackage() {
     fi
 
     buildNotifications
-
+    
+    if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
+      echo "Existing autostart file found, saving"
+      cp /etc/xdg/autostart/kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop.old
+    fi
     if [ -d "/etc/xdg/autostart" ]; then
       echo "Installing autostart file..."
       cp -v kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+    fi
+    autostartEnabled="$(cat "/usr/share/kernel-notify/kernel-notify.desktop.old" |grep "X-GNOME-Autostart-enabled=" |grep -v "#")"
+    autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
+    if [ "$autostartEnabled" == "false" ]; then
+      autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+      sed "s|X-GNOME-Autostart-enabled=true|X-GNOME-Autostart-enabled=false|" "$autostartFile" > "/tmp/kernel-notify-autostart-debian.desktop.temp"
+      mv "/tmp/kernel-notify-autostart-debian.desktop.temp" "$autostartFile"
     fi
 
     chmod +x kernel-notify
