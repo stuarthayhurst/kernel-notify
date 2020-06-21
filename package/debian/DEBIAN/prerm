@@ -1,21 +1,21 @@
 #!/bin/bash
 if [ "$1" = "remove" ]; then
   if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    sudo rm /etc/xdg/autostart/kernel-notify.desktop
+    rm /etc/xdg/autostart/kernel-notify.desktop
     echo "Removed autostart file"
   fi
   if [ -f /usr/share/kernel-notify/kernel-notify.desktop.old ]; then
-    sudo rm /usr/share/kernel-notify/kernel-notify.desktop.old
+    rm /usr/share/kernel-notify/kernel-notify.desktop.old
     echo "Removed old autostart file"
   fi
   if [ -f /usr/share/kernel-notify/config.old ]; then
-    sudo rm /usr/share/kernel-notify/config.old
+    rm /usr/share/kernel-notify/config.old
     echo "Removed old config file"
   fi
   if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-    sudo rm /usr/share/man/man1/kernel-notify.1.gz
+    rm /usr/share/man/man1/kernel-notify.1.gz
   fi
   if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-    sudo rm /usr/share/man/man1/kernel-notify.1
+    rm /usr/share/man/man1/kernel-notify.1
   fi
 fi
