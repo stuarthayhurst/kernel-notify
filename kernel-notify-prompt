@@ -4,13 +4,11 @@ _kernel_notify() {
   local promptlist line i
   while read -r line; do
     line="${line%%:*}"
-    if ! echo "$line" |grep -i "kernel-notify" > /dev/null; then
-      for i in $line; do
-        if [[ "${#i}" -gt "3" ]] && echo "$i" |grep "^-" > /dev/null; then
-          promptlist+="$i "
-        fi
-      done
-    fi
+    for i in $line; do
+      if [[ "${#i}" -gt "3" ]] && echo "$i" |grep "^-" > /dev/null; then
+        promptlist+="$i "
+      fi
+    done
   done <<< "$(kernel-notify --help 2>/dev/null)"
 
   #Generate configs
