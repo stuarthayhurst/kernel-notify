@@ -1,5 +1,19 @@
 #!/bin/bash
-_kernel_notify() {
+
+_kernel_notify_config_completion() {
+  #Generate configs
+  local configlist
+  while read -r line; do
+    if echo "$line" |grep -v "Config:"> /dev/null; then
+      if echo "$line" |grep -v "#"> /dev/null; then
+        configlist+="${line%%=*} "
+      fi
+    fi
+  done <<< "$(kernel-notify --config 2>/dev/null)"
+  echo "$configlist"
+}
+
+_kernel_notify_arg_completion() {
   #Generate argument list
   local promptlist line i
   while read -r line; do
@@ -10,25 +24,22 @@ _kernel_notify() {
       fi
     done
   done <<< "$(kernel-notify --help 2>/dev/null)"
+  echo "$promptlist"
+}
 
-  #Generate configs
-  local configlist
-  while read -r line; do
-    if echo "$line" |grep -v "Config:"> /dev/null; then
-      if echo "$line" |grep -v "#"> /dev/null; then
-        configlist+="${line%%=*} "
-      fi
-    fi
-  done <<< "$(kernel-notify --config 2>/dev/null)"
-
+_kernel_notify_completion() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
   if [[ "$prev" == "-c" ]] || [[ "$prev" == "--config" ]]; then
+    local configlist
+    configlist="$(_kernel_notify_config_completion)"
     COMPREPLY=( $(compgen -W "$configlist" -- "$cur") )
   else
+    local promptlist
+    promptlist="$(_kernel_notify_arg_completion)"
     COMPREPLY=( $(compgen -W "$promptlist" -- "$cur") )
   fi
   return 0
 }
 
-complete -F _kernel_notify kernel-notify
+complete -F _kernel_notify_completion kernel-notify
