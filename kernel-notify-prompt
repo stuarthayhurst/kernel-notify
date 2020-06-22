@@ -11,6 +11,7 @@ _kernel_notify_config_completion() {
     fi
   done <<< "$(kernel-notify --config 2>/dev/null)"
   echo "$configlist"
+  #grep blagh
 }
 
 _kernel_notify_arg_completion() {
@@ -32,11 +33,11 @@ _kernel_notify_completion() {
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
   if [[ "$prev" == "-c" ]] || [[ "$prev" == "--config" ]]; then
     local configlist
-    configlist="$(_kernel_notify_config_completion)"
+    configlist="$(_kernel_notify_config_completion)" &> /dev/null
     COMPREPLY=( $(compgen -W "$configlist" -- "$cur") )
   else
     local promptlist
-    promptlist="$(_kernel_notify_arg_completion)"
+    promptlist="$(_kernel_notify_arg_completion)" &> /dev/null
     COMPREPLY=( $(compgen -W "$promptlist" -- "$cur") )
   fi
   return 0
