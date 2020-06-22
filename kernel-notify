@@ -400,7 +400,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -u|--update) updateProgram; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -o|--old-config) listConfig; exit;;
-  
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]//"--test"//"-t"}" "${expandedArgs[((argNum + 3))]}"; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
@@ -408,7 +407,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -a|--add-kernel) updateKernel "" "${expandedArgs[((argNum + 1))]}"; exit;;
     -U|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;
-    -t|--test) ;; #Check for argument to prevent program interpreting it as unrecognised
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;
