@@ -172,7 +172,7 @@ removeKernel() {
     sudo dpkg -P $REMOVESTR
 
     #Clean up left over kernel directories if dpkg succeeded and config is enabled
-    if [[ "$?" == "0" ]]; then
+    if [[ "$?" == "0" ]] && [[ "kernelcleanup" == "1" ]]; then
       for kernelVer in "${REMOVEVERS[@]}"; do
         for kernelDir in "/usr/src/linux-headers-$kernelVer"*; do
           REMOVESTR+="$kernelDir "
