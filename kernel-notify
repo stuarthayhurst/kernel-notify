@@ -51,7 +51,7 @@ listConfig() {
       echo "Old values:"
       cat "$workDir/config.old"; echo ""; echo ""
       echo "New values:"
-      cat "$workDir/config"; echo ""; echo ""
+      cat "$workDir/config"
     else
       echo "No change in config found"
     fi
