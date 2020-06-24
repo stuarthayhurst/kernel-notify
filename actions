@@ -162,6 +162,7 @@ removeKernel() {
       echo "Removing the booted kernel is not allowed"
       exit
     fi
+    REMOVEVERS+=("$i")
     DELSTR="$DELSTR $i"
     REMOVESTR="$REMOVESTR linux-headers-$i linux-headers-$i-generic linux-modules-$i-generic linux-image-unsigned-$i-generic"
   done
@@ -169,8 +170,24 @@ removeKernel() {
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
     sudo dpkg -P $REMOVESTR
-    cd /usr/src/ && du -hks * |sort -n |awk '$1 <6000 {print $2}' |grep 'linux' |xargs -I F sudo rm -rvf F
-    cd /lib/modules && du -hks * |sort -n |awk '$1 <6000 {print $2}' |grep 'linux' |xargs -I F sudo rm -rvf F
+
+    #Clean up left over kernel directories if dpkg succeeded and config is enabled
+    if [[ "$?" == "0" ]]; then
+      for kernelVer in "${REMOVEVERS[@]}"; do
+        for kernelDir in "/usr/src/linux-headers-$kernelVer"*; do
+          REMOVESTR+="$kernelDir "
+        done
+        for kernelDir in "/lib/modules/$kernelVer"*; do
+          REMOVESTR+="$kernelDir "
+        done
+        sudo rm -rf ""
+        if [[ "$?" == "0" ]]; then
+          echo "Successfully cleaned up kernel source directories"
+        else
+          echo "Failed to clean up kernel source directories"
+        fi
+      done
+    fi
   fi
 }
 
