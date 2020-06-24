@@ -20,9 +20,6 @@ kernel-notify is a mainly-bash program for checking for the latest kernel and no
 -v, --version
         Display program version and exit
 
--i, --uninstall
-        Uninstall the program
-
 -o, --old-config
         List old and new config values
 
@@ -31,6 +28,9 @@ kernel-notify is a mainly-bash program for checking for the latest kernel and no
          - Use: kernel-notify --config CFGOPTION NEWCFGVALUE
 
 .B  Feature options:
+
+-L, --list-available
+        List all kernels available to install
 
 -r, --remove-kernel
         Remove a kernels from a menu and exit
@@ -41,7 +41,7 @@ kernel-notify is a mainly-bash program for checking for the latest kernel and no
 -a, --add-kernel
         Install a new kernel and exit
 
--um, --unmute
+-U, --unmute
         Unmute the program on login
 
 -m, --mute
