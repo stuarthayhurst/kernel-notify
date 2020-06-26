@@ -234,7 +234,7 @@ buildPackage() {
     gid="$(ls -nd package/debian |cut -d' ' -f4)"
     sudo chown -R root:root package/debian/
     sudo dpkg --build package/debian/ ./kernel-notify-"$newVersion"_all.deb
-    sudo chown -R "$uid:$gid" package/debian/
+    sudo chown -R "$uid:$gid" package/debian/ ./kernel-notify-"$newVersion"_all.deb
 
     rm -v notifications
     rm -v docs/kernel-notify.1.gz
