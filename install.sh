@@ -333,12 +333,19 @@ installPackage() {
       echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
     fi
 
-    echo "Updating system databases:"
-    echo "Updating desktop-file-utils"; update-desktop-database > /dev/null
-    echo "Updating mime-support"; update-mime > /dev/null
-    echo "Updating hicolor-icon-theme"; touch /usr/share/icons/hicolor > /dev/null
-    gtk-update-icon-cache -f /usr/share/icons/hicolor/ > /dev/null
-    echo "Updating man-db"; mandb > /dev/null
+    if which update-desktop-database > /dev/null; then
+      echo "Updating desktop-file-utils"; update-desktop-database > /dev/null
+    fi
+    if which update-mime > /dev/null; then
+      echo "Updating mime-support"; update-mime > /dev/null
+    fi
+    if which gtk-update-icon-cache > /dev/null; then
+      echo "Updating hicolor-icon-theme"; touch /usr/share/icons/hicolor > /dev/null
+      gtk-update-icon-cache -f /usr/share/icons/hicolor/ > /dev/null
+    fi
+    if which mandb > /dev/null; then
+      echo "Updating man-db"; mandb 2>&1 > /dev/null
+    fi
     echo "Done"
 
     echo ""; echo "-------------------------------"; echo ""
