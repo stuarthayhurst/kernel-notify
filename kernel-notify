@@ -1,6 +1,6 @@
 #!/bin/bash
 export workDir="/usr/share/kernel-notify"
-version="6.1.1"
+version="6.1.2"
 
 editConfig() {
   #Read arguments and input variables
