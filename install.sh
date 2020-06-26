@@ -229,7 +229,12 @@ buildPackage() {
 
     sed "s|.*Exec=.*|Exec=kernel-notify -zw|" package/debian/usr/share/applications/kernel-notify.desktop > package/debian/usr/share/applications/kernel-notify.desktop.temp
     mv -v package/debian/usr/share/applications/kernel-notify.desktop.temp package/debian/usr/share/applications/kernel-notify.desktop
-    dpkg --build package/debian/ ./kernel-notify-"$newVersion"_all.deb
+
+    uid="$(ls -nd package/debian |cut -d' ' -f3)"
+    gid="$(ls -nd package/debian |cut -d' ' -f4)"
+    sudo chown -R root:root package/debian/
+    sudo dpkg --build package/debian/ ./kernel-notify-"$newVersion"_all.deb
+    sudo chown -R "$uid:$gid" package/debian/
 
     rm -v notifications
     rm -v docs/kernel-notify.1.gz
