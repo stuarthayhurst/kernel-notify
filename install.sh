@@ -284,6 +284,7 @@ installPackage() {
       echo "Installing notifications..."
       chmod +x notifications
       mv -v notifications /usr/share/kernel-notify/notifications
+      mv -v notifications.cpp /usr/share/kernel-notify/notifications.cpp
     fi
 
     if [ -d "/usr/share/man/man1/" ]; then
