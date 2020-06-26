@@ -295,7 +295,7 @@ installPackage() {
 
     if [[ -d "/etc/bash_completion.d" ]]; then
       echo "Installing bash autocompletion..."
-      cp -v kernel-notify-prompt package/debian/etc/bash_completion.d/
+      cp -v kernel-notify-prompt /etc/bash_completion.d/
     fi
 
     echo "Installing other program files..."

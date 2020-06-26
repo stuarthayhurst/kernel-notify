@@ -1,4 +1,5 @@
 /etc/xdg/autostart/kernel-notify.desktop
+/etc/bash_completion.d/kernel-notify-prompt
 /usr/share/icons/hicolor/48x48/apps/kernel-notify.png
 /usr/share/icons/hicolor/48x48/apps/kernel-notify-app.png
 /usr/share/icons/hicolor/64x64/apps/kernel-notify.png
