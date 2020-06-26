@@ -2,15 +2,12 @@
 if [ "$1" = "remove" ]; then
   if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
     rm /etc/xdg/autostart/kernel-notify.desktop
-    echo "Removed autostart file"
   fi
   if [ -f /usr/share/kernel-notify/kernel-notify.desktop.old ]; then
     rm /usr/share/kernel-notify/kernel-notify.desktop.old
-    echo "Removed old autostart file"
   fi
   if [ -f /usr/share/kernel-notify/config.old ]; then
     rm /usr/share/kernel-notify/config.old
-    echo "Removed old config file"
   fi
   if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
     rm /usr/share/man/man1/kernel-notify.1.gz

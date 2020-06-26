@@ -1,13 +1,7 @@
 #!/bin/bash
 if [ -f /usr/share/kernel-notify/config ]; then
-  echo "Existing config found, saving"
   cp /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old
-else
-  echo "No existing config file found, continuing"
 fi
 if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-  echo "Existing autostart file found, saving"
   cp /etc/xdg/autostart/kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop.old
-else
-  echo "No existing autostart file found, continuing"
 fi
