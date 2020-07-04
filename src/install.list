@@ -6,10 +6,9 @@ icons/128x128/apps/kernel-notify.png /usr/share/icons/hicolor/128x128/apps/kerne
 icons/128x128/apps/kernel-notify-app.png /usr/share/icons/hicolor/128x128/apps/kernel-notify-app.png
 icons/256x256/apps/kernel-notify.png /usr/share/icons/hicolor/256x256/apps/kernel-notify.png
 icons/256x256/apps/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
-icons/scalable/apps/kernel-notify.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
-icons/scalable/apps/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
+icons/kernel-notify.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
+icons/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
 src/kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
-src/kernel-notify.desktop /usr/share/applications/kernel-notify.desktop
 src/kernel-notify-prompt /etc/bash_completion.d/kernel-notify-prompt +x
 src/kernel-notify /usr/bin/kernel-notify +x
 src/actions /usr/share/kernel-notify/actions +x
@@ -18,3 +17,4 @@ src/functions /usr/share/kernel-notify/functions +x
 src/updater /usr/share/kernel-notify/updater +x
 build/notifications /usr/share/kernel-notify/notifications +x
 build/kernel-notify.1.gz /usr/share/man/man1/kernel-notify.1.gz
+build/kernel-notify.desktop /usr/share/applications/kernel-notify.desktop
