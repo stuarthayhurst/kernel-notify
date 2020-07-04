@@ -1,5 +1,3 @@
-/etc/xdg/autostart/kernel-notify.desktop
-/etc/bash_completion.d/kernel-notify-prompt
 /usr/share/icons/hicolor/48x48/apps/kernel-notify.png
 /usr/share/icons/hicolor/48x48/apps/kernel-notify-app.png
 /usr/share/icons/hicolor/64x64/apps/kernel-notify.png
@@ -10,8 +8,10 @@
 /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
 /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
 /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
+/etc/xdg/autostart/kernel-notify.desktop
 /usr/share/applications/kernel-notify.desktop
-/usr/share/man/man1/kernel-notify.1.gz
-/usr/share/man/man1/kernel-notify.1
+/etc/bash_completion.d/kernel-notify-prompt
 /usr/bin/kernel-notify
 /usr/share/kernel-notify
+/usr/share/man/man1/kernel-notify.1.gz
+/usr/share/man/man1/kernel-notify.1
