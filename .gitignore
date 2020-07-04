@@ -1,7 +1,5 @@
-test*
-debian.deb
-kernel-notify-*.deb
-notifications
-icon.xcf
+test.*
+build/
+dist/
+
 notes.txt
-*.temp
