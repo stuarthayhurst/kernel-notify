@@ -16,11 +16,11 @@
    * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
 ## Uninstallation:
- * Run `./install.sh --uninstall`
+ * Run `make uninstall`
 
 ## Packaging:
- * Run `./install.sh -b`
- * This will prepare the code for release and build a .deb with the version specified, if left blank then the version won't be updated and kernel-notify will be built with the current version
+ * Run `make dist`
+ * This will prepare the code for release and build a .deb
 
 ## Updating:
  - ### Automatic:
@@ -73,18 +73,19 @@
 
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)
-   * inkscape (Used to generate .pngs from .svgs)
+   * gzip (Used to compress manpage)
    * libnotify-dev & g++ && pkg-config (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
-   * optipng (Compress icons)
-   * sed (Update versions)
+   * make
+   * Optional: inkscape (Used to generate .pngs from .svgs)
+   * Optional: optipng (Compress icons)
+   * Optional: sed (Update versions)
 
 ## Common Problems:
  - ### Notifications missing / failed to build:
    * If no notifications are sent when they should be, the notifications binary is likely missing or broken
    * If `ATTENTION: g++: failed to build notifications` was seen during install, the binary will be missing
-   * Notifications can be rebuilt with `./install.sh -n` and then `sudo mv notifications /usr/share/kernel-notify/`
-   * If you no longer have access to kernel-notify's source code or need build the notifications specifically for the installed version, use `g++ /usr/share/kernel-notify/notifications.cpp -o /usr/share/kernel-notify/notifications $(pkg-config --cflags --libs libnotify)`
-   * In the event both options failed, submit a bug report, following the template and giving all available information
+   * Notifications can be rebuilt with `make notifications` and then `sudo mv build/notifications /usr/share/kernel-notify/`
+   * If this still failed, submit a bug report, following the template and giving all available information
 
  - ### Updating failed:
    * Download the latest release from the Releases page (.deb or .tar.gz / .zip)
@@ -104,7 +105,7 @@
   * Show all configs and their values: `kernel-notify -c`
   * Change the value of 'maxkernelcount' to '3': `kernel-notify -c maxkernelcount 3`
   * Or you can use: `kernel-notify -c maxkernelcount="3"`
- 
+
  - Configs:
    * '/' shows multiple options
    * '-' shows a range of values

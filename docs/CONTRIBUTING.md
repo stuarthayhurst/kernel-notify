@@ -1,7 +1,7 @@
 # Contributing to kernel-notify
 ## Overview:
   - Your contributions and pull requests are welcome, this project can always use extra help! Contributing to this project consists of making whatever you're working on known, working on it, testing and finally submitting a pull request to merge your changes back to the master branch.
- 
+
 ## Suggestions for contributing:
   - Work on bug reports under 'Issues'
   - Work on feature requests under 'Issues'
@@ -17,15 +17,15 @@
 
 ## Building and testing the project:
   > Building / Installing: 
-  - To build the .deb, run `./install.sh -b` and press enter instead of making a new version.
+  - To build the .deb, run `make dist` and press enter instead of making a new version.
   - Install the .deb you built with `sudo dpkg -i kernel-notify-x.x_all.deb`.
   - Alternatively, `./install.sh -d` can be run and will build and install the package.
-  - Installing the program on a non-debian system can be done by running `./install.sh`.
+  - Installing the program on a non-debian system can be done by running `make build && sudo make install`.
   > Testing:
   - Test EVERY part of the program that may be affected by the changes you made, by comparing outputs between your modified version and the master branch.
-  - The notifications can be built separately with `./install.sh -n` and tested with `./notifications "[Title Text]" "[Body Text]" "[Icon Path]" "[kernel/program/""]" #Button "[mute/""]" #Button "[critical/normal/low/""]" #Critical priority or not`.
-  - Icons can be build with `./install.sh -c`
-  - Icons, built notifications and the built package can be cleaned up with `./install.sh --clean`
+  - The notifications can be built separately with `make notifications` and tested with `./build/notifications "[Title Text]" "[Body Text]" "[Icon Path]" "[kernel/program/""]" #Button "[mute/""]" #Button "[critical/normal/low/""]" #Critical priority or not`.
+  - Icons can be build with `make icons`
+  - Built files and packages can be cleaned up with `make clean`
 
 ## Submitting a pull request:
   - When you believe your contribution to be complete, submit a pull request and use the template provided.
