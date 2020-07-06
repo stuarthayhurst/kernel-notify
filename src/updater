@@ -8,9 +8,8 @@ else
   exit 2
 fi
 
-if [ ! -d "/tmp/kernel-notify" ]; then
-  mkdir /tmp/kernel-notify
-elif [ ! -w /tmp/kernel-notify ]; then
+mkdir -p "/tmp/kernel-notify"
+if [ ! -w /tmp/kernel-notify ]; then
   echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
   exit 2
 fi
