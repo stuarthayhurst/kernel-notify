@@ -33,11 +33,11 @@ _kernel_notify_completion() {
   if [[ "$prev" == "-c" ]] || [[ "$prev" == "--config" ]]; then
     local configlist
     configlist="$(_kernel_notify_config_completion)" &> /dev/null
-    COMPREPLY=( $(compgen -W "$configlist" -- "$cur") )
+    mapfile -t COMPREPLY < <(compgen -W "$configlist" -- "$cur")
   else
     local promptlist
     promptlist="$(_kernel_notify_arg_completion)" &> /dev/null
-    COMPREPLY=( $(compgen -W "$promptlist" -- "$cur") )
+    mapfile -t COMPREPLY < <(compgen -W "$promptlist" -- "$cur")
   fi
   return 0
 }
