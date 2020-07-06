@@ -77,9 +77,9 @@
    * gzip (Used to compress manpage)
    * libnotify-dev & g++ && pkg-config (Used in package building (.deb), installing and updating (source))
    * make
+   * sed (Update versions and modify files at build / install time)
    * Optional: inkscape (Used to generate .pngs from .svgs)
    * Optional: optipng (Compress icons)
-   * Optional: sed (Update versions)
 
 ## Common Problems:
  - ### Notifications missing / failed to build:
