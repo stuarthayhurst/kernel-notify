@@ -75,7 +75,7 @@
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)
    * gzip (Used to compress manpage)
-   * libnotify-dev & g++ && pkg-config (Used in package building (.deb), installing and updating (source) or package install (non-amd46))
+   * libnotify-dev & g++ && pkg-config (Used in package building (.deb), installing and updating (source))
    * make
    * Optional: inkscape (Used to generate .pngs from .svgs)
    * Optional: optipng (Compress icons)
