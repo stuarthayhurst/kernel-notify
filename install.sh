@@ -13,80 +13,49 @@ uninstall() {
 }
 
 checkDeps() {
-  if [[ "$1" == *"p"* ]]; then
-    echo "-------------------------------"; echo ""
-
-    deps=("awk" "curl" "cmp" "file" "git" "grep" "less" "pkexec" "sed" "sudo")
-    for i in "${deps[@]}"; do
-      if which "$i" > /dev/null 2>&1; then
-        echo "${i^} found"
-      else
-        echo "${i^} not found"
-        missingProgDeps="$missingProgDeps \n${i^}"
-      fi
-    done
-
-    if which fuser > /dev/null 2>&1; then
-      echo "Psmisc found"
-    else
-      echo "Psmisc not found"
-      missingProgDeps="$missingProgDeps \nPsmisc"
-    fi
-
-    if ldconfig -p |grep libnotify > /dev/null 2>&1; then
-      echo "libnotify found"
-    else
-      echo "libnotify not found"
-      missingProgDeps="$missingProgDeps \nlibnotify"
-    fi
-
-    if which zenity > /dev/null 2>&1; then
-      echo "Zenity found"
-    else
-      echo "Zenity not found, required for graphical menus"
-    fi
-    echo ""; echo "-------------------------------"; echo ""
-  fi
-
-  if [[ "$1" == *"b"* ]] || [[ "$1" == *"i"* ]]; then
-    if [[ "$1" == *"i"* ]]; then
-      buildDeps=("g++" "inkscape" "optipng" "pkg-config" "sed")
-    else
-      buildDeps=("g++" "pkg-config" "sed")
-    fi
-    for i in "${buildDeps[@]}"; do
-      if which "$i" > /dev/null 2>&1; then
-        echo "${i^} found"
-      else
-        echo "${i^} not found"
-        missingBuildDeps="$missingBuildDeps \n${i^}"
-      fi
-    done
-
-    if ls /usr/include/libnotify/notify.h > /dev/null 2>&1; then
-      echo "libnotify-dev found"
-    else
-      echo "libnotify-dev not found"
-      missingBuildDeps="$missingBuildDeps \nlibnotify-dev"
-    fi
-
-    echo ""; echo "-------------------------------"; echo ""
-  fi
-
-    if [[ "$missingProgDeps" != "" ]] || [[ "$missingBuildDeps" != "" ]]; then
-      if [[ "$missingBuildDeps" != "" ]]; then
-        echo -e "Build dependencies:$missingBuildDeps\n"
-        if [[ "$missingProgDeps" == "" ]]; then
-          echo -e "Weren't found, exiting"
-          echo ""; echo "-------------------------------"; echo ""
+  echo "-------------------------------"
+  for depSet in "$@"; do
+    echo "${depSet^} dependencies:"; echo ""
+    while read -r line; do
+      if [[ "$line" == *"$depSet"* ]]; then
+        depName="${line%%,*}" #Get first value
+        depCommand="${line/$depName,}" #Remove depName
+        depCommand="${depCommand%%,*}" #Remove everything after depCommand
+        depAuthority="${line/$depName,}" #Remove depName
+        depAuthority="${depAuthority//$depCommand,}" #Remove depCommand
+        depAuthority="${depAuthority%%,*}" #Remove everything after depAuthority
+        if bash -c "$depCommand" > /dev/null 2>&1; then #Check if the dependency is present
+          echo "$depName found"
+        else
+          if [[ "$depAuthority" == "mandatory" ]]; then
+            echo "$depName not found"
+            missingDeps+=", $depName"
+          else
+            echo "$depName not found, dependency optional so not fatal"
+            missingDepsOptional+=", $depName"
+          fi
         fi
       fi
-      if [[ "$missingProgDeps" != "" ]]; then
-        echo -e "Program dependencies:$missingProgDeps \n\nWeren't found, exiting"
-        echo ""; echo "-------------------------------"; echo ""
-      fi
-      exit
+    done < src/lists/dependencies.list
+    if [[ "$missingDeps" != "" ]]; then
+      missingDeps=${missingDeps/,}
+      echo -e "\nMissing $depSet dependencies:$missingDeps"
+      cancelInstall="true"
+      unset missingDeps
+    elif [[ "$missingDepsOptional" != "" ]]; then
+      echo ""
     fi
+    if [[ "$missingDepsOptional" != "" ]]; then
+      missingDepsOptional=${missingDepsOptional/,}
+      echo -e "Missing optional $depSet dependencies:$missingDepsOptional"
+      unset missingDepsOptional
+    fi
+    echo ""; echo "-------------------------------"
+  done
+  if [[ "$cancelInstall" == "true" ]]; then
+    echo "Some dependencies are missing"
+    exit 1
+  fi
 }
 
 updateVersion() {
@@ -179,16 +148,15 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   echo "-x | --update-version   : Update the version of the package"; \
   echo ""; \
   echo "Program written by: Dragon8oy"; exit;;
-  -b|--build) checkDeps "b"; make dist; exit;;
+  -b|--build) checkDeps "build"; make dist; exit;;
   -i|--install) make build; sudo make install; exit;;
   -u|--uninstall) uninstall; exit;;
   -d|--debian) installDebian; exit;;
-  -D|--dependencies) checkDeps "pbi"; exit;;
+  -D|--dependencies) checkDeps "runtime" "build" "icon"; exit;;
   -x|--update-version) updateVersion "$buildVersion"; exit;;
   --make-assist) makeAssist; exit;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-checkDeps "pb"
-exit
+checkDeps "runtime" "build"
 make build; sudo make install;

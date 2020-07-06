@@ -1,0 +1,18 @@
+Awk,which awk,mandatory,runtime
+Curl,which curl,mandatory,runtime
+Cmp,which cmp,mandatory,runtime
+File,which file,mandatory,runtime
+Git,which git,mandatory,runtime
+Grep,which grep,mandatory,runtime
+Less,which less,mandatory,runtime
+Pkexec,which pkexec,mandatory,runtime
+Psmisc,which fuser,mandatory,runtime
+Sed,which sed,mandatory,runtime,build
+Sudo,which sudo,mandatory,runtime
+libnotify,ldconfig -p |grep libnotify,optional,runtime
+Zenity,which zenity,optional,runtime
+G++,which g++,mandatory,build
+pkg-config,which pkg-config,mandatory,build
+libnotify-dev,ls /usr/include/libnotify/notify.h,mandatory,build
+Inkscape,which inkscape,mandatory,icon
+Optipng,which optipng,mandatory,icon
