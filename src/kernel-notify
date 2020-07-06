@@ -14,7 +14,7 @@ editConfig() {
 
   if [ "$configName" == "" ]; then
     #Display config without #!/bin/bash
-    echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config"
+    echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config" |grep -v "# shellcheck disable=SC2034"
   elif [ "$configValue" == "" ]; then
     #Search config for a specific config and output result
     if [[ "$3" != "silent" ]]; then

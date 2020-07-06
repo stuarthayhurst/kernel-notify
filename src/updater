@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck source=/dev/null
+# shellcheck disable=SC2154
 version="$1"
 githubAPIString='-H "Accept: application/vnd.github.full+json"'
 if [[ -f "$workDir/functions" ]]; then
@@ -38,7 +40,8 @@ fi
 if [[ "${latestVer//.}" != "${version//.}" ]]; then
   echo "Updates are available, updating"
   if [ "$installation" == "dpkg" ]; then
-    curl --progress-bar -O -L $(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")
+    debDownloadLink="$(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")"
+    curl --progress-bar -O -L "${debDownloadLink/ }"
   else
     curl --progress-bar -O -L "https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz"
   fi

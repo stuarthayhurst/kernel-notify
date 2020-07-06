@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2034
 #Whether or not to send notifications for kernel and program updates
 muted="0"
 #Automatically update the kernel and program

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2154
 checkDpkg() {
   i=0
   while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
