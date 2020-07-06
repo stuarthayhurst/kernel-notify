@@ -66,6 +66,7 @@
    * psmisc
    * policykit-1
    * sudo
+   * tar (Only required if installed from source)
 
  - ### Optional:
    * zenity
