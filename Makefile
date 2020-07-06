@@ -6,7 +6,7 @@ SHELL=bash
 BUILD_DIR=build
 DIST_DIR=dist
 
-UNINSTALL_LIST:=$(shell cat src/uninstall.list)
+UNINSTALL_LIST:=$(shell cat src/lists/uninstall.list)
 ICON_RESOLUTIONS=48 64 128 256
 
 .PHONY: build install uninstall dist debian notifications icons docs check test clean
@@ -34,7 +34,7 @@ install:
 	    chmod +x "$${line#* }"; \
 	    makeExecutable="false"; \
 	  fi; \
-	done < src/install.list
+	done < src/lists/install.list
 	./install.sh --make-assist
 uninstall:
 	rm -rf $(UNINSTALL_LIST)
@@ -44,7 +44,7 @@ debian:
 	make build
 	mkdir -p $(DIST_DIR)
 	cp -r src/debian $(DIST_DIR)
-	for filelist in src/install.list src/debian.list; do \
+	for filelist in src/lists/install.list src/lists/debian.list; do \
 	  while IFS='' read -r line || [ -n "$$line" ]; do \
 	    if [[ "$$line" = *"+x"* ]]; then \
 	      makeExecutable="true"; \
@@ -100,7 +100,7 @@ test:
 	    echo "$${line% *} is missing. Have you run 'make build'?"; \
 	    failed="true"; \
 	  fi; \
-	done < src/install.list; \
+	done < src/lists/install.list; \
 	if [[ "$$failed" == "true" ]]; then \
 	  exit 1; \
 	fi
