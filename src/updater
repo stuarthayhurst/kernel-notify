@@ -21,7 +21,7 @@ checkFiles() {
   if [ -f "$package" ]; then
     rm "$package"
   fi
-  if ! ls /tmp/kernel-notify |grep -q ".*"; then
+  if [[ "$(ls /tmp/kernel-notify)" == "" ]]; then
     rm -rf /tmp/kernel-notify
   fi
 }
