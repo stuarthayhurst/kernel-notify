@@ -181,6 +181,10 @@ zenityNotify() {
 }
 
 updateProgram() {
+  if [[ "$USER" != "root" ]]; then
+    echo "Insufficient permission, please rerun with root"
+    exit 1
+  fi
   if bash -e "$workDir/updater" "$version"; then
     #Program updated fine
     if [[ "$2" == "automatic" ]]; then
