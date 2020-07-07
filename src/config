@@ -8,8 +8,6 @@ autoupdate="0"
 warnautostart="1"
 #How many kernels should be installed before notifying users how to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
 maxkernelcount="5"
-#Whether or not to clean up kernel module and header source directories after dpkg exists
-kernelcleanup="1"
 #Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)
 priority="critical"
 #Whether to check for major and minor updates or only major version updates (minor / major)
