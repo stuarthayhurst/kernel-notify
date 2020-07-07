@@ -45,7 +45,13 @@ displayGraphics() {
 }
 
 getLatestKernelVersion() {
-  latestVersion="$(echo $(curl -k https://www.kernel.org -s) | tr -d '\n' | awk -F'<td id="latest_button">' '{print $2}' | cut -c -70 | tr -d '\n' | awk -F'/' '{print $8}' | cut -c -70 | sed 's/linux-//g' | sed 's/.t.*//g')"
+  latestVersion=$(curl -k https://www.kernel.org -s) #Get webpage containing latest version
+  latestVersion="$(echo "$latestVersion" | tr -d '\n')" #Remove all newlines
+  latestVersion="${latestVersion#*'<td id="latest_button">'}" #Remove all html before the pattern
+  latestVersion="${latestVersion%%>*}" #Remove all html after the tag with the latest version
+  latestVersion="${latestVersion##*/}" #Remove all html before the filename with the latest version
+  latestVersion="${latestVersion/linux-}" #Remove linux- from the filename
+  latestVersion="${latestVersion%.tar*}" #Remove .tar from the filename
   if [[ "$checkingprecision" == "minor" ]]; then
     kernelRepoUrl="$minorversionrepo"
   elif [[ "$checkingprecision" == "major" ]]; then
