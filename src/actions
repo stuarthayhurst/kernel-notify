@@ -133,7 +133,7 @@ installKernel() {
 
 removeKernel() {
   args="$*"
-  if [[ "$args" != "" ]] && [[ "$args" != *"-t"* ]] && [[ "$args" != *"-r"* ]]; then
+  if [[ "$args" != "" ]]; then
     DELVERSION="$args"
     listKernels "silent"
   else
@@ -234,7 +234,6 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   cd "$workDir" || exit 7
 else
   echo "Config file / kernel-notify directory missing, exiting"
-  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
   exit 1
 fi
 

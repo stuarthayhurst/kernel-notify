@@ -40,7 +40,6 @@
 ## Help:
  - ### Program Help:
    * -h  | --help       : Display the help page and exit
-   * -t  | --test       : Run program in current directory with other options
    * -u  | --update     : Update the program and exit
    * -v  | --version    : Display program version and exit
    * -o  | --old-config : List old and new config values and exit

@@ -209,11 +209,6 @@ updateKernel() {
     echo "Likely a network issue, installation cancelled"
     exit
   fi
-  if [[ "$2" == *"-t"* ]]; then
-    installVersion=""
-  else
-    installVersion="$2"
-  fi
   if [[ "$1" == "automatic" ]]; then
     "$workDir/actions" -i "$latestVersionFull" -a
     case "$?" in
@@ -235,7 +230,7 @@ updateKernel() {
       7|*) sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason";;
     esac
   else
-    "$workDir/actions" -i "$installVersion"
+    "$workDir/actions" -i "$2"
   fi
   checkKernelCount
 }
@@ -337,12 +332,12 @@ while [[ "$#" > "$argNum" ]]; do
   argNum=$((argNum + 1))
 done
 
-#Set variables needed for given argumens
+#Set variables needed for given arguments
 argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
   case $arg in
-    -t|--test) test="1"; export workDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"; echo "Running kernel-notify in $workDir/"; expandedArgs[argNum]="";;
+    -xxxxxxx|--argumentstring) echo "Placeholder";;
   esac
   argNum=$((argNum + 1))
 done
@@ -363,7 +358,6 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   cd "$workDir"
 else
   echo "Config file / kernel-notify directory missing, exiting"
-  echo "If you are running kernel-notify without installing, use '--test' or '-t'"
   exit 1
 fi
 
@@ -383,7 +377,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "Usage: kernel-notify [-OPTIONS]"; \
     echo "Program Help:"; \
     echo "-h  | --help       : Display this page and exit"; \
-    echo "-t  | --test       : Run program in current directory with other options"; \
     echo "-u  | --update     : Update the program and exit"; \
     echo "-v  | --version    : Display program version and exit"; \
     echo "-o  | --old-config : List old and new config values"; \
@@ -404,7 +397,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -u|--update) updateProgram; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -o|--old-config) listConfig; exit;;
-    -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]//"--test"//"-t"}" "${expandedArgs[((argNum + 3))]}"; exit;;
+    -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
     -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
