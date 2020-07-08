@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# shellcheck disable=SC1090
+# shellcheck disable=SC2154
 installKernel() {
   if ls /etc/*-release > /dev/null 2>&1; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
@@ -9,16 +10,16 @@ installKernel() {
   else
     exit 6
   fi
-  if [ "$automatic" -ne "1" ]; then
+  if [[ "$automatic" -ne "1" ]]; then
     echo "Enter a kernel version to install, leave blank to use selected kernel ($installVersion):"
-    read chosenVersion
+    read -r chosenVersion
   fi
 
   if [[ "$chosenVersion" == "" ]]; then
     echo "Using selected version $installVersion"
     chosenVersion="$installVersion"
     if [[ "$installVersion" != "x.x.x" ]]; then
-      if [ "${installVersion//.}" -eq "${currVersion//.}" ]; then
+      if [[ "${installVersion//.}" -eq "${currVersion//.}" ]]; then
         echo "Kernel is already on the selected version"
         exit 3
       fi
@@ -32,12 +33,12 @@ installKernel() {
   installVersion="$chosenVersion"
   mainlineRepoDir="https://kernel.ubuntu.com/~kernel-ppa/mainline/v$installVersion"
 
-  if [ "$(awk -F"." '{print NF-1}' <<< "${installVersion}")" -ne "2" ]; then
+  if [[ "$(awk -F"." '{print NF-1}' <<< "${installVersion}")" -ne "2" ]]; then
     installVersion="${installVersion}.0"
   fi
 
   arch="$(dpkg --print-architecture)"
-  archiveContent="$(curl -k -s $mainlineRepoDir/)"
+  archiveContent="$(curl -k -s "$mainlineRepoDir/")"
   kernelDate="$(echo "$archiveContent" |grep "linux-headers-$installVersion-$(prepareVersion "$installVersion")_$installVersion-$(prepareVersion "$installVersion").")"
 
   if [[ "$kernelDate" == *"$arch"* ]]; then
@@ -47,7 +48,7 @@ installKernel() {
   kernelDate="${kernelDate%%_all*}"
   kernelDate="${kernelDate##*.}"
 
-  if [ "$kernelDate" == "" ]; then
+  if [[ "$kernelDate" == "" ]]; then
     echo "Either kernel $installVersion doesn't have an entry, or you have no internet connection"
     exit 2
   fi
@@ -61,23 +62,23 @@ installKernel() {
 
   dpkgKernelInstall() {
     echo "Downloading kernel version $installVersion..." 1>&2 && echo "" 1>&2
-    if [ ! -d "/tmp/kernel-notify" ]; then
+    if [[ ! -d "/tmp/kernel-notify" ]]; then
       mkdir /tmp/kernel-notify
-    elif [ ! -w /tmp/kernel-notify ]; then
+    elif [[ ! -w /tmp/kernel-notify ]]; then
       echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root" 1>&2
       sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason"
       exit 7
     fi
-    cd /tmp/kernel-notify
+    cd /tmp/kernel-notify || exit 7
 
     for filename in "${packages[@]}"; do
-      let progress=$progress+20
+      progress=$((( "$progress"+20 )))
       echo "# Downloading ${filename##*/}..."
-      curl --progress-bar -O $filename
+      curl --progress-bar -O "$filename"
       echo "$progress"
       filename="${filename##*/}"
       installList="$installList $filename"
-      if ! file $filename | grep -q 'Debian binary package'; then
+      if ! file "$filename" | grep -q 'Debian binary package'; then
         echo "$filename: Not a Debian package" 1>&2
         clearFiles "$installList"
         sendNotification "Kernel failed to update" "Downloaded kernel faulty"
@@ -101,11 +102,11 @@ installKernel() {
 
     progress=0
     echo "$progress"
-    read -ra installArray <<< $installList
+    read -ra installArray <<< "$installList"
     for filename in "${installArray[@]}"; do
-      let progress=$progress+25
+      progress=$((( "$progress"+25 )))
       echo "# Installing ${filename##*/}..."
-      sudo dpkg -i $filename 1>&2
+      sudo dpkg -i "$filename" 1>&2
       echo "$progress"
     done
     echo "# Installed Kernel v$installVersion"
@@ -119,7 +120,7 @@ installKernel() {
     dpkgKernelInstall | displayGraphics 'zenity --progress --auto-close --no-cancel --window-icon="/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png" --title="Kernel Updater" --text="Starting update..." --width=400 --height=100 --percentage=0' "launch" "zenity"
   fi
 
-  if [ "$?" == "1" ]; then
+  if [[ "$?" == "1" ]]; then
     echo "Cancelled"
     for filename in "${packages[@]}"; do
       filename="${filename##*/}"
@@ -131,63 +132,44 @@ installKernel() {
 }
 
 removeKernel() {
-  args="$@"
-  args=$(echo "$args" | sed 's/\(-t\s*\|--test\s*\|-r\s*\|--remove\)//g')
-  if [[ "$(echo "$args")" != "" ]] && [[ "$args" != *"-t"* ]] && [[ "$args" != *"-r"* ]]; then
+  args="$*"
+  if [[ "$args" != "" ]] && [[ "$args" != *"-t"* ]] && [[ "$args" != *"-r"* ]]; then
     DELVERSION="$args"
     listKernels "silent"
   else
     listKernels
-    if [ "$?" == "1" ]; then
+    if [[ "$?" == "1" ]]; then
       exit
     fi
     echo "Please enter the kernels or numbers you want to remove: (x.x.x-xXxXxX): "
-    read DELVERSION
+    read -r DELVERSION
   fi
   DELVERSION=${DELVERSION//,/ }
-  read -ra ARR <<< $DELVERSION
-  if [[ "${ARR[@]}" == "0" ]] || [[ "${ARR[@]}" == "" ]]; then
+  read -ra ARR <<< "$DELVERSION"
+  if [[ "${ARR[*]}" == "0" ]] || [[ "${ARR[*]}" == "" ]]; then
       echo "Either no kernel was entered, or an error occured"
       exit
   fi
   for i in "${ARR[@]}"; do
-    if [ $(expr length "$i") == 1 ] || [ $(expr length "$i") == 2 ]; then
-      i=$(printf "$KERNELS\n" | awk "NR==$i{ print; }")
+    if [[ "${#i}" == 1 ]] || [[ "${#i}" == 2 ]]; then
+      i=$(echo "$KERNELS" | awk "NR==$i{ print; }")
     fi
-    if [[ ! $(expr length "$i") -eq 12 ]] && [[ ! $(expr length "$i") -eq 13 ]] && [[ ! $(expr length "$i") -eq 14 ]]; then
+    if [[ ! "${#i}" == 12 ]] && [[ ! "${#i}" == 13 ]] && [[ ! "${#i}" == 14 ]]; then
       echo "'$i' is not in the correct format"
       exit
     fi
-    if [ "$i" == $(uname -r | sed 's/-generic/ /g') ]; then
+    if [[ "$i" == "$(uname -r | sed 's/-generic//g')" ]]; then
       echo "Removing the booted kernel is not allowed"
       exit
     fi
     REMOVEVERS+=("$i")
     DELSTR="$DELSTR $i"
-    REMOVESTR="$REMOVESTR linux-headers-$i linux-headers-$i-generic linux-modules-$i-generic linux-image-unsigned-$i-generic"
+    REMOVESTR+=("linux-headers-$i" "linux-headers-$i-generic" "linux-modules-$i-generic" "linux-image-unsigned-$i-generic")
   done
   read -r -p "Are you sure you want to remove kernel(s):$DELSTR? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     checkDpkg
-    sudo dpkg -P $REMOVESTR
-
-    #Clean up left over kernel directories if dpkg succeeded and config is enabled
-    if [[ "$?" == "0" ]] && [[ "kernelcleanup" == "1" ]]; then
-      for kernelVer in "${REMOVEVERS[@]}"; do
-        for kernelDir in "/usr/src/linux-headers-$kernelVer"*; do
-          REMOVESTR+="$kernelDir "
-        done
-        for kernelDir in "/lib/modules/$kernelVer"*; do
-          REMOVESTR+="$kernelDir "
-        done
-        sudo rm -rf ""
-        if [[ "$?" == "0" ]]; then
-          echo "Successfully cleaned up kernel source directories"
-        else
-          echo "Failed to clean up kernel source directories"
-        fi
-      done
-    fi
+    sudo dpkg -P "${REMOVESTR[@]}"
   fi
 }
 
@@ -200,38 +182,40 @@ listKernels() {
   else
     return 1
   fi
-  if [ ! -d "/boot" ]; then
+  if [[ ! -d "/boot" ]]; then
     return 1
   fi
-  KERNELS=$(ls /boot/ | grep vmlinuz)
+  #KERNELS=$(ls /boot/ | grep vmlinuz)
+  KERNELS=$(ls /boot/vmlinuz-*)
+  KERNELS=${KERNELS//'/boot/'}
   KERNELS=${KERNELS//vmlinuz-}
   KERNELS=${KERNELS//-generic}
   KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
   KERNELS=${KERNELS// /\n}
   KERNELS=$(echo "$KERNELS" |grep .)
   KERNELS=$(echo "$KERNELS" |sort -V)
-  if [ "$KERNELS" = "" ]; then
+  if [[ "$KERNELS" = "" ]]; then
     KERNELS="Error while looking for kernels"
   fi
-  if [ "$1" != "silent" ]; then
+  if [[ "$1" != "silent" ]]; then
     echo "Currently installed kernels:"
-    printf "$KERNELS\n" |cat -n
+    echo "$KERNELS" |cat -n
     echo "Config set to keep $maxkernelcount kernels before notifying users"
   fi
 }
 
 clearFiles() {
-  cd /tmp/kernel-notify
-  read -ra ARR <<< $@
+  cd /tmp/kernel-notify || exit 7
+  read -ra ARR <<< "$@"
   for i in "${ARR[@]}"; do
-    if [ -f "$i" ]; then
-      rm $i
+    if [[ -f "$i" ]]; then
+      rm "$i"
     else
       echo "File $i doesn't exist, not deleting"
     fi
   done
-  if ! ls /tmp/kernel-notify |grep -q ".*"; then
-    if [ ! -w /tmp/kernel-notify ]; then
+  if [[ "$(ls /tmp/kernel-notify)" == "" ]]; then
+    if [[ ! -w /tmp/kernel-notify ]]; then
       echo "Insufficient permission to remove /tmp/kernel-notify"
     fi
     rm -rf /tmp/kernel-notify
@@ -247,24 +231,22 @@ mkDisplayInfo() {
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
   source "$workDir/config"
   source "$workDir/functions"
-  cd "$workDir"
+  cd "$workDir" || exit 7
 else
   echo "Config file / kernel-notify directory missing, exiting"
   echo "If you are running kernel-notify without installing, use '--test' or '-t'"
   exit 1
 fi
 
-
-if [ "$1" != "-l" ] && [ "$1" != "--list" ]; then
-  if [ ! -f "/usr/bin/dpkg" ]; then
+if [[ "$1" != "-l" ]] && [[ "$1" != "--list" ]]; then
+  if [[ ! -f "/usr/bin/dpkg" ]]; then
     echo "Kernel installation / removal is not supported on this system"
     exit 6
   fi
 fi
 
-if [ "$1" == "-i" ] && [ "$2" != "" ]; then
-  installVersion=$2
-  latestVersion=${latestVersionFull//.}
+if [[ "$1" == "-i" ]] && [[ "$2" != "" ]]; then
+  installVersion="$2"
   currVersion=$(uname -r | sed 's/-.*/ /g')
   automatic="1"
 elif [[ "$1" == "-i" ]]; then
@@ -272,13 +254,13 @@ elif [[ "$1" == "-i" ]]; then
   currVersion=$(uname -r | sed 's/-.*/ /g')
 fi
 
-if [ "$4" == "-a" ]; then
+if [[ "$4" == "-a" ]]; then
   automatic="1"
-elif [ "$automatic" == "" ]; then
+elif [[ "$automatic" == "" ]]; then
   automatic="0"
 fi
 
-read -ra args <<< $@
+read -ra args <<< "$@"
 case $1 in
     -r|--remove) removeKernel "${args[@]:1}"; exit;;
     -l|--list) listKernels; exit 0;;
