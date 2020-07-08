@@ -19,7 +19,7 @@ fi
 
 #Update autostart file
 if [[ -f "/usr/share/kernel-notify/kernel-notify.desktop.old" ]]; then
-  autostartEnabled="$(cat "/usr/share/kernel-notify/kernel-notify.desktop.old" |grep "X-GNOME-Autostart-enabled=" |grep -v "#")"
+  autostartEnabled="$(grep "X-GNOME-Autostart-enabled=" "/usr/share/kernel-notify/kernel-notify.desktop.old" |grep -v "#")"
   autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
   if [ "$autostartEnabled" == "false" ]; then
     autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
