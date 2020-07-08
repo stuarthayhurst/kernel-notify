@@ -55,7 +55,7 @@ getLatestKernelVersion() {
   if [[ "$checkingprecision" == "minor" ]]; then
     kernelRepoUrl="$minorversionrepo"
   elif [[ "$checkingprecision" == "major" ]]; then
-    if [ "$(awk -F"." '{print NF-1}' <<< "${latestVersion}")" == "2" ]; then
+    if [ "$(echo "$latestVersion" |tr -cd '.' |wc -c)" == "2" ]; then
       latestVersion="${latestVersion%.*}"
     fi
     kernelRepoUrl="$majorversionrepo"

@@ -55,7 +55,7 @@
 
 ## Dependencies:
  - ### Required:
-   * awk & grep & sed
+   * grep & sed
    * coreutils (8.25+)
    * curl
    * diffutils

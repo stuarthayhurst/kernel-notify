@@ -1,4 +1,3 @@
-Awk,which awk,mandatory,runtime
 Curl,which curl,mandatory,runtime
 Diffutils,which cmp,mandatory,runtime
 File,which file,mandatory,runtime

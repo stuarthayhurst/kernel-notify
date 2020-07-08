@@ -285,7 +285,7 @@ main() {
     exit 1
   fi
 
-  if [ $(awk -F"." '{print NF-1}' <<< "${latestVersionFull}") -ne "2" ]; then
+  if [[ "$(echo "$latestVersionFull" |tr -cd '.' |wc -c)" != "2" ]]; then
     latestVersionFull="${latestVersionFull}.0"
   fi
 
