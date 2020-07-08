@@ -57,7 +57,7 @@
  - ### Required:
    * coreutils (8.25+)
    * curl
-   * diffutils / cmp
+   * diffutils
    * file
    * gawk & grep & sed
    * git
