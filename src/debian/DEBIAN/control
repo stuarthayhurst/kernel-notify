@@ -10,5 +10,5 @@ Package: kernel-notify
 Architecture: all
 Depends: awk | gawk, coreutils (>= 8.25), curl, diffutils, file, git, grep, less, policykit-1, psmisc, sed, sudo
 Recommends: libnotify4, zenity
-Description: Kernel updater, checker and remover
- A small package to check the latest kernel version and notify users of an update, supports installing and removing kernels
+Description: Kernel notifier, updater and remover
+ A program to notify users if their kernel is outdated, and help maintain installed kernels, or install new ones
