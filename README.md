@@ -55,11 +55,11 @@
 
 ## Dependencies:
  - ### Required:
+   * awk & grep & sed
    * coreutils (8.25+)
    * curl
    * diffutils
    * file
-   * gawk & grep & sed
    * git
    * less
    * psmisc
