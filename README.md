@@ -64,12 +64,12 @@
    * less
    * psmisc
    * policykit-1
-   * sudo
    * tar (Only required if installed from source)
 
  - ### Optional:
-   * zenity
    * libnotify4 (Notifications)
+   * zenity
+   * sudo
 
  - ### Build:
    * dpkg (Used in package building and program + kernel installation / removal)

@@ -2,7 +2,7 @@
 # shellcheck disable=SC2154
 checkDpkg() {
   i=0
-  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
+  while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
     case $((i % 4)) in
       0 ) j="-" ;;
       1 ) j="\\" ;;
@@ -14,6 +14,27 @@ checkDpkg() {
     ((i=i+1))
   done
   echo -en "Done\n"
+}
+
+checkRoot() {
+  if [[ "$1" == "checksudo" ]]; then
+    if which sudo > /dev/null 2>&1 ; then
+      echo "true"
+    else
+      echo "false"
+    fi
+    return
+  elif [[ "$1" == "silent" ]] ; then
+    if [[ "$USER" == "root" ]]; then
+      echo "true"
+    else
+      echo "false"
+    fi
+    return
+  elif [[ "$USER" != "root" ]]; then
+    echo "  ATTENTION: Insufficient permission, $1" 1>&2
+    exit 1
+  fi
 }
 
 displayGraphics() {
@@ -39,7 +60,11 @@ displayGraphics() {
     fi
     #Run command on correct display with correct user
     if [[ "$i" == "launch" ]]; then
-      sudo -u "$user" DISPLAY="$display" DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$(id -u "$user")"/bus bash -c "$1"
+      if [[ "$(checkRoot "checksudo")" == "true" ]]; then
+        sudo -u "$user" DISPLAY="$display" DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$(id -u "$user")"/bus bash -c "$1"
+      else
+        return 1
+      fi
     fi
   done
 }
@@ -93,9 +118,9 @@ sendNotification() {
     fi
     #Check notifications code exists before running
     if [[ -f "$workDir/notifications" ]]; then
-       if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch"; then
-         echo "  Notification: $1, $2"
-       fi
+      if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch"; then
+        echo "  Notification: $1, $2"
+      fi
     else
       echo "  Notification: $1, $2"
     fi

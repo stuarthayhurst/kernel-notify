@@ -1,14 +1,10 @@
 #!/bin/bash
 
 uninstall() {
-  if [[ "$USER" != "root" ]]; then
-    echo "  ATTENTION: Insufficient permission, please rerun with root"
-  else
-    read -r -p "Are you sure you want to uninstall? [y/N] " response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-      echo "Uninstalling:"
-      sudo make uninstall
-    fi
+  read -r -p "Are you sure you want to uninstall? [y/N] " response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+    echo "Uninstalling:"
+    sudo make uninstall
   fi
 }
 

@@ -55,7 +55,7 @@ if [[ "${latestVer//.}" != "${version//.}" ]]; then
 
   if [ "$installation" == "dpkg" ]; then
     checkDpkg
-    sudo dpkg -i "$package"; checkFiles; exit 0
+    dpkg -i "$package"; checkFiles; exit 0
   else
     tar -xf "$package" && cd "kernel-notify-$latestVer/" && ./install.sh; checkFiles; exit 0
   fi

@@ -7,7 +7,7 @@ Less,which less,mandatory,runtime
 Pkexec,which pkexec,mandatory,runtime
 Psmisc,which fuser,mandatory,runtime
 Sed,which sed,mandatory,runtime,build
-Sudo,which sudo,mandatory,runtime
+Sudo,which sudo,optional,runtime
 libnotify,ldconfig -p |grep libnotify,optional,runtime
 Zenity,which zenity,optional,runtime
 G++,which g++,mandatory,build

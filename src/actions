@@ -10,6 +10,9 @@ installKernel() {
   else
     exit 6
   fi
+  if [[ "$(checkRoot "checksudo")" == "false" ]]; then
+    checkRoot "root is required to install a kernel"
+  fi
   if [[ "$automatic" -ne "1" ]]; then
     echo "Enter a kernel version to install, leave blank to use selected kernel ($installVersion):"
     read -r chosenVersion
@@ -98,7 +101,11 @@ installKernel() {
     echo "99"
 
     echo "" 1>&2; echo "All packages verified, installing kernel version $installVersion..." 1>&2
-    checkDpkg 1>&2
+    if [[ "$(checkRoot "silent")" == "true" ]]; then
+      checkDpkg 1>&2
+    else
+      sudo checkDpkg 1>&2
+    fi
 
     progress=0
     echo "$progress"
@@ -106,7 +113,11 @@ installKernel() {
     for filename in "${installArray[@]}"; do
       progress=$((( "$progress"+25 )))
       echo "# Installing ${filename##*/}..."
-      sudo dpkg -i "$filename" 1>&2
+      if [[ "$(checkRoot "silent")" == "true" ]]; then
+        dpkg -i "$filename" 1>&2
+      else
+        sudo dpkg -i "$filename" 1>&2
+      fi
       echo "$progress"
     done
     echo "# Installed Kernel v$installVersion"
@@ -132,6 +143,9 @@ installKernel() {
 }
 
 removeKernel() {
+  if [[ "$(checkRoot "checksudo")" == "false" ]]; then
+    checkRoot "root is required to remove kernels"
+  fi
   args="$*"
   if [[ "$args" != "" ]]; then
     DELVERSION="$args"
@@ -170,8 +184,12 @@ removeKernel() {
   done
   read -r -p "Are you sure you want to remove kernel(s):$DELSTR? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    checkDpkg
-    sudo dpkg -P "${REMOVESTR[@]}"
+    if [[ "$(checkRoot "silent")" == "true" ]]; then
+      checkDpkg
+      dpkg -P "${REMOVESTR[@]}"
+    else
+      sudo checkDpkg && sudo dpkg -P "${REMOVESTR[@]}"
+    fi
   fi
 }
 
