@@ -104,7 +104,7 @@ installKernel() {
     if [[ "$(checkRoot "silent")" == "true" ]]; then
       checkDpkg 1>&2
     else
-      sudo checkDpkg 1>&2
+      sudo bash -c "source $workDir/config && source $workDir/functions && checkDpkg" 1>&2
     fi
 
     progress=0
@@ -188,7 +188,7 @@ removeKernel() {
       checkDpkg
       dpkg -P "${REMOVESTR[@]}"
     else
-      sudo checkDpkg && sudo dpkg -P "${REMOVESTR[@]}"
+      sudo bash -c "source $workDir/config && source $workDir/functions && checkDpkg" && sudo dpkg -P "${REMOVESTR[@]}"
     fi
   fi
 }
