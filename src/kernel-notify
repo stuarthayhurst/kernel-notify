@@ -148,7 +148,7 @@ zenityNotify() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   latestVersionFull=$latestVersion
-  latestVersion=$(echo "${latestVersion//.}")
+  latestVersion="${latestVersion//.}"
   checkKernelCount "silent"
   if [ "$latestVersion" != "xxx" ] || [ "$latestProgVer" != "" ]; then
     if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
