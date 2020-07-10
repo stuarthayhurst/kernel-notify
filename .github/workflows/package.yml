@@ -26,4 +26,12 @@ jobs:
     # Build the package itself
     - name: Build package
       run: |
-       ./install.sh -d
+       sudo make dist
+    # Install the built package
+    - name: Install package
+      run: |
+       sudo dpkg -i dist/kernel-notify-*.deb
+    # Cleanup
+    - name: Cleanup
+      run: |
+       sudo make clean
