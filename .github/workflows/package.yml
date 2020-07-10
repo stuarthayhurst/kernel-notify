@@ -23,15 +23,29 @@ jobs:
     # Install build dpendencies
     - name: Install build dependencies
       run: sudo apt install -y sed g++ pkg-config libnotify-dev
-    # Build the package itself
+
+    # Build the package
     - name: Build package
-      run: |
-       sudo make dist
-    # Install the built package
+      run: make build
+    # Test the package
+    - name: Test package
+      run: make test
+    # Install the package
     - name: Install package
-      run: |
-       sudo dpkg -i dist/kernel-notify-*.deb
+      run: sudo make install
+    # Uninstall the package
+    - name: Uninstall package
+      run: sudo make uninstall
     # Cleanup
-    - name: Cleanup
-      run: |
-       sudo make clean
+    - name: Cleanup package
+      run: make clean
+
+    # Build the Debian package
+    - name: Build Debian package
+      run: sudo make dist
+    # Install the built Debian package
+    - name: Install Debian package
+      run: sudo dpkg -i dist/kernel-notify-*.deb
+    # Cleanup
+    - name: Cleanup Debian package
+      run: sudo make clean
