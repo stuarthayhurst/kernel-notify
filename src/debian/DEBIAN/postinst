@@ -15,6 +15,15 @@ if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify
     kernel-notify -c "$i" "$configValue" "silent"
   done
   echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
+  #Replace deprecated config values with new values
+  if [[ "$(echo -e "6.1.4\n$2" |sort -n |head -n 1)" == "6.1.4" ]]; then
+    echo "Replacing deprecated config values with replacements..."
+    oldConfig="$(cat /usr/share/kernel-notify/config)"
+    oldConfig="${oldConfig//'"0"'/'"false"'}"
+    oldConfig="${oldConfig//'"1"'/'"true"'}"
+    echo "$oldConfig" > /usr/share/kernel-notify/config
+    echo "Done"
+  fi
 fi
 
 #Update autostart file

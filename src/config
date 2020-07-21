@@ -1,11 +1,11 @@
 #!/bin/bash
 # shellcheck disable=SC2034
 #Whether or not to send notifications for kernel and program updates
-muted="0"
+muted="false"
 #Automatically update the kernel and program
-autoupdate="0"
+autoupdate="false"
 #Whether or not the program should warn users if the program cannot start on login
-warnautostart="1"
+warnautostart="true"
 #How many kernels should be installed before notifying users how to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
 maxkernelcount="5"
 #Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)

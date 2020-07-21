@@ -109,9 +109,9 @@
  - Configs:
    * '/' shows multiple options
    * '-' shows a range of values
-  * muted="0/1" - Whether or not to send notifications for kernel and program updates
-  * autoupdate="0/1" - Set to 0 to ask before updates, set to 1 to automatically update when the program is run
-  * warnautostart="1/0" - Warn users if the program cannot start on login
+  * muted="true/false" - Whether or not to send notifications for kernel and program updates
+  * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update when the program is run
+  * warnautostart="true/false" - Warn users if the program cannot start on login
   * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
   * priority="critical/normal/low" - Keep notifications with buttons on-screen until dismissed or not
   * checkingprecision="minor/major" - Whether to check for major and minor updates or only major version updates
