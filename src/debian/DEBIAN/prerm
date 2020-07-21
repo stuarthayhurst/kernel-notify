@@ -3,6 +3,9 @@ if [ "$1" = "remove" ]; then
   if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
     rm /etc/xdg/autostart/kernel-notify.desktop
   fi
+  if [ -f /usr/share/kernel-notify/kernel-notify.desktop ]; then
+    rm /usr/share/kernel-notify/kernel-notify.desktop
+  fi
   if [ -f /usr/share/kernel-notify/kernel-notify.desktop.old ]; then
     rm /usr/share/kernel-notify/kernel-notify.desktop.old
   fi

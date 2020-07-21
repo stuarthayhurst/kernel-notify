@@ -64,36 +64,34 @@ listConfig() {
 mute() {
   #Disable autostart
   checkRoot "root is required to mute kernel-notify"
-  echo "Disabling kernel-notify autostart:"
-  if [[ -d "/etc/xdg/autostart/" ]]; then
-    autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
-    sed "s|X-GNOME-Autostart-enabled=true|X-GNOME-Autostart-enabled=false|" "$autostartFile" > "/tmp/kernel-notify-autostart.temp"
-    mv "/tmp/kernel-notify-autostart.temp" "$autostartFile"
-    autostartEnabled="$(cat "$autostartFile" |grep "X-GNOME-Autostart-enabled=" |grep -v "#")"
-    autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
-    if [ "$autostartEnabled" == "false" ]; then
-      echo "Autostart disabled"
-    else
-      echo "Autostart disable failed"
-    fi
+  echo -n "Disabling kernel-notify autostart... "
+  autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+  #Remove .desktop file from /etc/xdg/autostart
+  if [[ -f "$autostartFile" ]]; then
+    rm "$autostartFile"
+  fi
+  #Test that the file was removed
+  if [[ ! -f "$autostartFile" ]]; then
+    echo "done"
+  else
+    echo "failed"
   fi
 }
 
 unmute() {
   #Enable autostart
   checkRoot "root is required to unmute kernel-notify"
-  echo "Enabling kernel-notify autostart:"
-  if [[ -d "/etc/xdg/autostart/" ]]; then
-    autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
-    sed "s|X-GNOME-Autostart-enabled=false|X-GNOME-Autostart-enabled=true|" "$autostartFile" > "/tmp/kernel-notify-autostart.temp"
-    mv "/tmp/kernel-notify-autostart.temp" "$autostartFile"
-    autostartEnabled="$(cat "$autostartFile" |grep "X-GNOME-Autostart-enabled=" |grep -v "#")"
-    autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
-    if [ "$autostartEnabled" == "true" ]; then
-      echo "Autostart enabled"
-    else
-      echo "Autostart enable failed"
-    fi
+  echo -n "Enabling kernel-notify autostart... "
+  #Copy .desktop file into /etc/xdg/autostart
+  autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
+  if [[ ! -f "$autostartFile" ]]; then
+    cp "/usr/share/kernel-notify/kernel-notify.desktop" "$autostartFile"
+  fi
+  #Test that the file is present
+  if [[ -f "$autostartFile" ]]; then
+    echo "done"
+  else
+    echo "failed"
   fi
 }
 

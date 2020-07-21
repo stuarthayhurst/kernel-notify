@@ -18,6 +18,9 @@ build:
 	make docs
 install:
 	mkdir -p "/usr/share/kernel-notify"
+	if [[ ! -f /etc/xdg/autostart/kernel-notify.desktop ]]; then \
+	  touch /tmp/remove-kernel-notify-autostart; \
+	fi
 	if [[ -f "/usr/share/kernel-notify/config" ]]; then \
 	  mv /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old; \
 	fi

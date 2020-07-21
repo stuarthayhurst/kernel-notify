@@ -9,6 +9,7 @@ icons/256x256/apps/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/k
 icons/kernel-notify.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
 icons/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
 src/kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
+src/kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 src/kernel-notify-prompt /etc/bash_completion.d/kernel-notify-prompt +x
 src/kernel-notify /usr/bin/kernel-notify +x
 src/actions /usr/share/kernel-notify/actions +x

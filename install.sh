@@ -94,13 +94,10 @@ installDebian() {
 }
 
 makeAssist() {
-  if [[ -f "/usr/share/kernel-notify/kernel-notify.desktop.old" ]]; then
-    autostartEnabled="$(grep "X-GNOME-Autostart-enabled=" "/usr/share/kernel-notify/kernel-notify.desktop.old" |grep -v "#")"
-    autostartEnabled="${autostartEnabled//X-GNOME-Autostart-enabled=}"
-    if [ "$autostartEnabled" == "false" ]; then
-      autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
-      sed "s|X-GNOME-Autostart-enabled=true|X-GNOME-Autostart-enabled=false|" "$autostartFile" > "/tmp/kernel-notify-autostart-debian.desktop.temp"
-      mv "/tmp/kernel-notify-autostart-debian.desktop.temp" "$autostartFile"
+  if [[ -f "/tmp/remove-kernel-notify-autostart" ]]; then
+    rm "/tmp/remove-kernel-notify-autostart"
+    if [[ -f "/etc/xdg/autostart/kernel-notify.desktop" ]]; then
+      rm "/etc/xdg/autostart/kernel-notify.desktop"
     fi
   fi
   if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old > /dev/null; then
