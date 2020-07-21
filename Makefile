@@ -82,7 +82,7 @@ icons:
 	done
 	for resolution in $(ICON_RESOLUTIONS); do \
 	  for filename in "./icons/"$$resolution"x"$$resolution"/apps/*.png"; do \
-	    optipng -strip all $$filename; \
+	    optipng -o7 -strip all $$filename; \
 	  done; \
 	done
 	cp ./icons/256x256/apps/kernel-notify.png ./docs/icon.png
