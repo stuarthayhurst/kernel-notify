@@ -237,7 +237,7 @@ checkProgVer() {
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |   grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     echo "" && echo "Program outdated, v$latestProgVer is available" 
-    if [ "$autoupdate" -ne "0" ]; then
+    if [[ "$autoupdate" == "true" ]]; then
       echo "Auto-update is enabled, updating kernel-notify" && echo ""
       sleep 5
       "$workDir/actions" "--display"
@@ -256,7 +256,7 @@ checkKernelVer() {
   if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
   elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]]; then
-    if [ "$autoupdate" -ne "0" ]; then
+    if [[ "$autoupdate" == "true" ]]; then
       echo "" && echo "Auto-update is enabled, updating kernel"
       sleep 5
       "$workDir/actions" "--display"
@@ -359,7 +359,7 @@ else
   exit 1
 fi
 
-if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [ "$warnautostart" == "1" ]; then
+if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [[ "$warnautostart" == "true" ]]; then
     echo "Autostart directory not found, program will not automatically start"
 fi
 

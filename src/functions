@@ -109,7 +109,7 @@ prepareVersion() {
 
 sendNotification() {
   #Silence notification if program is muted
-  if [ "$muted" == "1" ] && [ "$4" == "mute" ]; then
+  if [ "$muted" == "true" ] && [ "$4" == "mute" ]; then
     echo "$1, $2"
   else
     #Decide whether or not to set configured priority
