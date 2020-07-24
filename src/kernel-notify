@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC1090
+# shellcheck disable=SC2154
 export workDir="/usr/share/kernel-notify"
 version="6.1.4"
 
@@ -23,7 +25,8 @@ editConfig() {
     grep "$configName" "$workDir/config"
   else
     #Search config for specific config, get the value and replace with new value
-    currentConfigString="$(cat "$workDir/config" |grep "$configName=" |grep -v "#")"
+    currentConfigString="$(grep "$configName=" "$workDir/config" |grep -v "#")"
+    #currentConfigString="$(cat "$workDir/config" |grep "$configName=" |grep -v "#")"
     if [[ "$currentConfigString" != "" ]]; then
       checkRoot "root is required to edit the config"
       sed "s|.*$currentConfigString.*|$configName=\"$configValue\"|" "$workDir/config" > /tmp/kernel-config.temp
@@ -96,23 +99,22 @@ unmute() {
 }
 
 checkKernelCount() {
-  if [ "$1" != "silent" ] && [ "$1" != "alert" ]; then
+  if [[ "$1" != "silent" ]] && [[ "$1" != "alert" ]]; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
       return 1
     fi
   fi
-  if [ ! -d "/boot" ]; then
+  if [[ ! -d "/boot" ]]; then
     return
   fi
-  KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
-  KERNELS=${KERNELS// /\n}
-  KERNELS=$(echo "$KERNELS" |grep .)
-  read -ra ARR <<< $(echo $KERNELS |grep .)
-  if [ "$1" != "silent" ]; then
-    if [ "${#ARR[@]}" -gt "$maxkernelcount" ]; then
+  KERNELS="$(ls /boot/vmlinuz-*)"
+  KERNELS="${KERNELS//'/boot/'}"
+  KERNELS="${KERNELS//vmlinuz-}"
+  KERNELS="${KERNELS//-generic}"
+  KERNELS="$(echo "$KERNELS" |sort -V)"
+  read -ra ARR <<< "${KERNELS//$'\n'/ }"
+  if [[ "$1" != "silent" ]]; then
+    if [[ "${#ARR[@]}" > "$maxkernelcount" ]]; then
       sendNotification "Configured kernel install count reached" "Remove extra kernels with 'kernel-notify -r'" ""
       echo "Remove kernels to avoid this message, or raise the limit in the config"
     fi
@@ -172,8 +174,8 @@ zenityNotify() {
     sendNotification "Network error" "An error occured while checking latest version"
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
-    displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"
-    if [ "$?" != "0" ]; then
+    if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
+    #if [ "$?" != "0" ]; then
       sendNotification "Zenity issue detected" "An error occured while running zenity"
     fi
     exit
@@ -252,7 +254,6 @@ checkKernelVer() {
   currVersion="$1"
   latestVersionFull="$2"
   checkKernelCount "silent"
-
   if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
     echo "Latest kernel version installed, reboot to take effect"
   elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]]; then
@@ -353,7 +354,7 @@ unset args skipArg new_array
 if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
   source "$workDir/config"
   source "$workDir/functions"
-  cd "$workDir"
+  cd "$workDir" || exit 1
 else
   echo "Config file / kernel-notify directory missing, exiting"
   exit 1
@@ -406,7 +407,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;
     -zw) zenityNotify; main; exit;;
-    *) echo "Unknown argument passed: $1"; $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/kernel-notify --help; exit 1;;
+    *) echo "Unknown argument passed: $1"; "$(dirname "${BASH_SOURCE[0]}")/kernel-notify" --help; exit 1;;
   esac
   argNum=$((argNum + 1))
 done
