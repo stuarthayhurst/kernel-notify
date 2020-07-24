@@ -175,7 +175,6 @@ zenityNotify() {
   fi
   if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
     if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
-    #if [ "$?" != "0" ]; then
       sendNotification "Zenity issue detected" "An error occured while running zenity"
     fi
     exit
