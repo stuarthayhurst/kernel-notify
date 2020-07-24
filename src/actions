@@ -205,15 +205,11 @@ listKernels() {
   if [[ ! -d "/boot" ]]; then
     return 1
   fi
-  #KERNELS=$(ls /boot/ | grep vmlinuz)
-  KERNELS=$(ls /boot/vmlinuz-*)
-  KERNELS=${KERNELS//'/boot/'}
-  KERNELS=${KERNELS//vmlinuz-}
-  KERNELS=${KERNELS//-generic}
-  KERNELS=$(echo "$KERNELS" |grep -vi "vmlinuz")
-  KERNELS=${KERNELS// /\n}
-  KERNELS=$(echo "$KERNELS" |grep .)
-  KERNELS=$(echo "$KERNELS" |sort -V)
+  KERNELS="$(ls /boot/vmlinuz-*)"
+  KERNELS="${KERNELS//'/boot/'}"
+  KERNELS="${KERNELS//vmlinuz-}"
+  KERNELS="${KERNELS//-generic}"
+  KERNELS="$(echo "$KERNELS" |sort -V)"
   if [[ "$KERNELS" = "" ]]; then
     KERNELS="Error while looking for kernels"
   fi
