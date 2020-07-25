@@ -235,7 +235,7 @@ updateKernel() {
 }
 
 checkProgVer() {
-  latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest |   grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+  latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
   if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
     echo "" && echo "Program outdated, v$latestProgVer is available" 
     if [[ "$autoupdate" == "true" ]]; then
