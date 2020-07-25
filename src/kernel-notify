@@ -366,20 +366,20 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "Usage: kernel-notify [-OPTIONS]"; \
     echo "Program Help:"; \
     echo "-g  | --gui        : Launch the program with a gui, if available"; \
-    echo "-h  | --help       : Display this page and exit"; \
-    echo "-u  | --update     : Update the program and exit"; \
-    echo "-v  | --version    : Display program version and exit"; \
+    echo "-h  | --help       : Display this page"; \
+    echo "-u  | --update     : Update the program"; \
+    echo "-v  | --version    : Display program version"; \
     echo "-o  | --old-config : List old and new config values"; \
-    echo "-c  | --config     : Change / read a config value and exit"; \
+    echo "-c  | --config     : Change / read a config value"; \
     echo "                   : - kernel-notify --config configName configValue"; \
     echo ""; \
     echo "Feature Help:"; \
     echo "-L  | --list-available : List all kernels available to install"; \
-    echo "-r  | --remove-kernel  : Remove kernels with a menu and exit"; \
-    echo "-l  | --list-kernels   : List installed kernels and exit"; \
-    echo "-a  | --add-kernel     : Install a new kernel and exit"; \
-    echo "-U  | --unmute         : Enable kernel-notify autostart"; \
-    echo "-m  | --mute           : Disable kernel-notify autostart"; \
+    echo "-r  | --remove-kernel  : Remove kernels with a menu"; \
+    echo "-l  | --list-kernels   : List installed kernels"; \
+    echo "-a  | --add-kernel     : Install a new kernel"; \
+    echo "-U  | --unmute         : Enable kernel-notify sending notifications"; \
+    echo "-m  | --mute           : Disable kernel-notify sending notifications"; \
     echo ""; \
     echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
     echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \

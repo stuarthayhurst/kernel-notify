@@ -40,19 +40,19 @@
 ## Help:
  - ### Program Help:
    * -g  | --gui        : Launch the program with a gui, if available
-   * -h  | --help       : Display the help page and exit
-   * -u  | --update     : Update the program and exit
-   * -v  | --version    : Display program version and exit
-   * -o  | --old-config : List old and new config values and exit
-   * -c  | --config     : Change / read a config value and exit
+   * -h  | --help       : Display the help page
+   * -u  | --update     : Update the program
+   * -v  | --version    : Display program version
+   * -o  | --old-config : List old and new config values
+   * -c  | --config     : Change / read a config value
 
  - ### Feature Help:
    * -L  | --list-available : List all kernels available to install
-   * -r  | --remove-kernel  : Remove a kernels from a menu and exit
-   * -l  | --list-kernels   : List installed kernels and exit
-   * -a  | --add-kernel     : Install a new kernel and exit
-   * -U  | --unmute         : Enable kernel-notify autostart
-   * -m  | --mute           : Disable kernel-notify autostart
+   * -r  | --remove-kernel  : Remove a kernels from a menu
+   * -l  | --list-kernels   : List installed kernels
+   * -a  | --add-kernel     : Install a new kernel
+   * -U  | --unmute         : Enable kernel-notify sending notifications
+   * -m  | --mute           : Disable kernel-notify sending notifications
 
 ## Dependencies:
  - ### Required:
