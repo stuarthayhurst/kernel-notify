@@ -11,7 +11,8 @@ Sudo,which sudo,optional,runtime
 libnotify,ldconfig -p |grep libnotify,optional,runtime
 Zenity,which zenity,optional,runtime
 G++,which g++,mandatory,build
-pkg-config,which pkg-config,mandatory,build
 libnotify-dev,ls /usr/include/libnotify/notify.h,mandatory,build
+pkg-config,which pkg-config,mandatory,build
+shellcheck,which shellcheck,mandatory,build
 Inkscape,which inkscape,mandatory,icon
 Optipng,which optipng,mandatory,icon
