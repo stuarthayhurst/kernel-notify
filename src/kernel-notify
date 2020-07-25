@@ -98,6 +98,15 @@ unmute() {
   fi
 }
 
+setPrecision() {
+  if [[ "$1" != "major" ]] && [[ "$1" != "minor" ]]; then
+    echo "'$1' is invalid, use either 'major' or 'minor'"
+    exit 1
+  else
+    export checkingprecision="$1"
+  fi
+}
+
 checkKernelCount() {
   if [[ "$1" != "silent" ]] && [[ "$1" != "alert" ]]; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
@@ -288,6 +297,20 @@ main() {
   checkKernelCount "alert"
 }
 
+#Source / check existing program files
+if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
+  source "$workDir/config"
+  source "$workDir/functions"
+  cd "$workDir" || exit 1
+else
+  echo "Config file / kernel-notify directory missing, exiting"
+  exit 1
+fi
+
+if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [[ "$warnautostart" == "true" ]]; then
+    echo "Autostart directory not found, program will not automatically start"
+fi
+
 #Expand combined arguments
 read -ra args <<< "$@"; argNum="0"
 while [[ "$#" > "$argNum" ]]; do
@@ -325,7 +348,7 @@ argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
   case $arg in
-    -xxxxxxx|--argumentstring) echo "Placeholder";;
+    -p|--precision) setPrecision "${expandedArgs[((argNum + 1))]}"; expandedArgs[argNum]=""; expandedArgs[((argNum + 1))]="";;
   esac
   argNum=$((argNum + 1))
 done
@@ -338,20 +361,6 @@ for i in "${expandedArgs[@]}"; do
 done
 expandedArgs=("${new_array[@]}")
 unset args skipArg new_array
-
-#Source / check existing program files
-if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/functions" ]]; then
-  source "$workDir/config"
-  source "$workDir/functions"
-  cd "$workDir" || exit 1
-else
-  echo "Config file / kernel-notify directory missing, exiting"
-  exit 1
-fi
-
-if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [[ "$warnautostart" == "true" ]]; then
-    echo "Autostart directory not found, program will not automatically start"
-fi
 
 #Run given arguments
 argNum="0"
@@ -378,6 +387,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "-r  | --remove-kernel  : Remove kernels with a menu"; \
     echo "-l  | --list-kernels   : List installed kernels"; \
     echo "-a  | --add-kernel     : Install a new kernel"; \
+    echo "-p  | --precision      : Check either major or minor kernel updates"; \
     echo "-U  | --unmute         : Enable kernel-notify sending notifications"; \
     echo "-m  | --mute           : Disable kernel-notify sending notifications"; \
     echo ""; \

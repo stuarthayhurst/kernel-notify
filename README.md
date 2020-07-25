@@ -51,6 +51,7 @@
    * -r  | --remove-kernel  : Remove a kernels from a menu
    * -l  | --list-kernels   : List installed kernels
    * -a  | --add-kernel     : Install a new kernel
+   * -p  | --precision      : Check either major or minor kernel updates
    * -U  | --unmute         : Enable kernel-notify sending notifications
    * -m  | --mute           : Disable kernel-notify sending notifications
 
