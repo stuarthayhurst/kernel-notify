@@ -124,10 +124,10 @@ checkKernelCount() {
 listAvailableKernels() {
   kernelList=()
   while read -r line; do
-    kernelList+=("$line")
+    kernelList+=("${line##*v}")
   done <<< "$(git ls-remote --refs --tags --sort="v:refname" "$minorversionrepo" |grep -v "[0-9]-rc")"
   for line in "${kernelList[@]}"; do
-    echo "${line##*v}"
+    echo "$line"
   done |less +G
 }
 
