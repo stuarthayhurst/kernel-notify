@@ -89,6 +89,7 @@ installDebian() {
   make dist
   currVersion="$(sed -n '5p' "src/kernel-notify.desktop")"
   currVersion=${currVersion//Version=}
+  make test
   sudo dpkg -i "./dist/kernel-notify-${currVersion}_all.deb"
   make clean
 }
