@@ -39,6 +39,7 @@
 
 ## Help:
  - ### Program Help:
+   * -g  | --gui        : Launch the program with a gui, if available
    * -h  | --help       : Display the help page and exit
    * -u  | --update     : Update the program and exit
    * -v  | --version    : Display program version and exit

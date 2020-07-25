@@ -13,7 +13,7 @@ ICON_RESOLUTIONS=48 64 128 256
 
 build:
 	mkdir -p $(BUILD_DIR)
-	sed "s|.*Exec=.*|Exec=kernel-notify -zw|" src/kernel-notify.desktop > build/kernel-notify.desktop
+	sed "s|.*Exec=.*|Exec=kernel-notify --gui|" src/kernel-notify.desktop > build/kernel-notify.desktop
 	make notifications
 	make docs
 install:

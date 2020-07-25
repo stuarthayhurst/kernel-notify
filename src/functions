@@ -109,19 +109,19 @@ prepareVersion() {
 
 sendNotification() {
   #Silence notification if program is muted
-  if [ "$muted" == "true" ] && [ "$4" == "mute" ]; then
+  if [[ "$muted" == "true" ]] && [[ "$4" == "mute" ]] && [[ "$5" != "silent" ]]; then
     echo "$1, $2"
   else
     #Decide whether or not to set configured priority
-    if [ "$3" == "kernel" ] || [ "$3" == "program" ] || [ "$4" == "mute" ]; then
+    if [[ "$3" == "kernel" ]] || [[ "$3" == "program" ]] || [[ "$4" == "mute" ]]; then
       displayPriority="$priority"
     fi
     #Check notifications code exists before running
     if [[ -f "$workDir/notifications" ]]; then
-      if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch"; then
+      if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch" && [[ "$5" != "silent" ]]; then
         echo "  Notification: $1, $2"
       fi
-    else
+    elif [[ "$5" != "silent" ]]; then
       echo "  Notification: $1, $2"
     fi
   fi

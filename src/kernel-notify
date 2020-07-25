@@ -143,45 +143,6 @@ automaticFeatures() {
   fi
 }
 
-zenityNotify() {
-  latestVersion=$(getLatestKernelVersion)
-  currVersion=$(uname -r | sed 's/-.*/ /g')
-  latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-  latestVersionFull=$latestVersion
-  latestVersion="${latestVersion//.}"
-  checkKernelCount "silent"
-  if [ "$latestVersion" != "xxx" ] || [ "$latestProgVer" != "" ]; then
-    if [ "$KERNELS" != "" ] && [ "$latestVersion" -ne "${currVersion//.}" ] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
-      echo "Latest kernel version installed, reboot to take effect"
-      kernelOutdated="0"
-    elif [ "$latestVersion" -ne "${currVersion//.}" ]; then
-      echo "Latest kernel not installed"
-      kernelOutdated="1"
-    else
-      echo "Latest kernel version installed"
-      kernelOutdated="0"
-    fi
-    if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
-      echo "Program outdated"
-      progOutdated="1"
-    else
-      echo "Program up-to-date"
-      progOutdated="0"
-    fi
-  else
-    progOutdated="0"
-    kernelOutdated="0"
-    sendNotification "Network error" "An error occured while checking latest version"
-  fi
-  if [ "$progOutdated" == "0" ] && [ "$kernelOutdated" == "0" ]; then
-    if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
-      sendNotification "Zenity issue detected" "An error occured while running zenity"
-    fi
-    exit
-  fi
-  latestVersion="$latestVersionFull"
-}
-
 updateProgram() {
   checkRoot "root is required to update kernel-notify"
   if bash -e "$workDir/updater" "$version"; then
@@ -236,7 +197,7 @@ updateKernel() {
 
 checkProgVer() {
   latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-  if [ "${latestProgVer//.}" -ne "${version//.}" ]; then
+  if [[ "${latestProgVer//.}" != "${version//.}" ]] && [[ "$1" != "gui" ]]; then
     echo "" && echo "Program outdated, v$latestProgVer is available" 
     if [[ "$autoupdate" == "true" ]]; then
       echo "Auto-update is enabled, updating kernel-notify" && echo ""
@@ -246,6 +207,13 @@ checkProgVer() {
     else
       sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
     fi
+  elif [[ "${latestProgVer//.}" != "${version//.}" ]] && [[ "$1" == "gui" ]]; then
+    echo "Program: outdated" 1>&2
+    echo "outdated"
+    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute" "silent"
+  elif [[ "${latestProgVer//.}" == "${version//.}" ]] && [[ "$1" == "gui" ]]; then
+    echo "Program: up-to-date" 1>&2
+    echo "up-to-date"
   fi
 }
 
@@ -254,8 +222,13 @@ checkKernelVer() {
   latestVersionFull="$2"
   checkKernelCount "silent"
   if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
-    echo "Latest kernel version installed, reboot to take effect"
-  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]]; then
+    if [[ "$3" != "gui" ]]; then
+      echo "Latest kernel version installed, reboot to take effect"
+    else
+      echo "Kernel: up-to-date" 1>&2
+      echo "up-to-date"
+    fi
+  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" != "gui" ]]; then
     if [[ "$autoupdate" == "true" ]]; then
       echo "" && echo "Auto-update is enabled, updating kernel"
       sleep 5
@@ -263,6 +236,23 @@ checkKernelVer() {
       pkexec kernel-notify -aa
     else
       sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute"
+    fi
+  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" == "gui" ]]; then
+    echo "Kernel: outdated" 1>&2
+    echo "outdated"
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute" "silent"
+  elif [[ "$(prepareVersion "$latestVersionFull")" == "$(prepareVersion "$currVersion")" ]] && [[ "$3" == "gui" ]]; then
+    echo "Kernel: up-to-date" 1>&2
+    echo "up-to-date"
+  fi
+}
+
+launchGui() {
+  currVersion=$(uname -r | sed 's/-.*/ /g')
+  latestVersion=$(getLatestKernelVersion)
+  if [[ "$(checkProgVer "gui")" == "up-to-date" ]] && [[ "$(checkKernelVer "$currVersion" "$latestVersion" "gui")" == "up-to-date" ]]; then
+    if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify-app --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
+      sendNotification "Zenity issue detected" "An error occured while running zenity"
     fi
   fi
 }
@@ -307,7 +297,7 @@ while [[ "$#" > "$argNum" ]]; do
     expandedArgs+=("$arg")
   elif [[ "$arg" = -* ]]; then
     #If the argument is internal, set it to be skipped
-    for i in -aa -au -am -zw; do
+    for i in -aa -au -am; do
       if [[ "$arg" == "$i" ]]; then
         skipArg="true"
         break
@@ -368,12 +358,14 @@ argNum="0"
 while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
   arg="${expandedArgs[argNum]}"
   case $arg in
+    -g|--gui) launchGui; exit;;
     -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; \
     echo "This program comes with ABSOLUTELY NO WARRANTY."; \
     echo "This is free software; see the source for copying conditions."; \
     echo ""; \
     echo "Usage: kernel-notify [-OPTIONS]"; \
     echo "Program Help:"; \
+    echo "-g  | --gui        : Launch the program with a gui, if available"; \
     echo "-h  | --help       : Display this page and exit"; \
     echo "-u  | --update     : Update the program and exit"; \
     echo "-v  | --version    : Display program version and exit"; \
@@ -405,7 +397,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;
-    -zw) zenityNotify; main; exit;;
     *) echo "Unknown argument passed: $1"; "$(dirname "${BASH_SOURCE[0]}")/kernel-notify" --help; exit 1;;
   esac
   argNum=$((argNum + 1))
