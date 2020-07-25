@@ -27,7 +27,8 @@ checkFiles() {
   fi
 }
 
-latestVer=$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
+githubAPIContent="$(curl -k -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString")"
+latestVer=$(echo "$githubAPIContent" | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
 
 if [[ "$(dpkg -s kernel-notify 2>/dev/null)" =~ "Status: install ok installed" ]]; then
   installation="dpkg"
@@ -40,7 +41,7 @@ fi
 if [[ "${latestVer//.}" != "${version//.}" ]]; then
   echo "Updates are available, updating"
   if [ "$installation" == "dpkg" ]; then
-    debDownloadLink="$(curl -s -L https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest "$githubAPIString" |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")"
+    debDownloadLink="$(echo "$githubAPIContent" |grep "browser_download_url.*deb" |cut -d : -f 2,3 |tr -d \")"
     curl --progress-bar -O -L "${debDownloadLink/ }"
   else
     curl --progress-bar -O -L "https://github.com/Dragon8oy/kernel-notify/archive/v$latestVer.tar.gz"
