@@ -4,7 +4,7 @@ File,command -v file,mandatory,runtime
 Git,command -v git,mandatory,runtime
 Grep,command -v grep,mandatory,runtime
 Less,command -v less,mandatory,runtime
-Pkexec,command -v pkexec,mandatory,runtime
+Policykit-1,command -v pkexec,mandatory,runtime
 Psmisc,command -v fuser,mandatory,runtime
 Sed,command -v sed,mandatory,runtime,build
 Sudo,command -v sudo,optional,runtime
