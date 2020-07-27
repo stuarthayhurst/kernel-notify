@@ -83,12 +83,6 @@
    * Optional: optipng (Compress icons)
 
 ## Common Problems:
- - ### Notifications missing / failed to build:
-   * If no notifications are sent when they should be, the notifications binary is likely missing or broken
-   * If `ATTENTION: g++: failed to build notifications` was seen during install, the binary will be missing
-   * Notifications can be rebuilt with `make notifications` and then `sudo mv build/notifications /usr/share/kernel-notify/`
-   * If this still failed, submit a bug report, following the template and giving all available information
-
  - ### Updating failed:
    * Download the latest release from the Releases page (.deb or .tar.gz / .zip)
    * Follow the install instructions in the `Installation` section
