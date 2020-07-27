@@ -70,28 +70,62 @@ displayGraphics() {
 }
 
 getLatestKernelVersion() {
-  latestVersion=$(curl -k https://www.kernel.org -s) #Get webpage containing latest version
-  latestVersion="$(echo "$latestVersion" | tr -d '\n')" #Remove all newlines
-  latestVersion="${latestVersion#*'<td id="latest_button">'}" #Remove all html before the pattern
-  latestVersion="${latestVersion%%>*}" #Remove all html after the tag with the latest version
-  latestVersion="${latestVersion##*/}" #Remove all html before the filename with the latest version
-  latestVersion="${latestVersion/linux-}" #Remove linux- from the filename
-  latestVersion="${latestVersion%.tar*}" #Remove .tar from the filename
-  if [[ "$checkingprecision" == "minor" ]]; then
-    kernelRepoUrl="$minorversionrepo"
-  elif [[ "$checkingprecision" == "major" ]]; then
-    if [ "$(echo "$latestVersion" |tr -cd '.' |wc -c)" == "2" ]; then
-      latestVersion="${latestVersion%.*}"
+  useKernelWeb() {
+    latestVersion=$(curl -k https://www.kernel.org -s) #Get webpage containing latest version
+    latestVersion="$(echo "$latestVersion" | tr -d '\n')" #Remove all newlines
+    latestVersion="${latestVersion#*'<td id="latest_button">'}" #Remove all html before the pattern
+    latestVersion="${latestVersion%%>*}" #Remove all html after the tag with the latest version
+    latestVersion="${latestVersion##*/}" #Remove all html before the filename with the latest version
+    latestVersion="${latestVersion/linux-}" #Remove linux- from the filename
+    latestVersion="${latestVersion%.tar*}" #Remove .tar from the filename
+    echo "$latestVersion"
+  }
+  useKernelGit() {
+    latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelrepourl" 2>/dev/null |grep -v "[0-9]-rc" |tail -n1)"
+    echo "${latestVersion##*v}"
+  }
+
+  getKernelVersion() {
+    if [[ "$1" == "web" ]]; then
+      latestVersion="$(useKernelWeb)"
+    else
+      latestVersion="$(useKernelGit)"
     fi
-    kernelRepoUrl="$majorversionrepo"
-  fi
-  if [ "$latestVersion" == "" ]; then
-    latestVersion="$(git ls-remote --refs --tags --sort="v:refname" "$kernelRepoUrl" 2>/dev/null |grep -v "[0-9]-rc" |tail -n1)"
-    latestVersion="${latestVersion##*v}"
-    if [ "$latestVersion" == "" ]; then
+    #Correct output required precision
+    if [[ "$checkingprecision" == "major" ]]; then
+      if [ "$(echo "$latestVersion" |tr -cd '.' |wc -c)" == "2" ]; then
+        latestVersion="${latestVersion%.*}"
+      fi
+    fi
+    echo "$latestVersion"
+  }
+  checkVersionExists() {
+    if [[ "$1" != "" ]]; then
+      echo "true"
+    else
+      echo "false"
+    fi
+  }
+
+  #Try getKernelVersion with primary method
+  latestVersion="$(getKernelVersion "$primarycheckingmethod")"
+  versionExists="$(checkVersionExists "$latestVersion")"
+  if [[ "$versionExists" == "false" ]]; then
+    #Try getKernelVersion with secondary method
+    if [[ "$primarycheckingmethod" != "web" ]]; then
+      echo -en "\nCouldn't get latest kernel version from git, trying web..." 1>&2
+      latestVersion="$(getKernelVersion "web")"
+    else
+      echo -en "\nCouldn't get latest kernel version from web, trying git..." 1>&2
+      latestVersion="$(getKernelVersion "git")"
+    fi
+    #Set latestVersion to x.x.x if both methods failed
+    versionExists="$(checkVersionExists "$latestVersion")"
+    if [[ "$versionExists" == "false" ]]; then
       latestVersion="x.x.x"
     fi
   fi
+
   echo "$latestVersion"
 }
 

@@ -12,7 +12,7 @@ maxkernelcount="5"
 priority="critical"
 #Whether to check for major and minor updates or only major version updates (minor / major)
 checkingprecision="minor"
-#Git repository for Linux kernel to use when checking major and minor versions (default)
-minorversionrepo="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
-#Git repository for Linux kernel to use when only checking major versions
-majorversionrepo="git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+#Which method to use to check latest kernel version (web / git)
+primarycheckingmethod="web"
+#Git repository for checking major and minor versions
+kernelrepourl="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git"
