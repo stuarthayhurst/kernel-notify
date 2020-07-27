@@ -99,18 +99,11 @@ getLatestKernelVersion() {
     fi
     echo "$latestVersion"
   }
-  checkVersionExists() {
-    if [[ "$1" != "" ]]; then
-      echo "true"
-    else
-      echo "false"
-    fi
-  }
 
   #Try getKernelVersion with primary method
   latestVersion="$(getKernelVersion "$primarycheckingmethod")"
-  versionExists="$(checkVersionExists "$latestVersion")"
-  if [[ "$versionExists" == "false" ]]; then
+  versionExists="$(checkValidKernel "$latestVersion")"
+  if [[ "$versionExists" == "invalid" ]]; then
     #Try getKernelVersion with secondary method
     if [[ "$primarycheckingmethod" != "web" ]]; then
       echo -en "\nCouldn't get latest kernel version from git, trying web..." 1>&2
@@ -120,13 +113,41 @@ getLatestKernelVersion() {
       latestVersion="$(getKernelVersion "git")"
     fi
     #Set latestVersion to x.x.x if both methods failed
-    versionExists="$(checkVersionExists "$latestVersion")"
-    if [[ "$versionExists" == "false" ]]; then
+    versionExists="$(checkValidKernel "$latestVersion")"
+    if [[ "$versionExists" == "invalid" ]]; then
       latestVersion="x.x.x"
     fi
   fi
 
   echo "$latestVersion"
+}
+
+checkValidKernel() {
+  checkResult="valid"
+  #Must contain a .
+  if [[ ! "$1" == *"."* ]]; then
+    checkResult="invalid"
+  fi
+  #Mustn't end or start in a .
+  if [[ "${1%%-rc*}" == *"." ]] || [[ "${1%%-rc*}" == "."* ]]; then
+    checkResult="invalid"
+  fi
+  #No group of characters can exceed a size of 3
+  for i in ${1//./ }; do
+    partCount=$((partCount + 1))
+    if [[ "${#i}" != "1" ]] && [[ "${#i}" != "2" ]] && [[ "${#i}" != "3" ]]; then
+      checkResult="invalid"
+    fi
+  done
+  #Must only have 2 or 3 parts
+  if [[ "$partCount" != "2" ]] && [[ "$partCount" != "3" ]]; then
+    checkResult="invalid"
+  fi
+  #Mustn't contain any letters, except rc
+  if [[ "${1/-rc}" =~ [a-z] ]]; then
+    checkResult="invalid"
+  fi
+  echo "$checkResult"
 }
 
 prepareVersion() {
