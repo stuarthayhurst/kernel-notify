@@ -19,6 +19,10 @@ installKernel() {
   fi
 
   if [[ "$chosenVersion" == "" ]]; then
+    if [[ "$(checkValidKernel "$installVersion")" == "invalid" ]]; then
+      echo "Selected kernel '$installVersion' is invalid" 1>&2
+      exit 7
+    fi
     echo "Using selected version $installVersion"
     chosenVersion="$installVersion"
     if [[ "$installVersion" != "x.x.x" ]]; then
@@ -30,6 +34,10 @@ installKernel() {
       exit 7
     fi
   else
+    if [[ "$(checkValidKernel "$chosenVersion")" == "invalid" ]]; then
+      echo "Selected kernel '$chosenVersion' is invalid" 1>&2
+      exit 7
+    fi
     echo "Finding kernel version $chosenVersion..."
   fi
 
