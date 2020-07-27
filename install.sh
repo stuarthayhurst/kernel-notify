@@ -111,10 +111,10 @@ makeAssist() {
     done
     echo "  ATTENTION: Config updated, run 'kernel-notify -o' to view the old config"
   fi
-    if which update-desktop-database > /dev/null; then
+    if command -v update-desktop-database > /dev/null; then
     echo "Updating desktop-file-utils"; update-desktop-database > /dev/null
   fi
-  if which gtk-update-icon-cache > /dev/null; then
+  if command -v gtk-update-icon-cache > /dev/null; then
     echo "Updating gtk-update-icon-cache"; touch /usr/share/icons/hicolor > /dev/null
     gtk-update-icon-cache -f /usr/share/icons/hicolor/ &> /dev/null
   fi

@@ -1,18 +1,18 @@
-Curl,which curl,mandatory,runtime
-Diffutils,which cmp,mandatory,runtime
-File,which file,mandatory,runtime
-Git,which git,mandatory,runtime
-Grep,which grep,mandatory,runtime
-Less,which less,mandatory,runtime
-Pkexec,which pkexec,mandatory,runtime
-Psmisc,which fuser,mandatory,runtime
-Sed,which sed,mandatory,runtime,build
-Sudo,which sudo,optional,runtime
+Curl,command -v curl,mandatory,runtime
+Diffutils,command -v cmp,mandatory,runtime
+File,command -v file,mandatory,runtime
+Git,command -v git,mandatory,runtime
+Grep,command -v grep,mandatory,runtime
+Less,command -v less,mandatory,runtime
+Pkexec,command -v pkexec,mandatory,runtime
+Psmisc,command -v fuser,mandatory,runtime
+Sed,command -v sed,mandatory,runtime,build
+Sudo,command -v sudo,optional,runtime
 libnotify,ldconfig -p |grep libnotify,optional,runtime
-Zenity,which zenity,optional,runtime
-G++,which g++,mandatory,build
+Zenity,command -v zenity,optional,runtime
+G++,command -v g++,mandatory,build
 libnotify-dev,ls /usr/include/libnotify/notify.h,mandatory,build
-pkg-config,which pkg-config,mandatory,build
-shellcheck,which shellcheck,mandatory,build
-Inkscape,which inkscape,mandatory,icon
-Optipng,which optipng,mandatory,icon
+pkg-config,command -v pkg-config,mandatory,build
+shellcheck,command -v shellcheck,mandatory,build
+Inkscape,command -v inkscape,mandatory,icon
+Optipng,command -v optipng,mandatory,icon
