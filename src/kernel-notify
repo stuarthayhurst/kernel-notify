@@ -134,10 +134,10 @@ listAvailableKernels() {
   kernelList=()
   while read -r line; do
     kernelList+=("${line##*v}")
-  done <<< "$(git ls-remote --refs --tags --sort="v:refname" "$minorversionrepo" |grep -v "[0-9]-rc")"
+  done <<< "$(git ls-remote --refs --tags --sort="v:refname" "$kernelrepourl" |grep -v "[0-9]-rc")"
   for line in "${kernelList[@]}"; do
     echo "$line"
-  done |less +G
+  done |column -x |less +G
 }
 
 automaticFeatures() {
