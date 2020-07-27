@@ -6,7 +6,9 @@ muted="false"
 autoupdate="false"
 #Whether or not the program should warn users if the program cannot start on login
 warnautostart="true"
-#How many kernels should be installed before notifying users how to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
+#Show a warning if the number of kernels installed exceeds maxkernelcount
+kernelcountwarning="true"
+#Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
 maxkernelcount="5"
 #Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)
 priority="critical"

@@ -216,7 +216,9 @@ listKernels() {
   if [[ "$1" != "silent" ]]; then
     echo "Currently installed kernels:"
     echo "$KERNELS" |cat -n
-    echo "Config set to keep $maxkernelcount kernels before notifying users"
+    if [[ "$kernelcountwarning" == "true" ]]; then
+      echo "Config set to keep $maxkernelcount kernels before notifying users"
+    fi
   fi
 }
 

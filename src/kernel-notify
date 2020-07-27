@@ -108,24 +108,24 @@ setPrecision() {
 }
 
 checkKernelCount() {
-  if [[ "$1" != "silent" ]] && [[ "$1" != "alert" ]]; then
-    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      return 1
+  if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+    return 1
+  fi
+  if [[ "$1" == "alert" ]] && [[ "$kernelcountwarning" == "true" ]] || [[ "$1" == "silent" ]]; then
+    if [[ ! -d "/boot" ]]; then
+      return
     fi
-  fi
-  if [[ ! -d "/boot" ]]; then
-    return
-  fi
-  KERNELS="$(ls /boot/vmlinuz-*)"
-  KERNELS="${KERNELS//'/boot/'}"
-  KERNELS="${KERNELS//vmlinuz-}"
-  KERNELS="${KERNELS//-generic}"
-  KERNELS="$(echo "$KERNELS" |sort -V)"
-  read -ra ARR <<< "${KERNELS//$'\n'/ }"
-  if [[ "$1" != "silent" ]]; then
-    if [[ "${#ARR[@]}" > "$maxkernelcount" ]]; then
-      sendNotification "Configured kernel install count reached" "Remove extra kernels with 'kernel-notify -r'" ""
-      echo "Remove kernels to avoid this message, or raise the limit in the config"
+    KERNELS="$(ls /boot/vmlinuz-*)"
+    KERNELS="${KERNELS//'/boot/'}"
+    KERNELS="${KERNELS//vmlinuz-}"
+    KERNELS="${KERNELS//-generic}"
+    KERNELS="$(echo "$KERNELS" |sort -V)"
+    read -ra ARR <<< "${KERNELS//$'\n'/ }"
+    if [[ "$1" != "silent" ]]; then
+      if [[ "${#ARR[@]}" > "$maxkernelcount" ]]; then
+        sendNotification "Configured kernel install count reached" "Remove extra kernels with 'kernel-notify -r'" ""
+        echo "Remove kernels to avoid this message, or raise the limit in the config"
+      fi
     fi
   fi
 }
@@ -201,7 +201,7 @@ updateKernel() {
   else
     "$workDir/actions" -i "$2"
   fi
-  checkKernelCount
+  checkKernelCount "alert"
 }
 
 checkProgVer() {
@@ -400,7 +400,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
-    -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount; exit;;
+    -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount "alert"; exit;;
     -a|--add-kernel) updateKernel "" "${expandedArgs[((argNum + 1))]}"; exit;;
     -U|--unmute) unmute; exit;;
     -m|--mute) mute; exit;;

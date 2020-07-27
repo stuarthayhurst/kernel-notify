@@ -114,7 +114,8 @@
   * muted="true/false" - Whether or not to send notifications for kernel and program updates
   * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update when the program is run
   * warnautostart="true/false" - Warn users if the program cannot start on login
-  * maxkernelcount="1-99" - How many kernels should be saved before notifying users to remove a kernel (e.g. "5" would notify on the 6th kernel installed)
+  * kernelcountwarning="true/false" - Show a warning if the number of kernels installed exceeds maxkernelcount
+  * maxkernelcount="1-99" - Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
   * priority="critical/normal/low" - Keep notifications with buttons on-screen until dismissed or not
   * checkingprecision="minor/major" - Whether to check for major and minor updates or only major version updates
   * minorversionrepo="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" - Git repository for Linux kernel to use when checking major and minor versions (default)
