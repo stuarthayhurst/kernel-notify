@@ -4,8 +4,6 @@
 muted="false"
 #Automatically update the kernel and program
 autoupdate="false"
-#Whether or not the program should warn users if the program cannot start on login
-warnautostart="true"
 #Show a warning if the number of kernels installed exceeds maxkernelcount
 kernelcountwarning="true"
 #Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)

@@ -307,10 +307,6 @@ else
   exit 1
 fi
 
-if [ "$test" == "" ] && [ ! -d "/etc/xdg/autostart/" ] && [[ "$warnautostart" == "true" ]]; then
-    echo "Autostart directory not found, program will not automatically start"
-fi
-
 #Expand combined arguments
 read -ra args <<< "$@"; argNum="0"
 while [[ "$#" > "$argNum" ]]; do

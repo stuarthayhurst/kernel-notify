@@ -113,7 +113,6 @@
    * '-' shows a range of values
   * muted="true/false" - Whether or not to send notifications for kernel and program updates
   * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update when the program is run
-  * warnautostart="true/false" - Warn users if the program cannot start on login
   * kernelcountwarning="true/false" - Show a warning if the number of kernels installed exceeds maxkernelcount
   * maxkernelcount="1-99" - Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
   * priority="critical/normal/low" - Keep notifications with buttons on-screen until dismissed or not
