@@ -109,6 +109,7 @@
   * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update when the program is run
   * kernelcountwarning="true/false" - Show a warning if the number of kernels installed exceeds maxkernelcount
   * maxkernelcount="1-99" - Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
+  * kernelcleanup="true/false" - Whether or not to clean up kernel module directory after dpkg exits
   * priority="critical/normal/low" - Keep notifications with buttons on-screen until dismissed or not
   * checkingprecision="minor/major" - Whether to check for major and minor updates or only major version updates
   * primarycheckingmethod="web/git" - Which method to use to check latest kernel version

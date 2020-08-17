@@ -8,6 +8,8 @@ autoupdate="false"
 kernelcountwarning="true"
 #Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
 maxkernelcount="5"
+#Whether or not to clean up kernel module directory after dpkg exits
+kernelcleanup="true"
 #Keep notifications with buttons on-screen until dismissed or not (critical / normal / low)
 priority="critical"
 #Whether to check for major and minor updates or only major version updates (minor / major)

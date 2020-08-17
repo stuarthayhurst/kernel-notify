@@ -195,8 +195,22 @@ removeKernel() {
     if [[ "$(checkRoot "silent")" == "true" ]]; then
       checkDpkg
       dpkg -P "${REMOVESTR[@]}"
+      #Remove left over kernel module directory is config is enabled
+      if [[ "$kernelcleanup" == "true" ]]; then
+        REMOVESTR=("")
+        for kernelVer in "${REMOVEVERS[@]}"; do
+          for kernelDir in "/lib/modules/$kernelVer"*; do
+            REMOVESTR+=("$kernelDir")
+          done
+        done
+        if sudo rm -rf "${REMOVESTR[@]}"; then
+          echo "Successfully cleaned up kernel module directories"
+        else
+          echo "Failed to clean up kernel module directories"
+        fi
+      fi
     else
-      sudo bash -c "source $workDir/config && source $workDir/functions && checkDpkg" && sudo dpkg -P "${REMOVESTR[@]}"
+      echo "  ATTENTION: Insufficient permission, root is required to remove kernels"; exit 1
     fi
   fi
 }
