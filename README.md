@@ -45,8 +45,8 @@
    * -v  | --version     : Display program version
    * -o  | --old-config  : List old and new config values
    * -c  | --config      : Change / read a config value
-   * --disable-autostart : Enable kernel-notify starting on login
-   * --enable-autostart  : Disable kernel-notify starting on login
+   * --enable-autostart  : Enable kernel-notify starting on login
+   * --disable-autostart : Disable kernel-notify starting on login
 
  - ### Feature Help:
    * -L  | --list-available : List all kernels available to install
