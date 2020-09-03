@@ -57,7 +57,7 @@ checkDeps() {
 updateVersion() {
   if [[ "$1" != "" ]]; then
     newVersion="$1"
-    echo "Building package v$buildVersion:"
+    echo "Changing package version to v$buildVersion:"
   else
     echo "Enter the new version number:"
     read -r newVersion
@@ -68,7 +68,7 @@ updateVersion() {
   fi
 
   if [[ "$1" == "" ]]; then
-    echo "Building package:"
+    echo "Updating package version:"
   fi
   read -r -p "Update manpage date? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
