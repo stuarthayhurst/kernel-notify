@@ -370,13 +370,15 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo ""; \
     echo "Usage: kernel-notify [-OPTIONS]"; \
     echo "Program Help:"; \
-    echo "-g  | --gui        : Launch the program with a gui, if available"; \
-    echo "-h  | --help       : Display this page"; \
-    echo "-u  | --update     : Update the program"; \
-    echo "-v  | --version    : Display program version"; \
-    echo "-o  | --old-config : List old and new config values"; \
-    echo "-c  | --config     : Change / read a config value"; \
-    echo "                   : - kernel-notify --config configName configValue"; \
+    echo "-g  | --gui         : Launch the program with a gui, if available"; \
+    echo "-h  | --help        : Display this page"; \
+    echo "-u  | --update      : Update the program"; \
+    echo "-v  | --version     : Display program version"; \
+    echo "-o  | --old-config  : List old and new config values"; \
+    echo "-c  | --config      : Change / read a config value"; \
+    echo "                      - kernel-notify -c configName configValue"; \
+    echo "--disable-autostart : Enable kernel-notify starting on login"; \
+    echo "--enable-autostart  : Disable kernel-notify starting on login"; \
     echo ""; \
     echo "Feature Help:"; \
     echo "-L  | --list-available : List all kernels available to install"; \
@@ -384,8 +386,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "-l  | --list-kernels   : List installed kernels"; \
     echo "-a  | --add-kernel     : Install a new kernel"; \
     echo "-p  | --precision      : Check either major or minor kernel updates"; \
-    echo "-U  | --unmute         : Enable kernel-notify sending notifications"; \
-    echo "-m  | --mute           : Disable kernel-notify sending notifications"; \
     echo ""; \
     echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
     echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \
@@ -394,12 +394,12 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -o|--old-config) listConfig; exit;;
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
+    --disable-autostart) unmute; exit;;
+    --enable-autostart|--autostart) mute; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
     -l|--list|--list-kernels) "$workDir/actions" -l ""; checkKernelCount "alert"; exit;;
     -a|--add-kernel) updateKernel "" "${expandedArgs[((argNum + 1))]}"; exit;;
-    -U|--unmute) unmute; exit;;
-    -m|--mute) mute; exit;;
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
     -au) automaticFeatures "au"; exit;;

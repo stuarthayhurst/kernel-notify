@@ -30,6 +30,12 @@ kernel-notify is a mainly-bash program for checking for the latest kernel and no
         Change / read a config value
          - Use: kernel-notify --config CFGOPTION NEWCFGVALUE
 
+--disable-autostart
+        Enable kernel-notify starting on login
+
+--enable-autostart
+        Disable kernel-notify starting on login
+
 .B  Feature options:
 
 -L, --list-available
@@ -46,12 +52,6 @@ kernel-notify is a mainly-bash program for checking for the latest kernel and no
 
 -p, --precision
         Check either major or minor kernel updates
-
--U, --unmute
-        Enable kernel-notify sending notifications
-
--m, --mute
-        Disable kernel-notify sending notifications
 
 .SH AUTHOR
 Written by Stuart Hayhurst (stuart.a.hayhurst@gmail.com)

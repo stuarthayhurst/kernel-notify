@@ -31,7 +31,7 @@
  - If the config breaks, the old config can be viewed with `kernel-notify -o`
 
 ## Notes:
- * Kernel-notify starting on login can be toggled with `kernel-notify --mute` and `kernel-notify --unmute`
+ * Kernel-notify starting on login can be toggled with `kernel-notify --enable-autostart` and `kernel-notify --disable-autostart`
  * Kernel-notify sending notifications can be toggled in the config, with the `muted=0/1` option
  * The program and kernel can be automatically updated if autoupdate is set to 1 in the config
  * On .deb installation, the package will attempt to rebuild the notifications program if the architecture is not amd64
@@ -39,12 +39,14 @@
 
 ## Help:
  - ### Program Help:
-   * -g  | --gui        : Launch the program with a gui, if available
-   * -h  | --help       : Display the help page
-   * -u  | --update     : Update the program
-   * -v  | --version    : Display program version
-   * -o  | --old-config : List old and new config values
-   * -c  | --config     : Change / read a config value
+   * -g  | --gui         : Launch the program with a gui, if available
+   * -h  | --help        : Display the help page
+   * -u  | --update      : Update the program
+   * -v  | --version     : Display program version
+   * -o  | --old-config  : List old and new config values
+   * -c  | --config      : Change / read a config value
+   * --disable-autostart : Enable kernel-notify starting on login
+   * --enable-autostart  : Disable kernel-notify starting on login
 
  - ### Feature Help:
    * -L  | --list-available : List all kernels available to install
@@ -52,8 +54,6 @@
    * -l  | --list-kernels   : List installed kernels
    * -a  | --add-kernel     : Install a new kernel
    * -p  | --precision      : Check either major or minor kernel updates
-   * -U  | --unmute         : Enable kernel-notify sending notifications
-   * -m  | --mute           : Disable kernel-notify sending notifications
 
 ## Dependencies:
  - ### Required:
