@@ -2,7 +2,7 @@
 # shellcheck disable=SC1090
 # shellcheck disable=SC2154
 export workDir="/usr/share/kernel-notify"
-version="6.1.4"
+version="6.2"
 
 editConfig() {
   #Read arguments and input variables
