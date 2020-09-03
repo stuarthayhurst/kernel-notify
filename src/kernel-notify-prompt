@@ -4,8 +4,8 @@ _kernel_notify_config_completion() {
   #Generate configs
   local configlist
   while read -r line; do
-    if echo "$line" |grep -v "Config:"> /dev/null; then
-      if echo "$line" |grep -v "#"> /dev/null; then
+    if [[ "$line" != *"Config:"* ]]; then
+      if [[ "$line" != *"#"* ]]; then
         configlist+="${line%%=*} "
       fi
     fi
@@ -19,7 +19,7 @@ _kernel_notify_arg_completion() {
   while read -r line; do
     line="${line%%:*}"
     for i in $line; do
-      if [[ "${#i}" -gt "3" ]] && echo "$i" |grep "^-" > /dev/null; then
+      if [[ "${#i}" -gt "3" ]] && [[ "${i:0:1}" == "-" ]]; then
         promptlist+="$i "
       fi
     done
