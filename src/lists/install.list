@@ -1,13 +1,13 @@
 icons/48x48/apps/kernel-notify.png /usr/share/icons/hicolor/48x48/apps/kernel-notify.png
-icons/48x48/apps/kernel-notify-app.png /usr/share/icons/hicolor/48x48/apps/kernel-notify-app.png
+icons/48x48/apps/kernel-notify-tux.png /usr/share/icons/hicolor/48x48/apps/kernel-notify-tux.png
 icons/64x64/apps/kernel-notify.png /usr/share/icons/hicolor/64x64/apps/kernel-notify.png
-icons/64x64/apps/kernel-notify-app.png /usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png
+icons/64x64/apps/kernel-notify-tux.png /usr/share/icons/hicolor/64x64/apps/kernel-notify-tux.png
 icons/128x128/apps/kernel-notify.png /usr/share/icons/hicolor/128x128/apps/kernel-notify.png
-icons/128x128/apps/kernel-notify-app.png /usr/share/icons/hicolor/128x128/apps/kernel-notify-app.png
+icons/128x128/apps/kernel-notify-tux.png /usr/share/icons/hicolor/128x128/apps/kernel-notify-tux.png
 icons/256x256/apps/kernel-notify.png /usr/share/icons/hicolor/256x256/apps/kernel-notify.png
-icons/256x256/apps/kernel-notify-app.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-app.png
+icons/256x256/apps/kernel-notify-tux.png /usr/share/icons/hicolor/256x256/apps/kernel-notify-tux.png
 icons/kernel-notify.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify.svg
-icons/kernel-notify-app.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-app.svg
+icons/kernel-notify-tux.svg /usr/share/icons/hicolor/scalable/apps/kernel-notify-tux.svg
 src/kernel-notify.desktop /etc/xdg/autostart/kernel-notify.desktop
 src/kernel-notify.desktop /usr/share/kernel-notify/kernel-notify.desktop
 src/kernel-notify-prompt /etc/bash_completion.d/kernel-notify-prompt +x

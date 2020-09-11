@@ -136,7 +136,7 @@ installKernel() {
   if ! displayGraphics "zenity"; then
     dpkgKernelInstall
   else
-    dpkgKernelInstall | displayGraphics 'zenity --progress --auto-close --no-cancel --window-icon="/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png" --title="Kernel Updater" --text="Starting update..." --width=400 --height=100 --percentage=0' "launch" "zenity"
+    dpkgKernelInstall | displayGraphics 'zenity --progress --auto-close --no-cancel --window-icon="/usr/share/icons/hicolor/64x64/apps/kernel-notify.png" --title="Kernel Updater" --text="Starting update..." --width=400 --height=100 --percentage=0' "launch" "zenity"
   fi
 
   if [[ "$?" == "1" ]]; then

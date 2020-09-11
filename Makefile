@@ -88,7 +88,7 @@ icons:
 	    optipng -o7 -strip all $$filename; \
 	  done; \
 	done
-	cp ./icons/256x256/apps/kernel-notify.png ./docs/icon.png
+	cp ./icons/256x256/apps/kernel-notify-tux.png ./docs/icon.png
 docs:
 	mkdir -p $(BUILD_DIR)
 	gzip -cqv9 docs/kernel-notify.1 > $(BUILD_DIR)/kernel-notify.1.gz

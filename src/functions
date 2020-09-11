@@ -173,7 +173,7 @@ sendNotification() {
     fi
     #Check notifications code exists before running
     if [[ -f "$workDir/notifications" ]]; then
-      if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch" && [[ "$5" != "silent" ]]; then
+      if ! displayGraphics "$workDir/notifications \"$1\" \"$2\" \"kernel-notify-tux\" \"$3\" \"$4\" \"$displayPriority\" > /dev/null 2>&1 &" "launch" && [[ "$5" != "silent" ]]; then
         echo "  Notification: $1, $2"
       fi
     elif [[ "$5" != "silent" ]]; then
