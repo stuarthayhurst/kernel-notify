@@ -66,7 +66,7 @@ listConfig() {
 
 mute() {
   #Disable autostart
-  checkRoot "root is required to mute kernel-notify"
+  checkRoot "root is required to disable autostart"
   echo -n "Disabling kernel-notify autostart... "
   autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
   #Remove .desktop file from /etc/xdg/autostart
@@ -83,7 +83,7 @@ mute() {
 
 unmute() {
   #Enable autostart
-  checkRoot "root is required to unmute kernel-notify"
+  checkRoot "root is required to disable autostart"
   echo -n "Enabling kernel-notify autostart... "
   #Copy .desktop file into /etc/xdg/autostart
   autostartFile="/etc/xdg/autostart/kernel-notify.desktop"
