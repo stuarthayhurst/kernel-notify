@@ -1,21 +1,6 @@
 #!/bin/bash
-if [ "$1" = "remove" ]; then
-  if [ -f /etc/xdg/autostart/kernel-notify.desktop ]; then
-    rm /etc/xdg/autostart/kernel-notify.desktop
-  fi
-  if [ -f /usr/share/kernel-notify/kernel-notify.desktop ]; then
-    rm /usr/share/kernel-notify/kernel-notify.desktop
-  fi
-  if [ -f /usr/share/kernel-notify/kernel-notify.desktop.old ]; then
-    rm /usr/share/kernel-notify/kernel-notify.desktop.old
-  fi
-  if [ -f /usr/share/kernel-notify/config.old ]; then
-    rm /usr/share/kernel-notify/config.old
-  fi
-  if [ -f /usr/share/man/man1/kernel-notify.1.gz ]; then
-    rm /usr/share/man/man1/kernel-notify.1.gz
-  fi
-  if [ -f /usr/share/man/man1/kernel-notify.1 ]; then
-    rm /usr/share/man/man1/kernel-notify.1
-  fi
+#Clean up files not maintained by package manager
+if [[ "$1" == "remove" ]]; then
+  fileList=("/etc/xdg/autostart/kernel-notify.desktop" "/usr/share/kernel-notify/kernel-notify.desktop" "/usr/share/kernel-notify/kernel-notify.desktop.old" "/usr/share/kernel-notify/config.old" "/usr/share/man/man1/kernel-notify.1.gz" "/usr/share/man/man1/kernel-notify.1")
+  rm -f ${fileList[*]}
 fi
