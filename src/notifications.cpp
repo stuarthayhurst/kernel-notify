@@ -3,12 +3,6 @@
 
 int action_triggered = 0;
 
-void callback_update_program() {
-  std::cout << "Updating Program" << std::endl;
-  action_triggered = 1;
-  system("workDir=$(pwd) $(pwd)/actions --display");
-  system("pkexec kernel-notify -au");
-}
 void callback_update_kernel() {
   std::cout << "Updating Kernel" << std::endl;
   action_triggered = 1;
@@ -28,14 +22,7 @@ int main(int argc, char * argv[] ) {
   NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
   if (argc > 4) {
-    if (argv[4] == std::string("program")) {
-      notify_notification_add_action (n,
-        "action_update",
-        "Update Program",
-         NOTIFY_ACTION_CALLBACK(callback_update_program),
-         NULL,
-         NULL);
-    } else if (argv[4] == std::string("kernel")) {
+    if (argv[4] == std::string("kernel")) {
       notify_notification_add_action (n,
         "action_update",
         "Update Kernel",

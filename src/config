@@ -2,7 +2,7 @@
 # shellcheck disable=SC2034
 #Whether or not to send notifications for kernel and program updates
 muted="false"
-#Automatically update the kernel and program
+#Automatically update the kernel
 autoupdate="false"
 #Show a warning if the number of kernels installed exceeds maxkernelcount
 kernelcountwarning="true"

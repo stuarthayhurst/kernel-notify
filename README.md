@@ -23,12 +23,7 @@
  * This will prepare the code for release and build a .deb
 
 ## Updating:
- - ### Automatic:
-   * Run `kernel-notify -u`
- - ### Manual:
-   * Follow the instructions in the `Installation` section, configs will be saved through updates
- - WARNING: kernel-notify will attempt to update the config after an update
- - If the config breaks, the old config can be viewed with `kernel-notify -o`
+ * Install the program, using the instructions in the `Installation` section
 
 ## Notes:
  * Kernel-notify starting on login can be toggled with `kernel-notify --enable-autostart` and `kernel-notify --disable-autostart`
@@ -41,7 +36,6 @@
  - ### Program Help:
    * -g  | --gui         : Launch the program with a gui, if available
    * -h  | --help        : Display the help page
-   * -u  | --update      : Update the program
    * -v  | --version     : Display program version
    * -o  | --old-config  : List old and new config values
    * -c  | --config      : Change / read a config value
@@ -66,7 +60,6 @@
    * less
    * psmisc
    * policykit-1
-   * tar (Only required if installed from source)
 
  - ### Optional:
    * libnotify4 (Notifications)
@@ -106,7 +99,7 @@
    * '/' shows multiple options
    * '-' shows a range of values
   * muted="true/false" - Whether or not to send notifications for kernel and program updates
-  * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update when the program is run
+  * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update the kernel when the program is run
   * kernelcountwarning="true/false" - Show a warning if the number of kernels installed exceeds maxkernelcount
   * maxkernelcount="1-99" - Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
   * kernelcleanup="true/false" - Whether or not to clean up kernel module directory after dpkg exits

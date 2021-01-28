@@ -144,30 +144,10 @@ automaticFeatures() {
   case $1 in
     am) mute; sendNotification "Program muted" "Run 'kernel-notify -U' to unmute";;
     aa) updateKernel "automatic" "";;
-    au) updateProgram "$version" "automatic";;
   esac
 
   if [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
     rm /tmp/kernel-notify.displayinfo
-  fi
-}
-
-updateProgram() {
-  checkRoot "root is required to update kernel-notify"
-  if bash -e "$workDir/updater" "$version"; then
-    #Program updated fine
-    if [[ "$2" == "automatic" ]]; then
-      sendNotification "Program updated" "Run 'kernel-notify -v' to check version"
-    fi
-  elif [[ "$?" == "1" ]]; then
-    #Program has no updates available
-    return
-  else
-    #Program failed to update
-    echo "  ATTENTION: Updating kernel-notify failed"
-    if [[ "$2" == "automatic" ]]; then
-      sendNotification "Program update failed" "Kernel-notify failed to update - run 'kernel-notify -u'"
-    fi
   fi
 }
 
@@ -202,28 +182,6 @@ updateKernel() {
     "$workDir/actions" -i "$2"
   fi
   checkKernelCount "alert"
-}
-
-checkProgVer() {
-  latestProgVer=$(curl -k -s https://api.github.com/repos/dragon8oy/kernel-notify/releases/latest | grep "tag_name" | cut -d v -f 2,3 | tr -d \",)
-  if [[ "${latestProgVer//.}" != "${version//.}" ]] && [[ "$1" != "gui" ]]; then
-    echo "" && echo "Program outdated, v$latestProgVer is available" 
-    if [[ "$autoupdate" == "true" ]]; then
-      echo "Auto-update is enabled, updating kernel-notify" && echo ""
-      sleep 5
-      "$workDir/actions" "--display"
-      pkexec kernel-notify -au
-    else
-      sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute"
-    fi
-  elif [[ "${latestProgVer//.}" != "${version//.}" ]] && [[ "$1" == "gui" ]]; then
-    echo "Program: outdated" 1>&2
-    echo "outdated"
-    sendNotification "Version v$latestProgVer is available" "Update with 'kernel-notify -u'" "program" "mute" "silent"
-  elif [[ "${latestProgVer//.}" == "${version//.}" ]] && [[ "$1" == "gui" ]]; then
-    echo "Program: up-to-date" 1>&2
-    echo "up-to-date"
-  fi
 }
 
 checkKernelVer() {
@@ -289,8 +247,7 @@ main() {
   echo "Latest Kernel: $latestVersionFull"
   echo "Current Kernel: $currVersion"
 
-  #Check if versions are outdated and notify
-  checkProgVer
+  #Check kernel version is outdated and notify
   checkKernelVer "$currVersion" "$latestVersionFull"
 
   #Check installed kernel count is below configured warning threshold
@@ -372,7 +329,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "Program Help:"; \
     echo "-g  | --gui         : Launch the program with a gui, if available"; \
     echo "-h  | --help        : Display this page"; \
-    echo "-u  | --update      : Update the program"; \
     echo "-v  | --version     : Display program version"; \
     echo "-o  | --old-config  : List old and new config values"; \
     echo "-c  | --config      : Change / read a config value"; \
@@ -390,7 +346,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
     echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \
     echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-    -u|--update) updateProgram; exit;;
     -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
     -o|--old-config) listConfig; exit;;
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
@@ -402,7 +357,6 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -a|--add-kernel) updateKernel "" "${expandedArgs[((argNum + 1))]}"; exit;;
     -am) automaticFeatures "am"; exit;;
     -aa) automaticFeatures "aa"; exit;;
-    -au) automaticFeatures "au"; exit;;
     *) echo "Unknown argument passed: $1"; "$(dirname "${BASH_SOURCE[0]}")/kernel-notify" --help; exit 1;;
   esac
   argNum=$((argNum + 1))
