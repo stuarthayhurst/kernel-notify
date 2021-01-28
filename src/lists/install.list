@@ -15,7 +15,6 @@ src/kernel-notify /usr/bin/kernel-notify +x
 src/actions /usr/share/kernel-notify/actions +x
 src/config /usr/share/kernel-notify/config
 src/functions /usr/share/kernel-notify/functions +x
-src/updater /usr/share/kernel-notify/updater +x
 build/notifications /usr/share/kernel-notify/notifications +x
 build/kernel-notify.1.gz /usr/share/man/man1/kernel-notify.1.gz
 build/kernel-notify.desktop /usr/share/applications/kernel-notify.desktop
