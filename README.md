@@ -110,4 +110,4 @@
 
 ## License
  * GNU GENERAL PUBLIC LICENSE (v3)
- * Kernel-notify Copyright (C) 2020 Stuart Hayhurst
+ * Kernel-notify Copyright (C) 2021 Stuart Hayhurst

@@ -129,7 +129,7 @@ for i in "$@"; do
 done
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -h|--help) echo "Kernel-notify Copyright (C) 2020 Stuart Hayhurst"; \
+  -h|--help) echo "Kernel-notify Copyright (C) 2021 Stuart Hayhurst"; \
   echo "This program comes with ABSOLUTELY NO WARRANTY."; \
   echo "This is free software; see the source for copying conditions."; \
   echo ""; \
