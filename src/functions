@@ -129,29 +129,21 @@ getLatestKernelVersion() {
 
 checkValidKernel() {
   checkResult="valid"
-  #Must contain a .
-  if [[ ! "$1" == *"."* ]]; then
+  if [[ ! "$1" == *"."* ]]; then #Must contain a .
+    checkResult="invalid"
+  elif [[ "${1%%-rc*}" == *"." ]] || [[ "${1%%-rc*}" == "."* ]]; then #Mustn't end or start in a .
+    checkResult="invalid"
+  elif [[ "$partCount" != "2" ]] && [[ "$partCount" != "3" ]]; then #Must only have 2 or 3 parts
+    checkResult="invalid"
+  elif [[ "${1/-rc}" =~ [a-z] ]]; then #Mustn't contain any letters, except rc
     checkResult="invalid"
   fi
-  #Mustn't end or start in a .
-  if [[ "${1%%-rc*}" == *"." ]] || [[ "${1%%-rc*}" == "."* ]]; then
-    checkResult="invalid"
-  fi
-  #No group of characters can exceed a size of 3
-  for i in ${1//./ }; do
+  for i in ${1//./ }; do #No group of characters can exceed a size of 3
     partCount=$((partCount + 1))
     if [[ "${#i}" != "1" ]] && [[ "${#i}" != "2" ]] && [[ "${#i}" != "3" ]]; then
       checkResult="invalid"
     fi
   done
-  #Must only have 2 or 3 parts
-  if [[ "$partCount" != "2" ]] && [[ "$partCount" != "3" ]]; then
-    checkResult="invalid"
-  fi
-  #Mustn't contain any letters, except rc
-  if [[ "${1/-rc}" =~ [a-z] ]]; then
-    checkResult="invalid"
-  fi
   echo "$checkResult"
 }
 
