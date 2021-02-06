@@ -32,9 +32,14 @@ checkRoot() {
     fi
     return
   elif [[ "$USER" != "root" ]]; then
-    echo "  ATTENTION: Insufficient permission, $1" 1>&2
+    sendError "  ATTENTION: Insufficient permission, $1" 1>&2
     exit 1
   fi
+}
+
+sendError() {
+  #Output $1 to stderr
+  echo -e "$1" 1>&2
 }
 
 displayGraphics() {
@@ -54,7 +59,7 @@ displayGraphics() {
     #Check if zenity is installed
     if [[ "$i" == "zenity" ]]; then
       if ! command -v zenity > /dev/null 2>&1; then
-        echo "Zenity not installed, it is required for graphical menus"
+        sendError "Zenity not installed, it is required for graphical menus"
         return 1
       fi
     fi

@@ -4,7 +4,7 @@
 installKernel() {
   if ls /etc/*-release > /dev/null 2>&1; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      echo "Raspbian / Raspberry Pis are not supported with this feature"
+      sendError "Raspbian / Raspberry Pis are not supported with this feature"
       exit 6
     fi
   else
@@ -20,7 +20,7 @@ installKernel() {
 
   if [[ "$chosenVersion" == "" ]]; then
     if [[ "$(checkValidKernel "$installVersion")" == "invalid" ]]; then
-      echo "Selected kernel '$installVersion' is invalid" 1>&2
+      sendError "Selected kernel '$installVersion' is invalid" 1>&2
       exit 7
     fi
     echo "Using selected version $installVersion"
@@ -35,7 +35,7 @@ installKernel() {
     fi
   else
     if [[ "$(checkValidKernel "$chosenVersion")" == "invalid" ]]; then
-      echo "Selected kernel '$chosenVersion' is invalid" 1>&2
+      sendError "Selected kernel '$chosenVersion' is invalid" 1>&2
       exit 7
     fi
     echo "Finding kernel version $chosenVersion..."
@@ -60,7 +60,7 @@ installKernel() {
   kernelDate="${kernelDate##*.}"
 
   if [[ "$kernelDate" == "" ]]; then
-    echo "Either kernel $installVersion doesn't have an entry, or you have no internet connection"
+    sendError "Either kernel $installVersion doesn't have an entry, or you have no internet connection"
     exit 2
   fi
 
@@ -76,7 +76,7 @@ installKernel() {
     if [[ ! -d "/tmp/kernel-notify" ]]; then
       mkdir /tmp/kernel-notify
     elif [[ ! -w /tmp/kernel-notify ]]; then
-      echo "No permission to use /tmp/kernel-notify, please delete it and try again or run with root" 1>&2
+      sendError "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
       sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason"
       exit 7
     fi
@@ -90,7 +90,7 @@ installKernel() {
       filename="${filename##*/}"
       installList="$installList $filename"
       if ! file "$filename" | grep -q 'Debian binary package'; then
-        echo "$filename: Not a Debian package" 1>&2
+        sendError "$filename: Not a Debian package"
         clearFiles "$installList"
         sendNotification "Kernel failed to update" "Downloaded kernel faulty"
         exit 4
@@ -101,7 +101,7 @@ installKernel() {
     curl --progress-bar -O "$mainlineRepoDir/CHECKSUMS"
     echo "90"
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
-      echo "Downloaded kernel checksum invalid" 1>&2
+      sendError "Downloaded kernel checksum invalid"
       clearFiles "$installList CHECKSUMS"
       sendNotification "Kernel failed to update" "Downloaded kernel faulty"
       exit 4
@@ -169,8 +169,8 @@ removeKernel() {
   DELVERSION=${DELVERSION//,/ }
   read -ra ARR <<< "$DELVERSION"
   if [[ "${ARR[*]}" == "0" ]] || [[ "${ARR[*]}" == "" ]]; then
-      echo "Either no kernel was entered, or an error occured"
-      exit
+    sendError "Either no kernel was entered, or an error occured"
+    exit
   fi
   for i in "${ARR[@]}"; do
     if [[ "${#i}" == 1 ]] || [[ "${#i}" == 2 ]]; then
@@ -179,11 +179,11 @@ removeKernel() {
       fi
     fi
     if [[ ! "${#i}" == 12 ]] && [[ ! "${#i}" == 13 ]] && [[ ! "${#i}" == 14 ]]; then
-      echo "'$i' is not in the correct format"
+      sendError "'$i' is not in the correct format"
       exit
     fi
     if [[ "$i" == "$(uname -r | sed 's/-generic//g')" ]]; then
-      echo "Removing the booted kernel is not allowed"
+      sendError "Removing the booted kernel is not allowed"
       exit
     fi
     REMOVEVERS+=("$i")
@@ -206,11 +206,11 @@ removeKernel() {
         if sudo rm -rf "${REMOVESTR[@]}"; then
           echo "Successfully cleaned up kernel module directories"
         else
-          echo "Failed to clean up kernel module directories"
+          sendError "Failed to clean up kernel module directories"
         fi
       fi
     else
-      echo "  ATTENTION: Insufficient permission, root is required to remove kernels"; exit 1
+      sendError "  ATTENTION: Insufficient permission, root is required to remove kernels"; exit 1
     fi
   fi
 }
@@ -218,7 +218,7 @@ removeKernel() {
 listKernels() {
   if ls /etc/*-release > /dev/null 2>&1; then
     if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      echo "Raspbian / Raspberry Pis are not supported with this feature"
+      sendError "Raspbian / Raspberry Pis are not supported with this feature"
       return 1
     fi
   else
@@ -251,12 +251,12 @@ clearFiles() {
     if [[ -f "$i" ]]; then
       rm "$i"
     else
-      echo "File $i doesn't exist, not deleting"
+      sendError "File $i doesn't exist, not deleting"
     fi
   done
   if [[ "$(ls /tmp/kernel-notify)" == "" ]]; then
     if [[ ! -w /tmp/kernel-notify ]]; then
-      echo "Insufficient permission to remove /tmp/kernel-notify"
+      sendError "Insufficient permission to remove /tmp/kernel-notify"
     fi
     rm -rf /tmp/kernel-notify
   fi
@@ -273,13 +273,13 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   source "$workDir/functions"
   cd "$workDir" || exit 7
 else
-  echo "Config file / kernel-notify directory missing, exiting"
+  sendError "Config file / kernel-notify directory missing, exiting"
   exit 1
 fi
 
 if [[ "$1" != "-l" ]] && [[ "$1" != "--list" ]]; then
   if [[ ! -f "/usr/bin/dpkg" ]]; then
-    echo "Kernel installation / removal is not supported on this system"
+    sendError "Kernel installation / removal is not supported on this system"
     exit 6
   fi
 fi
