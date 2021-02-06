@@ -16,7 +16,7 @@
    * Run `sudo dpkg -i kernel-notify-x.x_all.deb`
 
 ## Uninstallation:
- * Run `make uninstall`
+ * Run `sudo make uninstall`
 
 ## Packaging:
  * Run `make dist`

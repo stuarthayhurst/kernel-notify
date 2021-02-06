@@ -1,13 +1,5 @@
 #!/bin/bash
 
-uninstall() {
-  read -r -p "Are you sure you want to uninstall? [y/N] " response
-  if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-    echo "Uninstalling:"
-    sudo make uninstall
-  fi
-}
-
 checkDeps() {
   echo "-------------------------------"
   for depSet in "$@"; do
@@ -139,7 +131,6 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   echo "-b | --build            : Build the Debian package"; \
   echo "-d | --debian           : Build and install the program for Debian"; \
   echo "-i | --install          : Install the program"; \
-  echo "-u | --uninstall        : Uninstall the program"; \
   echo "-D | --dependencies     : Check if dependencies are installed"; \
   echo "-x | --update-version   : Update the version of the package"; \
   echo ""; \
