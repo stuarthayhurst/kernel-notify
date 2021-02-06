@@ -26,7 +26,6 @@ editConfig() {
   else
     #Search config for specific config, get the value and replace with new value
     currentConfigString="$(grep "$configName=" "$workDir/config" |grep -v "#")"
-    #currentConfigString="$(cat "$workDir/config" |grep "$configName=" |grep -v "#")"
     if [[ "$currentConfigString" != "" ]]; then
       checkRoot "root is required to edit the config"
       sed "s|.*$currentConfigString.*|$configName=\"$configValue\"|" "$workDir/config" > /tmp/kernel-config.temp
