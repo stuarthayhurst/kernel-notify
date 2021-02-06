@@ -7,7 +7,7 @@ BUILD_DIR=build
 DIST_DIR=dist
 
 UNINSTALL_LIST:=$(shell cat src/lists/uninstall.list)
-ICON_RESOLUTIONS=48 64 128 256
+ICON_RESOLUTIONS=8 16 22 24 32 48 64 128 256
 
 .PHONY: build install uninstall dist debian notifications icons docs check test clean
 
