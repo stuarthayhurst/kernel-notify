@@ -28,7 +28,6 @@
 ## Notes:
  * Kernel-notify starting on login can be toggled with `kernel-notify --enable-autostart` and `kernel-notify --disable-autostart`
  * Kernel-notify sending notifications can be toggled in the config, with the `muted=0/1` option
- * The program and kernel can be automatically updated if autoupdate is set to 1 in the config
  * On .deb installation, the package will attempt to rebuild the notifications program if the architecture is not amd64
  * Man page available with `man kernel-notify`
 
@@ -99,7 +98,6 @@
    * '/' shows multiple options
    * '-' shows a range of values
   * muted="true/false" - Whether or not to send notifications for kernel and program updates
-  * autoupdate="true/false" - Set to false to ask before updates, set to true to automatically update the kernel when the program is run
   * kernelcountwarning="true/false" - Show a warning if the number of kernels installed exceeds maxkernelcount
   * maxkernelcount="1-99" - Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
   * kernelcleanup="true/false" - Whether or not to clean up kernel module directory after dpkg exits

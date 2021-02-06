@@ -195,14 +195,7 @@ checkKernelVer() {
       echo "up-to-date"
     fi
   elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" != "gui" ]]; then
-    if [[ "$autoupdate" == "true" ]]; then
-      echo "" && echo "Auto-update is enabled, updating kernel"
-      sleep 5
-      "$workDir/actions" "--display"
-      pkexec kernel-notify -aa
-    else
-      sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute"
-    fi
+    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute"
   elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" == "gui" ]]; then
     echo "Kernel: outdated" 1>&2
     echo "outdated"

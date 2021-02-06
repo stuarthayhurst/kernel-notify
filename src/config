@@ -2,8 +2,6 @@
 # shellcheck disable=SC2034
 #Whether or not to send notifications for kernel and program updates
 muted="false"
-#Automatically update the kernel
-autoupdate="false"
 #Show a warning if the number of kernels installed exceeds maxkernelcount
 kernelcountwarning="true"
 #Number of kernels installed before warning users (e.g. "5" would notify on the 6th kernel installed)
