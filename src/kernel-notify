@@ -141,7 +141,7 @@ listAvailableKernels() {
 
 automaticFeatures() {
   case $1 in
-    am) mute; sendNotification "Program muted" "Run 'kernel-notify -U' to unmute";;
+    am) mute; sendNotification "Autostart disabled" "Run 'kernel-notify --enable-autostart' to enable";;
     aa) updateKernel "automatic" "";;
   esac
 
