@@ -209,6 +209,15 @@ checkKernelVer() {
 launchGui() {
   currVersion=$(uname -r | sed 's/-.*/ /g')
   latestVersion=$(getLatestKernelVersion)
+
+  if [[ "$latestVersion" == "x.x.x" ]]; then
+    sleep 0.5; echo -ne " Error\n"; sleep 0.5
+    sendNotification "Network error" "An error occured while checking latest version"
+    exit 1
+  else
+    echo -ne " Done\n"
+  fi
+
   if [[ "$(checkKernelVer "$currVersion" "$latestVersion" "gui")" == "up-to-date" ]]; then
     if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
       sendNotification "Zenity issue detected" "An error occured while running zenity"
