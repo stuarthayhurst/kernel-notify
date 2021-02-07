@@ -1,6 +1,11 @@
 #include <libnotify/notify.h>
 #include <iostream>
 
+//Namespaces
+using std::cout;
+using std::endl;
+using std::string;
+
 int action_triggered = 0;
 
 void callback_update_kernel() {
@@ -21,35 +26,32 @@ int main(int argc, char * argv[] ) {
   notify_init("Kernel Updater");
   NotifyNotification* n = notify_notification_new(argv[1], argv[2], argv[3]);
 
-  if (argc > 4) {
-    if (argv[4] == std::string("kernel")) {
-      notify_notification_add_action (n,
-        "action_update",
-        "Update Kernel",
-         NOTIFY_ACTION_CALLBACK(callback_update_kernel),
-         NULL,
-         NULL);
-    }
-  }
-
-  if (argc > 5) {
-    if (argv[5] == std::string("mute")) {
-      notify_notification_add_action (n,
-        "action_mute",
-        "Mute",
-         NOTIFY_ACTION_CALLBACK(callback_mute),
-         NULL,
-         NULL);
-    }
-  }
-
-  if (argc > 6) {
-    if (argv[6] == std::string("critical")) {
-      notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
-    } else if (argv[6] == std::string("low")) {
-      notify_notification_set_urgency(n, NOTIFY_URGENCY_LOW);
-    } else {
-      notify_notification_set_urgency(n, NOTIFY_URGENCY_NORMAL);
+  //Check arguments 4-6 for keywords
+  for (int i = 4; i <= 6; i++) {
+    if (argc > i) {
+      //Add callback action to update kernel
+      if (argv[i] == string("kernel")) {
+        notify_notification_add_action (n,
+          "action_update",
+          "Update Kernel",
+           NOTIFY_ACTION_CALLBACK(callback_update_kernel),
+           NULL,
+           NULL);
+      //Add callback action to mute program
+      } else if (argv[i] == string("mute")) {
+        notify_notification_add_action (n,
+          "action_mute",
+          "Mute",
+           NOTIFY_ACTION_CALLBACK(callback_mute),
+           NULL,
+           NULL);
+      //Set notification priority to critical
+      } else if (argv[i] == string("critical")) {
+        notify_notification_set_urgency(n, NOTIFY_URGENCY_CRITICAL);
+      //Set notification priority to low
+      } else if (argv[i] == string("low")) {
+        notify_notification_set_urgency(n, NOTIFY_URGENCY_LOW);
+      }
     }
   }
 
