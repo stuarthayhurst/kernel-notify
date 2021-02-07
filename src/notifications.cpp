@@ -7,17 +7,17 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-int action_triggered = 0;
+bool actionTriggered = false;
 
 void callback_update_kernel() {
   cout << "Updating Kernel" << endl;
-  action_triggered = 1;
+  actionTriggered = false;
   system("workDir=$(pwd) $(pwd)/actions --display");
   system("pkexec kernel-notify -aa");
 }
 void callback_mute() {
   cout << "Muting Program" << endl;
-  action_triggered = 1;
+  actionTriggered = false;
   system("pkexec kernel-notify -am");
 }
 
@@ -62,12 +62,12 @@ int main(int argc, char * argv[] ) {
     cerr << "Notification failed" << endl;
     return 1;
   }
-  while(action_triggered != 1) {
+  while(actionTriggered == false) {
     if(notify_notification_get_closed_reason(n) != -1) {
       cerr << "Closed" << endl;
-      action_triggered = 1;
+      actionTriggered = true;
     }
-    if(action_triggered == 1) {
+    if(actionTriggered == true) {
       g_main_loop_quit(loop);
     }
     g_main_context_iteration(g_main_loop_get_context(loop), TRUE);
