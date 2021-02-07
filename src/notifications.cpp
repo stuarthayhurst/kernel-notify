@@ -3,19 +3,20 @@
 
 //Namespaces
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::string;
 
 int action_triggered = 0;
 
 void callback_update_kernel() {
-  std::cout << "Updating Kernel" << std::endl;
+  cout << "Updating Kernel" << endl;
   action_triggered = 1;
   system("workDir=$(pwd) $(pwd)/actions --display");
   system("pkexec kernel-notify -aa");
 }
 void callback_mute() {
-  std::cout << "Muting Program" << std::endl;
+  cout << "Muting Program" << endl;
   action_triggered = 1;
   system("pkexec kernel-notify -am");
 }
@@ -58,12 +59,12 @@ int main(int argc, char * argv[] ) {
   notify_notification_set_hint (n, "desktop-entry", g_variant_new_string ("kernel-notify"));
   notify_notification_set_timeout(n, NOTIFY_EXPIRES_NEVER);
   if (!notify_notification_show(n, 0)) {
-    std::cerr << "Notification failed" << std::endl;
+    cerr << "Notification failed" << endl;
     return 1;
   }
   while(action_triggered != 1) {
     if(notify_notification_get_closed_reason(n) != -1) {
-      std::cerr << "Closed" << std::endl;
+      cerr << "Closed" << endl;
       action_triggered = 1;
     }
     if(action_triggered == 1) {
