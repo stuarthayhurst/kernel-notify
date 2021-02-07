@@ -129,6 +129,12 @@ getLatestKernelVersion() {
 
 checkValidKernel() {
   checkResult="valid"
+  for i in ${1//./ }; do #No group of characters can exceed a size of 3
+    partCount=$((partCount + 1))
+    if [[ "${#i}" != "1" ]] && [[ "${#i}" != "2" ]] && [[ "${#i}" != "3" ]]; then
+      checkResult="invalid"
+    fi
+  done
   if [[ ! "$1" == *"."* ]]; then #Must contain a .
     checkResult="invalid"
   elif [[ "${1%%-rc*}" == *"." ]] || [[ "${1%%-rc*}" == "."* ]]; then #Mustn't end or start in a .
@@ -138,12 +144,6 @@ checkValidKernel() {
   elif [[ "${1/-rc}" =~ [a-z] ]]; then #Mustn't contain any letters, except rc
     checkResult="invalid"
   fi
-  for i in ${1//./ }; do #No group of characters can exceed a size of 3
-    partCount=$((partCount + 1))
-    if [[ "${#i}" != "1" ]] && [[ "${#i}" != "2" ]] && [[ "${#i}" != "3" ]]; then
-      checkResult="invalid"
-    fi
-  done
   echo "$checkResult"
 }
 
