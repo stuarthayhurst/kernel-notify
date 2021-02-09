@@ -187,37 +187,36 @@ getKernelList() {
   fi
 
   #Get list of installed kernels
-  KERNELS="$(ls /boot/vmlinuz-*)"
-  KERNELS="${KERNELS//'/boot/'}"
-  KERNELS="${KERNELS//vmlinuz-}"
-  KERNELS="${KERNELS//-generic}"
-  KERNELS="$(echo "$KERNELS" |sort -V)"
+  kernelList="$(ls /boot/vmlinuz-*)"
+  kernelList="${kernelList//'/boot/'}"
+  kernelList="${kernelList//vmlinuz-}"
+  kernelList="${kernelList//-generic}"
+  kernelList="$(echo "$kernelList" |sort -V)"
 
-  if [[ "$KERNELS" == "" ]]; then
-    return 1
-  fi
+  [[ "$kernelList" == "" ]] && return 1
+  echo "$kernelList" |tr "\n" " "
 }
 
 displayKernels() {
-  getKernelList
+  read -ra kernelList <<< "$(getKernelList)"
   #Display the list of kernels if not blank
-  if [[ "$KERNELS" == "" ]]; then
-    KERNELS="Error while looking for kernels"
+  if [[ "${kernelList[*]}" == "" ]]; then
+    sendError "Error while looking for kernels"
   else
     echo "Currently installed kernels:"
-    echo "$KERNELS" |cat -n
-    if [[ "$kernelcountwarning" == "true" ]]; then
+    echo "${kernelList[*]}" |tr " " "\n" |cat -n
+    if [[ "$kernelcountwarning" == "true" ]] && [[ "$1" != "minimal" ]]; then
       echo "Config set to keep $maxkernelcount kernels before notifying users"
     fi
   fi
 }
 
 warnKernelCount() {
-  getKernelList
+  read -ra kernelList <<< "$(getKernelList)"
   #Split into an array and warn if the length is longer than the configured limit
-  read -ra ARR <<< "${KERNELS//$'\n'/ }"
+  read -ra ARR <<< "$(echo "${kernelList[*]}" |tr "\n" " ")"
   if [[ "${#ARR[@]}" > "$maxkernelcount" ]]; then
     sendNotification "Configured kernel install count reached" "Remove extra kernels with 'kernel-notify -r'" ""
-    echo "Remove kernels to avoid this message, or raise the limit in the config"
+    echo "Remove kernels to avoid this notification, or raise the limit in the config"
   fi
 }

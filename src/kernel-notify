@@ -163,8 +163,8 @@ updateKernel() {
 checkKernelVer() {
   currVersion="$1"
   latestVersionFull="$2"
-  getKernelList
-  if [ "$KERNELS" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "$KERNELS" |grep "$latestVersionFull" > /dev/null 2>&1; then
+  read -ra kernelList <<< "$(getKernelList)"
+  if [ "${kernelList[*]}" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "${kernelList[*]}" |grep "$latestVersionFull" > /dev/null 2>&1; then
     if [[ "$3" != "gui" ]]; then
       echo "Latest kernel version installed, reboot to take effect"
     else

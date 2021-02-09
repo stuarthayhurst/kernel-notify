@@ -155,11 +155,11 @@ removeKernel() {
     checkRoot "root is required to remove kernels"
   fi
   args="$*"
+  read -ra kernelList <<< "$(getKernelList)"
   if [[ "$args" != "" ]]; then
     DELVERSION="$args"
-    getKernelList
   else
-    displayKernels
+    displayKernels "minimal"
     if [[ "$?" == "1" ]]; then
       exit
     fi
@@ -175,7 +175,7 @@ removeKernel() {
   for i in "${ARR[@]}"; do
     if [[ "${#i}" == 1 ]] || [[ "${#i}" == 2 ]]; then
       if [[ "$i" =~ ^([1-9][0-9]|[1-9])+$ ]]; then
-        i="$(mapfile -s "$(((i-1)))" -n 1 targetKernel < <(echo "$KERNELS"); echo "${targetKernel[0]}" |tr -d "\n")" #Get the value of the line in position n in $KERNELS
+        i="${kernelList[$(((i-1)))]}" #Replace i with the kernel in that position
       fi
     fi
     if [[ ! "${#i}" == 12 ]] && [[ ! "${#i}" == 13 ]] && [[ ! "${#i}" == 14 ]]; then
