@@ -157,9 +157,9 @@ removeKernel() {
   args="$*"
   if [[ "$args" != "" ]]; then
     DELVERSION="$args"
-    listKernels "silent"
+    getKernelList
   else
-    listKernels
+    displayKernels
     if [[ "$?" == "1" ]]; then
       exit
     fi
@@ -211,35 +211,6 @@ removeKernel() {
       fi
     else
       sendError "  ATTENTION: Insufficient permission, root is required to remove kernels"; exit 1
-    fi
-  fi
-}
-
-listKernels() {
-  if ls /etc/*-release > /dev/null 2>&1; then
-    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      sendError "Raspbian / Raspberry Pis are not supported with this feature"
-      return 1
-    fi
-  else
-    return 1
-  fi
-  if [[ ! -d "/boot" ]]; then
-    return 1
-  fi
-  KERNELS="$(ls /boot/vmlinuz-*)"
-  KERNELS="${KERNELS//'/boot/'}"
-  KERNELS="${KERNELS//vmlinuz-}"
-  KERNELS="${KERNELS//-generic}"
-  KERNELS="$(echo "$KERNELS" |sort -V)"
-  if [[ "$KERNELS" = "" ]]; then
-    KERNELS="Error while looking for kernels"
-  fi
-  if [[ "$1" != "silent" ]]; then
-    echo "Currently installed kernels:"
-    echo "$KERNELS" |cat -n
-    if [[ "$kernelcountwarning" == "true" ]]; then
-      echo "Config set to keep $maxkernelcount kernels before notifying users"
     fi
   fi
 }
@@ -302,7 +273,7 @@ fi
 read -ra args <<< "$@"
 case $1 in
     -r|--remove) removeKernel "${args[@]:1}"; exit;;
-    -l|--list) listKernels; exit 0;;
+    -l|--list) displayKernels; exit 0;;
     -i|--install) installKernel; exit 0;;
     -d|--display) mkDisplayInfo; exit 0;;
     *) echo "Use -i, -r or -l"; exit 7;;
