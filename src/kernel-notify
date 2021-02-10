@@ -215,12 +215,9 @@ main() {
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sleep 0.5; echo -ne " Error\n"; sleep 0.5
     sendNotification "Network error" "An error occured while checking latest version"
+    exit 1
   else
     echo -ne " Done\n"
-  fi
-
-  if [[ "$latestVersionFull" == "x.x.x" ]] || [[ "$latestVersionFull" == "" ]]; then
-    exit 1
   fi
 
   if [[ "$(echo "$latestVersionFull" |tr -cd '.' |wc -c)" != "2" ]]; then
