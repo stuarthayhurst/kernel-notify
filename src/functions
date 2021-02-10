@@ -17,23 +17,15 @@ checkDpkg() {
 }
 
 checkRoot() {
-  if [[ "$1" == "checksudo" ]]; then
-    if command -v sudo > /dev/null 2>&1 ; then
-      echo "true"
-    else
-      echo "false"
-    fi
-    return
-  elif [[ "$1" == "silent" ]] ; then
-    if [[ "$USER" == "root" ]]; then
-      echo "true"
-    else
-      echo "false"
-    fi
-    return
-  elif [[ "$USER" != "root" ]]; then
+  if [[ "$1" == "checksudo" ]] && command -v sudo > /dev/null 2>&1; then
+    echo "true" #Return true if sudo exists
+  elif [[ "$1" == "silent" ]] && [[ "$USER" == "root" ]]; then
+    echo "true" #Return true silently if user is root and silence requested
+  elif [[ "$1" != "silent" ]] && [[ "$1" != "checksudo" ]] && [[ "$USER" != "root" ]]; then
     sendError "  ATTENTION: Insufficient permission, $1" 1>&2
-    exit 1
+    exit 1 #Exit with an error if user isn't root
+  else
+    echo "false" #Exit silently if no conditions were met
   fi
 }
 
