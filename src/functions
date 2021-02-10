@@ -164,7 +164,7 @@ sendNotification() {
   if [[ "$muted" == "true" ]] && [[ "$5" != "silent" ]]; then
     echo "$1, $2"
   else
-    #Decide whether or not to set00 configured priority
+    #Decide whether or not to set configured priority
     if [[ "$3" == "kernel" ]] || [[ "$3" == "program" ]] || [[ "$4" == "mute" ]]; then
       displayPriority="$priority"
     fi
