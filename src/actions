@@ -228,8 +228,9 @@ clearFiles() {
   if [[ "$(ls /tmp/kernel-notify)" == "" ]]; then
     if [[ ! -w /tmp/kernel-notify ]]; then
       sendError "Insufficient permission to remove /tmp/kernel-notify"
+    else
+      rm -rf /tmp/kernel-notify
     fi
-    rm -rf /tmp/kernel-notify
   fi
   cd ../
 }
