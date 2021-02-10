@@ -2,12 +2,8 @@
 # shellcheck disable=SC1090
 # shellcheck disable=SC2154
 installKernel() {
-  if ls /etc/*-release > /dev/null 2>&1; then
-    if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-      sendError "Raspbian / Raspberry Pis are not supported with this feature"
-      exit 6
-    fi
-  else
+  if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
+    sendError "Raspbian / Raspberry Pis are not supported with this feature"
     exit 6
   fi
   if [[ "$(checkRoot "checksudo")" == "false" ]]; then
