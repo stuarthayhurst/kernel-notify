@@ -164,22 +164,22 @@ checkKernelVer() {
   currVersion="$1"
   latestVersionFull="$2"
   read -ra kernelList <<< "$(getKernelList)"
-  if [ "${kernelList[*]}" != "" ] && [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && echo "${kernelList[*]}" |grep "$latestVersionFull" > /dev/null 2>&1; then
+  if [[ "$(prepareVersion "$latestVersionFull")" != "$(prepareVersion "$currVersion")" ]]; then
+    outdated="true"
+    sendNotification "Kernel $(formatKernelVersion "$latestVersionFull") is available" "You are currently running Kernel $(formatKernelVersion "$currVersion")" "kernel" "mute"
+  fi
+
+  if [[ "$outdated" == "true" ]] && [[ "${kernelList[*]}" != "" ]] && echo "${kernelList[*]}" |grep "$latestVersionFull" > /dev/null 2>&1; then
     if [[ "$3" != "gui" ]]; then
       echo "Latest kernel version installed, reboot to take effect"
-    else
-      echo "Kernel: up-to-date" 1>&2
-      echo "up-to-date"
+      outdated="false"
     fi
-  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" != "gui" ]]; then
-    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute"
-  elif [[ "$(prepareVersion "$latestVersionFull")" > "$(prepareVersion "$currVersion")" ]] && [[ "$3" == "gui" ]]; then
-    echo "Kernel: outdated" 1>&2
-    echo "outdated"
-    sendNotification "Kernel $latestVersionFull is available" "You are currently running Kernel $currVersion" "kernel" "mute" "silent"
-  elif [[ "$(prepareVersion "$latestVersionFull")" == "$(prepareVersion "$currVersion")" ]] && [[ "$3" == "gui" ]]; then
-    echo "Kernel: up-to-date" 1>&2
-    echo "up-to-date"
+  fi
+
+  if [[ "$outdated" == "true" ]] && [[ "$3" == "gui" ]]; then
+    echo "Kernel: outdated" 1>&2; echo "outdated"
+  elif [[ "$3" == "gui" ]]; then
+    echo "Kernel: up-to-date" 1>&2; echo "up-to-date"
   fi
 }
 
@@ -199,6 +199,14 @@ launchGui() {
     if ! displayGraphics 'zenity --info --window-icon=/usr/share/icons/hicolor/64x64/apps/kernel-notify-app.png --icon-name=kernel-notify --title="Kernel Updater" --text="No updates available" --width=200 --height=50' "launch" "zenity"; then
       sendNotification "Zenity issue detected" "An error occured while running zenity"
     fi
+  fi
+}
+
+formatKernelVersion() {
+  if [[ "${1##*.}" == "0 " ]] || [[ "${1##*.}" == "0 " ]]; then
+    echo "${1%.0*}" #Remove '.0' where are kernel version ends with it
+  else
+    echo "${1//' '}"
   fi
 }
 
@@ -222,8 +230,8 @@ main() {
     latestVersionFull="${latestVersionFull}.0"
   fi
 
-  echo "Latest Kernel: $latestVersionFull"
-  echo "Current Kernel: $currVersion"
+  echo "Latest Kernel: $(formatKernelVersion "$latestVersionFull")"
+  echo "Current Kernel: $(formatKernelVersion "$currVersion")"
 
   #Check kernel version is outdated and notify
   checkKernelVer "$currVersion" "$latestVersionFull"
