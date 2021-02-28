@@ -143,59 +143,84 @@ installKernel() {
 }
 
 removeKernel() {
+  #Check for root access
   if [[ "$(checkRoot "checksudo")" == "false" ]]; then
     checkRoot "root is required to remove kernels"
   fi
+
+  #Create list of arguments and kernels
   args="$*"
-  read -ra kernelList <<< "$(getKernelList)"
-  if [[ "$args" != "" ]]; then
-    DELVERSION="$args"
-  else
+  read -ra installedKernelList <<< "$(getKernelList)"
+
+  #Decide which kernels to remove
+  if [[ "$args" != "" ]]; then #If a kernel was given, skip asking
+    chosenKernels="$args"
+  else #List kernels and ask user for kernels to remove
     displayKernels "minimal"
     if [[ "$?" == "1" ]]; then
       exit
     fi
     echo "Please enter the kernels or numbers you want to remove: (x.x.x-xXxXxX): "
-    read -r DELVERSION
+    read -r chosenKernels
   fi
-  DELVERSION=${DELVERSION//,/ }
-  read -ra ARR <<< "$DELVERSION"
-  if [[ "${ARR[*]}" == "0" ]] || [[ "${ARR[*]}" == "" ]]; then
+
+  #Process chosen kernels and read into an array
+  chosenKernels=${chosenKernels//,/ }
+  read -ra chosenKernels <<< "$chosenKernels"
+
+  if [[ "${chosenKernels[*]}" == "0" ]] || [[ "${chosenKernels[*]}" == "" ]]; then
     sendError "Either no kernel was entered, or an error occured"
     exit
   fi
-  for i in "${ARR[@]}"; do
-    if [[ "${#i}" == 1 ]] || [[ "${#i}" == 2 ]]; then
-      if [[ "$i" =~ ^([1-9][0-9]|[1-9])+$ ]]; then
-        i="${kernelList[$(((i-1)))]}" #Replace i with the kernel in that position
+
+  #Expand list positions into kernels
+  for kernel in "${chosenKernels[@]}"; do
+    i=$((i-1))
+    if [[ "${#kernel}" == 1 ]] || [[ "${#kernel}" == 2 ]]; then #Decide if $i is a kernel or not
+      if [[ "$kernel" -gt "${#installedKernelList[@]}" ]]; then
+        echo "$kernel has no corresponding installed kernel"
+        exit 1
+      elif [[ "$kernel" =~ ^([1-9][0-9]|[1-9])+$ ]]; then #Check it's numerical if not a kernel
+        chosenKernels[i]="${installedKernelList[$(((kernel-1)))]}" #Expand the position in list to a kernel
       fi
     fi
-    if [[ ! "${#i}" == 12 ]] && [[ ! "${#i}" == 13 ]] && [[ ! "${#i}" == 14 ]]; then
+  done
+
+  #Validate chosen kernels
+  for i in "${chosenKernels[@]}"; do
+    #Check kernels are installed
+    for validKernel in "${installedKernelList[@]}"; do
+      if [[ "$i" == "$validKernel" ]]; then
+        validKernel="true"
+        break
+      fi
+    done
+    if [[ "$validKernel" != "true" ]]; then
       sendError "'$i' is not in the correct format"
       exit
     fi
+    #Check the kernel isn't currently booted
     if [[ "$i" == "$(uname -r | sed 's/-generic//g')" ]]; then
       sendError "Removing the booted kernel is not allowed"
       exit
     fi
-    REMOVEVERS+=("$i")
-    DELSTR="$DELSTR $i"
-    REMOVESTR+=("linux-headers-$i" "linux-headers-$i-generic" "linux-modules-$i-generic" "linux-image-unsigned-$i-generic")
+    removeVersions+=("$i")
+    removePackages+=("linux-headers-$i" "linux-headers-$i-generic" "linux-modules-$i-generic" "linux-image-unsigned-$i-generic")
   done
-  read -r -p "Are you sure you want to remove kernel(s):$DELSTR? [y/N] " response
+  read -r -p "Are you sure you want to remove kernel(s): ${removeVersions[*]}? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     if [[ "$(checkRoot "silent")" == "true" ]]; then
       checkDpkg
-      dpkg -P "${REMOVESTR[@]}"
+      dpkg -P "${removePackages[@]}"
       #Remove left over kernel module directory is config is enabled
       if [[ "$kernelcleanup" == "true" ]]; then
-        REMOVESTR=("")
-        for kernelVer in "${REMOVEVERS[@]}"; do
+        removePackages=("")
+        for kernelVer in "${removeVersions[@]}"; do
           for kernelDir in "/lib/modules/$kernelVer"*; do
-            REMOVESTR+=("$kernelDir")
+            removePackages+=("$kernelDir")
           done
         done
-        if sudo rm -rf "${REMOVESTR[@]}"; then
+        if sudo rm -rf "${removePackages[@]}"; then
           echo "Successfully cleaned up kernel module directories"
         else
           sendError "Failed to clean up kernel module directories"
@@ -209,8 +234,8 @@ removeKernel() {
 
 clearFiles() {
   cd /tmp/kernel-notify || exit 7
-  read -ra ARR <<< "$@"
-  for i in "${ARR[@]}"; do
+  read -ra removeFiles <<< "$@"
+  for i in "${removeFiles[@]}"; do
     if [[ -f "$i" ]]; then
       rm "$i"
     else
