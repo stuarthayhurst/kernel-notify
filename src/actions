@@ -79,7 +79,7 @@ installKernel() {
     cd /tmp/kernel-notify || exit 7
 
     for filename in "${packages[@]}"; do
-      progress=$((( "$progress"+20 )))
+      progress=$((( "$progress"+10 )))
       echo "# Downloading ${filename##*/}..."
       curl --progress-bar -O "$filename"
       echo "$progress"
@@ -95,14 +95,14 @@ installKernel() {
 
     echo "# Downloading & verifying checksums..."
     curl --progress-bar -O "$mainlineRepoDir/CHECKSUMS"
-    echo "90"
+    echo "45"
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       sendError "Downloaded kernel checksum invalid"
       clearFiles "$installList CHECKSUMS"
       sendNotification "Kernel failed to update" "Downloaded kernel faulty"
       exit 4
     fi
-    echo "99"
+    echo "50"
 
     echo "" 1>&2; echo "All packages verified, installing kernel version $installVersion..." 1>&2
     if [[ "$(checkRoot "silent")" == "true" ]]; then
@@ -111,20 +111,16 @@ installKernel() {
       sudo bash -c "source $workDir/config && source $workDir/functions && checkDpkg" 1>&2
     fi
 
-    progress=0
-    echo "$progress"
+    #Read kernels into an array and install
     read -ra installArray <<< "$installList"
-    for filename in "${installArray[@]}"; do
-      progress=$((( "$progress"+25 )))
-      echo "# Installing ${filename##*/}..."
-      if [[ "$(checkRoot "silent")" == "true" ]]; then
-        dpkg -i "$filename" 1>&2
-      else
-        sudo dpkg -i "$filename" 1>&2
-      fi
-      echo "$progress"
-    done
+    echo "# Installing kernel $installVersion..."
+    if [[ "$(checkRoot "silent")" == "true" ]]; then
+      dpkg -i "${installArray[@]}" 1>&2
+    else
+      sudo dpkg -i "${installArray[@]}" 1>&2
+    fi
     echo "# Installed Kernel v$installVersion"
+    echo "100"
     echo "Done, reboot for the update to take effect" 1>&2
     clearFiles "$installList CHECKSUMS"
   }
