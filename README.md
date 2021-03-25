@@ -5,7 +5,7 @@
  - GitHub Link: https://github.com/Dragon8oy/kernel-notify
 
 ## Code of Conduct and Contributing:
- - Read 'CODE\_OF\_CONDUCT.md' and 'CONTRIBUTING.md' in 'docs/' for information
+ - Read `CODE\_OF\_CONDUCT.md` and `CONTRIBUTING.md` in `docs/` for information
 
 ## Installation:
  * Run `./install.sh`
