@@ -323,10 +323,10 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "-a  | --add-kernel     : Install a new kernel"; \
     echo "-p  | --precision      : Check either major or minor kernel updates"; \
     echo ""; \
-    echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; \
-    echo "Issues: https://github.com/Dragon8oy/kernel-notify/issues"; \
-    echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
-    -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/Dragon8oy/kernel-notify"; echo "Program written by: Dragon8oy (Stuart Hayhurst)"; exit;;
+    echo "GitHub Link: https://github.com/stuarthayhurst/kernel-notify"; \
+    echo "Issues: https://github.com/stuarthayhurst/kernel-notify/issues"; \
+    echo "Program written by: Stuart Hayhurst"; exit;;
+    -v|--version) echo "Kernel-notify version: $version"; echo ""; echo "GitHub Link: https://github.com/stuarthayhurst/kernel-notify"; echo "Program written by: Stuart Hayhurst"; exit;;
     -o|--old-config) listConfig; exit;;
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
     --enable-autostart|--autostart) unmute; exit;;

@@ -134,7 +134,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   echo "-D | --dependencies     : Check if dependencies are installed"; \
   echo "-x | --update-version   : Update the version of the package"; \
   echo ""; \
-  echo "Program written by: Dragon8oy"; exit;;
+  echo "Program written by: Stuart Hayhurst"; exit;;
   -b|--build) checkDeps "build"; make dist; exit;;
   -i|--install) make build; sudo make install; exit;;
   -u|--uninstall) uninstall; exit;;

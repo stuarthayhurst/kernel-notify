@@ -1,8 +1,8 @@
 # kernel-notify
  - A program to fetch the latest kernel version on login and notify users if their kernel is no longer the latest
  - Updating and removing the kernel is supported on Debian-based systems
- - If you have an issue, please file a bug report under [Issues](https://github.com/Dragon8oy/kernel-notify/issues "Issues")
- - GitHub Link: https://github.com/Dragon8oy/kernel-notify
+ - If you have an issue, please file a bug report under [Issues](https://github.com/stuarthayhurst/kernel-notify/issues "Issues")
+ - GitHub Link: https://github.com/stuarthayhurst/kernel-notify
 
 ## Code of Conduct and Contributing:
  - Read `CODE_OF_CONDUCT.md` and `CONTRIBUTING.md` in `docs/` for information
