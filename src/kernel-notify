@@ -317,6 +317,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     echo "--disable-autostart : Disable kernel-notify starting on login"; \
     echo ""; \
     echo "Feature Help:"; \
+    echo "-m  | --minimal-output : Only print the latest kernel version"; \
     echo "-L  | --list-available : List all kernels available to install"; \
     echo "-r  | --remove-kernel  : Remove kernels with a menu"; \
     echo "-l  | --list-kernels   : List installed kernels"; \
@@ -331,6 +332,7 @@ while [[ "${#expandedArgs[@]}" > "$argNum" ]]; do
     -c|--config) editConfig "${expandedArgs[((argNum + 1))]}" "${expandedArgs[((argNum + 2))]}" "${expandedArgs[((argNum + 3))]}"; exit;;
     --enable-autostart|--autostart) unmute; exit;;
     --disable-autostart) mute; exit;;
+    -m|--minimal-output) echo -n "$(formatKernelVersion "$(getLatestKernelVersion)")"; exit;;
     -L|--list-available|--list-available-kernels) listAvailableKernels; exit;;
     -r|--remove-kernel|--remove-kernels) "$workDir/actions" -r "${expandedArgs[@]:1}"; exit;;
     -l|--list|--list-kernels) displayKernels; warnKernelCount; exit;;

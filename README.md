@@ -42,6 +42,7 @@
    * --disable-autostart : Disable kernel-notify starting on login
 
  - ### Feature Help:
+   * -m  | --minimal-output : Only print the latest kernel version
    * -L  | --list-available : List all kernels available to install
    * -r  | --remove-kernel  : Remove a kernels from a menu
    * -l  | --list-kernels   : List installed kernels
