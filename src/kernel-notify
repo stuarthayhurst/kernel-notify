@@ -128,12 +128,38 @@ automaticFeatures() {
 }
 
 updateKernel() {
+  clearLock() {
+    if [[ -f "$lockFile" ]]; then
+      rm "$lockFile"
+    fi
+  }
+
+  lockFile="/tmp/kernel-notify-kernel-update.lock"
+  if [[ -f "$lockFile" ]]; then
+    if [[ "$1" == "automatic" ]]; then
+      sendNotification "Kernel already updating" "Kernel-notify is already running, wait for it to finish"
+      exit 1
+    else
+      echo "Kernel already updating ($lockFile is present)" 1>&2
+      echo "Enter 'force' to override:"
+      read -r forceUpdate
+      if [[ "$forceUpdate" == "force" ]]; then
+        clearLock
+      else
+        exit 1
+      fi
+    fi
+  fi
+  trap clearLock INT
+  touch "$lockFile"
+
   latestVersionFull=$(getLatestKernelVersion)
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sendNotification "Network error" "An error occured while checking latest version"
     sendError "Likely a network issue, installation cancelled"
     exit
   fi
+
   if [[ "$1" == "automatic" ]]; then
     "$workDir/actions" -i "$latestVersionFull" -a
     case "$?" in
@@ -157,6 +183,8 @@ updateKernel() {
   else
     "$workDir/actions" -i "$2"
   fi
+
+  clearLock
   warnKernelCount
 }
 
