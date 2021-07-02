@@ -3,6 +3,8 @@
  - Updating and removing the kernel is supported on Debian-based systems
  - If you have an issue, please file a bug report under [Issues](https://github.com/stuarthayhurst/kernel-notify/issues "Issues")
  - GitHub Link: https://github.com/stuarthayhurst/kernel-notify
+ - **This project is archived, as I don't have a strong use case for it anymore**
+   - Feel free to contact me about unarchiving it if you want to submit a pull request :)
 
 ## Code of Conduct and Contributing:
  - Read `CODE_OF_CONDUCT.md` and `CONTRIBUTING.md` in `docs/` for information
