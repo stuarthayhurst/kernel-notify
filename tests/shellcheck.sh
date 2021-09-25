@@ -6,7 +6,7 @@ if [[ "$shellcheckVer" > "0.7.0" ]]; then
   shellcheckArgs+=("-W" "0")
 fi
 
-for file in $(echo */*); do
+for file in $(echo ./*/*); do
   if [[ -f "$file" ]] && grep -q "#!/bin/bash" "$file"; then
     if ! shellcheck -e "SC1091" -e "SC1090" "${shellcheckArgs[@]}" "$file"; then
       exit 1
