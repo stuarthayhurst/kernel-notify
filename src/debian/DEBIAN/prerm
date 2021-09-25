@@ -1,6 +1,5 @@
 #!/bin/bash
-#Clean up files not maintained by package manager
-if [[ "$1" == "remove" ]]; then
+if [[ "$1" == "remove" ]]; then #Clean up files not maintained by package manager
   fileList=("/etc/xdg/autostart/kernel-notify.desktop" "/usr/share/kernel-notify/kernel-notify.desktop" "/usr/share/kernel-notify/kernel-notify.desktop.old" "/usr/share/kernel-notify/config.old" "/usr/share/man/man1/kernel-notify.1.gz" "/usr/share/man/man1/kernel-notify.1")
   rm -f "${fileList[@]}"
 fi
