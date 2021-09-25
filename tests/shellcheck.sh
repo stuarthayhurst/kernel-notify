@@ -8,7 +8,7 @@ fi
 
 for file in $(echo */*); do
   if [[ -f "$file" ]] && grep -q "#!/bin/bash" "$file"; then
-    if ! shellcheck "${shellcheckArgs[@]}" "$file"; then
+    if ! shellcheck -e "SC1091" "${shellcheckArgs[@]}" "$file"; then
       exit 1
     fi
   fi
