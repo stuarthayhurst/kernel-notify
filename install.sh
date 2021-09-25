@@ -30,9 +30,7 @@ checkDeps() {
       echo -e "\nMissing $depSet dependencies:$missingDeps"
       cancelInstall="true"
       unset missingDeps
-    elif [[ "$missingDepsOptional" != "" ]]; then
-      echo ""
-    fi
+    elif [[ "$missingDepsOptional" != "" ]]; then echo ""; fi
     if [[ "$missingDepsOptional" != "" ]]; then
       missingDepsOptional=${missingDepsOptional/,}
       echo -e "Missing optional $depSet dependencies:$missingDepsOptional"
@@ -49,19 +47,12 @@ checkDeps() {
 updateVersion() {
   if [[ "$1" != "" ]]; then
     newVersion="$1"
-    echo "Changing package version to v$buildVersion:"
+    echo "Changing package version to v$newVersion:"
   else
-    echo "Enter the new version number:"
-    read -r newVersion
+    echo "Enter the new version number:"; read -r newVersion
   fi
-  if [[ "$newVersion" == "" ]]; then
-    echo "No new version entered, exiting"
-    exit
-  fi
+  if [[ "$newVersion" == "" ]]; then echo "No new version entered, exiting"; exit; fi
 
-  if [[ "$1" == "" ]]; then
-    echo "Updating package version:"
-  fi
   read -r -p "Update manpage date? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     manDate=$(date "+%B %Y")
@@ -81,19 +72,14 @@ installDebian() {
   make dist
   currVersion="$(sed -n '5p' "src/kernel-notify.desktop")"
   currVersion=${currVersion//Version=}
-  if ! make test; then
-    exit 1
-  fi
+  if ! make test; then exit 1; fi
   sudo dpkg -i "./dist/kernel-notify-${currVersion}_all.deb"
   make clean
 }
 
 makeAssist() {
   if [[ -f "/tmp/remove-kernel-notify-autostart" ]]; then
-    rm "/tmp/remove-kernel-notify-autostart"
-    if [[ -f "/etc/xdg/autostart/kernel-notify.desktop" ]]; then
-      rm "/etc/xdg/autostart/kernel-notify.desktop"
-    fi
+    rm -f "/tmp/remove-kernel-notify-autostart" "/etc/xdg/autostart/kernel-notify.desktop"
   fi
   if [ -f /usr/share/kernel-notify/config.old ] && ! diff /usr/share/kernel-notify/config /usr/share/kernel-notify/config.old > /dev/null; then
     echo "Updating config values..."
@@ -115,11 +101,8 @@ makeAssist() {
 }
 
 for i in "$@"; do
-  if [[ "$i" != *"d"* ]] && [[ "$i" != *"s"* ]] && [[ "$i" != *"-"* ]]; then
-    buildVersion="$i"
-  fi
+  if [[ "$i" != *"-"* ]]; then buildVersion="$i"; fi
 done
-
 while [[ "$#" -gt 0 ]]; do case $1 in
   -h|--help) echo "Kernel-notify Copyright (C) 2021 Stuart Hayhurst"; \
   echo "This program comes with ABSOLUTELY NO WARRANTY."; \

@@ -1,10 +1,8 @@
 #!/bin/bash
-# shellcheck disable=SC1090
 # shellcheck disable=SC2154
 installKernel() {
   if cat /etc/*-release |grep -q Raspbian 2>&1 ; then
-    sendError "Raspbian / Raspberry Pis are not supported with this feature"
-    exit 6
+    sendError "Raspbian / Raspberry Pis are not supported with this feature"; exit 6
   fi
   if [[ "$(checkRoot "checksudo")" == "false" ]]; then
     checkRoot "root is required to install a kernel"
@@ -16,23 +14,20 @@ installKernel() {
 
   if [[ "$chosenVersion" == "" ]]; then
     if [[ "$(checkValidKernel "$installVersion")" == "invalid" ]]; then
-      sendError "Selected kernel '$installVersion' is invalid" 1>&2
-      exit 7
+      sendError "Selected kernel '$installVersion' is invalid" 1>&2; exit 7
     fi
     echo "Using selected version $installVersion"
     chosenVersion="$installVersion"
     if [[ "$installVersion" != "x.x.x" ]]; then
       if [[ "${installVersion//.}" -eq "${currVersion//.}" ]]; then
-        echo "Kernel is already on the selected version"
-        exit 3
+        echo "Kernel is already on the selected version"; exit 3
       fi
     else
       exit 7
     fi
   else
     if [[ "$(checkValidKernel "$chosenVersion")" == "invalid" ]]; then
-      sendError "Selected kernel '$chosenVersion' is invalid" 1>&2
-      exit 7
+      sendError "Selected kernel '$chosenVersion' is invalid" 1>&2; exit 7
     fi
     echo "Finding kernel version $chosenVersion..."
   fi
@@ -56,8 +51,7 @@ installKernel() {
   kernelDate="${kernelDate##*.}"
 
   if [[ "$kernelDate" == "" ]]; then
-    sendError "Either kernel $installVersion doesn't have an entry, or you have no internet connection"
-    exit 2
+    sendError "Either kernel $installVersion doesn't have an entry, or you have no internet connection"; exit 2
   fi
 
   kernelType="generic"
@@ -73,8 +67,7 @@ installKernel() {
       mkdir /tmp/kernel-notify
     elif [[ ! -w /tmp/kernel-notify ]]; then
       sendError "No permission to use /tmp/kernel-notify, please delete it and try again or run with root"
-      sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason"
-      exit 7
+      sendNotification "Kernel failed to update" "Kernel failed to update for an unknown reason"; exit 7
     fi
     cd /tmp/kernel-notify || exit 7
 
@@ -88,8 +81,7 @@ installKernel() {
       if ! file "$filename" | grep -q 'Debian binary package'; then
         sendError "$filename: Not a Debian package"
         clearFiles "$installList"
-        sendNotification "Kernel failed to update" "Downloaded kernel faulty"
-        exit 4
+        sendNotification "Kernel failed to update" "Downloaded kernel faulty"; exit 4
       fi
     done
 
@@ -99,8 +91,7 @@ installKernel() {
     if ! sha256sum --ignore-missing -c CHECKSUMS 1>&2; then
       sendError "Downloaded kernel checksum invalid"
       clearFiles "$installList CHECKSUMS"
-      sendNotification "Kernel failed to update" "Downloaded kernel faulty"
-      exit 4
+      sendNotification "Kernel failed to update" "Downloaded kernel faulty"; exit 4
     fi
     echo "50"
 
@@ -137,8 +128,7 @@ installKernel() {
       filename="${filename##*/}"
       installList="$installList $filename"
     done
-    clearFiles "$installList CHECKSUMS"
-    exit 5
+    clearFiles "$installList CHECKSUMS"; exit 5
   fi
 }
 
@@ -169,8 +159,7 @@ removeKernel() {
   read -ra chosenKernels <<< "$chosenKernels"
 
   if [[ "${chosenKernels[*]}" == "0" ]] || [[ "${chosenKernels[*]}" == "" ]]; then
-    sendError "Either no kernel was entered, or an error occured"
-    exit
+    sendError "Either no kernel was entered, or an error occured"; exit
   fi
 
   #Expand list positions into kernels
@@ -178,8 +167,7 @@ removeKernel() {
     i=$((i-1))
     if [[ "${#kernel}" == 1 ]] || [[ "${#kernel}" == 2 ]]; then #Decide if $i is a kernel or not
       if [[ "$kernel" -gt "${#installedKernelList[@]}" ]]; then
-        echo "$kernel has no corresponding installed kernel"
-        exit 1
+        echo "$kernel has no corresponding installed kernel"; exit 1
       elif [[ "$kernel" =~ ^([1-9][0-9]|[1-9])+$ ]]; then #Check it's numerical if not a kernel
         chosenKernels[i]="${installedKernelList[$(((kernel-1)))]}" #Expand the position in list to a kernel
       fi
@@ -196,13 +184,11 @@ removeKernel() {
       fi
     done
     if [[ "$validKernel" != "true" ]]; then
-      sendError "'$i' is not in the correct format"
-      exit
+      sendError "'$i' is not in the correct format"; exit
     fi
     #Check the kernel isn't currently booted
     if [[ "$i" == "$(uname -r | sed 's/-generic//g')" ]]; then
-      sendError "Removing the booted kernel is not allowed"
-      exit
+      sendError "Removing the booted kernel is not allowed"; exit
     fi
     removeVersions+=("$i")
     removePackages+=("linux-headers-$i" "linux-headers-$i-generic" "linux-modules-$i-generic" "linux-image-unsigned-$i-generic")
@@ -262,14 +248,12 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   source "$workDir/functions"
   cd "$workDir" || exit 7
 else
-  sendError "Config file / kernel-notify directory missing, exiting"
-  exit 1
+  sendError "Config file / kernel-notify directory missing, exiting"; exit 1
 fi
 
 if [[ "$1" != "-l" ]] && [[ "$1" != "--list" ]]; then
   if [[ ! -f "/usr/bin/dpkg" ]]; then
-    sendError "Kernel installation / removal is not supported on this system"
-    exit 6
+    sendError "Kernel installation / removal is not supported on this system"; exit 6
   fi
 fi
 

@@ -22,8 +22,7 @@ checkRoot() {
   elif [[ "$1" == "silent" ]] && [[ "$USER" == "root" ]]; then
     echo "true" #Return true silently if user is root and silence requested
   elif [[ "$1" != "silent" ]] && [[ "$1" != "checksudo" ]] && [[ "$USER" != "root" ]]; then
-    sendError "  ATTENTION: Insufficient permission, $1" 1>&2
-    exit 1 #Exit with an error if user isn't root
+    sendError "  ATTENTION: Insufficient permission, $1" 1>&2; exit 1 #Exit with an error if user isn't root
   else
     echo "false" #Exit silently if no conditions were met
   fi
@@ -115,7 +114,6 @@ getLatestKernelVersion() {
       latestVersion="x.x.x"
     fi
   fi
-
   echo "$latestVersion"
 }
 
@@ -174,9 +172,7 @@ sendNotification() {
 #Set a variable for the currently installed kernels
 getKernelList() {
   #Exit with error if unsupported
-  if cat /etc/*-release |grep -q Raspbian 2>&1 || [[ ! -d "/boot" ]]; then
-    return 1
-  fi
+  if cat /etc/*-release |grep -q Raspbian 2>&1 || [[ ! -d "/boot" ]]; then return 1; fi
 
   #Get list of installed kernels
   kernelList="$(ls /boot/vmlinuz-*)"

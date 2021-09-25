@@ -1,5 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC1090
 # shellcheck disable=SC2154
 export workDir="/usr/share/kernel-notify"
 version="6.4"
@@ -7,16 +6,14 @@ version="6.4"
 editConfig() {
   #Read arguments and input variables
   if [[ "$1" == *"="* ]]; then
-    configName="${1%=*}"
-    configValue="${1#*=}"
+    configName="${1%=*}"; configValue="${1#*=}"
   else
-    configName="$1"
-    configValue="$2"
+    configName="$1"; configValue="$2"
   fi
 
   if [ "$configName" == "" ]; then
     #Display config without #!/bin/bash
-    echo "Config: $workDir/config"; echo ""; grep -v "#!/bin/bash" "$workDir/config" |grep -v "# shellcheck disable=SC2034"
+    echo "Config: $workDir/config"; echo ""; cat "$workDir/config"
   elif [ "$configValue" == "" ]; then
     #Search config for a specific config and output result
     if [[ "$3" != "silent" ]]; then
@@ -99,8 +96,7 @@ unmute() {
 
 setPrecision() {
   if [[ "$1" != "major" ]] && [[ "$1" != "minor" ]]; then
-    sendError "'$1' is invalid, use either 'major' or 'minor'"
-    exit 1
+    sendError "'$1' is invalid, use either 'major' or 'minor'"; exit 1
   else
     export checkingprecision="$1"
   fi
@@ -122,9 +118,7 @@ automaticFeatures() {
     aa) updateKernel "automatic" "";;
   esac
 
-  if [[ -f "/tmp/kernel-notify.displayinfo" ]]; then
-    rm /tmp/kernel-notify.displayinfo
-  fi
+  if [[ -f "/tmp/kernel-notify.displayinfo" ]]; then rm /tmp/kernel-notify.displayinfo; fi
 }
 
 updateKernel() {
@@ -137,8 +131,7 @@ updateKernel() {
   lockFile="/tmp/kernel-notify-kernel-update.lock"
   if [[ -f "$lockFile" ]]; then
     if [[ "$1" == "automatic" ]]; then
-      sendNotification "Kernel already updating" "Kernel-notify is already running, wait for it to finish"
-      exit 1
+      sendNotification "Kernel already updating" "Kernel-notify is already running, wait for it to finish"; exit 1
     else
       echo "Kernel already updating ($lockFile is present)" 1>&2
       echo "Enter 'force' to override:"
@@ -156,8 +149,7 @@ updateKernel() {
   latestVersionFull=$(getLatestKernelVersion)
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sendNotification "Network error" "An error occured while checking latest version"
-    sendError "Likely a network issue, installation cancelled"
-    exit
+    sendError "Likely a network issue, installation cancelled"; exit 1
   fi
 
   if [[ "$1" == "automatic" ]]; then
@@ -184,8 +176,7 @@ updateKernel() {
     "$workDir/actions" -i "$2"
   fi
 
-  clearLock
-  warnKernelCount
+  clearLock; warnKernelCount
 }
 
 checkKernelVer() {
@@ -216,8 +207,7 @@ launchGui() {
   latestVersion=$(getLatestKernelVersion)
 
   if [[ "$latestVersion" == "x.x.x" ]]; then
-    sendNotification "Network error" "An error occured while checking latest version"
-    exit 1
+    sendNotification "Network error" "An error occured while checking latest version"; exit 1
   fi
 
   if [[ "$(checkKernelVer "$currVersion" "$latestVersion" "gui")" == "up-to-date" ]]; then
@@ -242,8 +232,7 @@ main() {
 
   if [[ "$latestVersionFull" == "x.x.x" ]]; then
     sleep 0.5; echo -ne " Error\n"; sleep 0.5
-    sendNotification "Network error" "An error occured while checking latest version"
-    exit 1
+    sendNotification "Network error" "An error occured while checking latest version"; exit 1
   else
     echo -ne " Done\n"
   fi
@@ -257,7 +246,6 @@ main() {
 
   #Check kernel version is outdated and notify
   checkKernelVer "$currVersion" "$latestVersionFull"
-
   #Check installed kernel count is below configured warning threshold
   warnKernelCount
 }
@@ -268,8 +256,7 @@ if [[ -d "$workDir" ]] && [[ -f "$workDir/config" ]] && [[ -f "$workDir/function
   source "$workDir/functions"
   cd "$workDir" || exit 1
 else
-  sendError "Config file / kernel-notify directory missing, exiting"
-  exit 1
+  sendError "Config file / kernel-notify directory missing, exiting"; exit 1
 fi
 
 #Expand combined arguments
@@ -298,8 +285,7 @@ while [[ "$#" > "$argNum" ]]; do
     fi
     skipArg="false"
   else
-    #If the argument has no dashes, don't modify it
-    expandedArgs+=("$arg")
+    expandedArgs+=("$arg") #If the argument has no dashes, don't modify it
   fi
   argNum=$((argNum + 1))
 done

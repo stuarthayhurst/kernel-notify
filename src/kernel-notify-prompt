@@ -1,5 +1,4 @@
 #!/bin/bash
-
 _kernel_notify_config_completion() {
   #Generate configs
   local configlist
@@ -9,8 +8,7 @@ _kernel_notify_config_completion() {
         configlist+="${line%%=*} "
       fi
     fi
-  done <<< "$(kernel-notify --config 2>/dev/null)"
-  echo "$configlist"
+  done <<< "$(kernel-notify --config 2>/dev/null)"; echo "$configlist"
 }
 
 _kernel_notify_arg_completion() {
@@ -23,8 +21,7 @@ _kernel_notify_arg_completion() {
         promptlist+="$i "
       fi
     done
-  done <<< "$(kernel-notify --help 2>/dev/null)"
-  echo "$promptlist"
+  done <<< "$(kernel-notify --help 2>/dev/null)"; echo "$promptlist"
 }
 
 _kernel_notify_completion() {
@@ -39,7 +36,5 @@ _kernel_notify_completion() {
     promptlist="$(_kernel_notify_arg_completion)" &> /dev/null
     mapfile -t COMPREPLY < <(compgen -W "$promptlist" -- "$cur")
   fi
-  return 0
 }
-
 complete -F _kernel_notify_completion kernel-notify
